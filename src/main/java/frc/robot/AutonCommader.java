@@ -3,6 +3,8 @@ package frc.robot;
 import java.io.IOException;
 import java.nio.file.Path;
 
+import com.pathplanner.lib.PathPlannerTrajectory.PathPlannerState;
+
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.trajectory.Trajectory;
@@ -51,6 +53,7 @@ public class AutonCommader extends RobotCommander{
     @Override
     public boolean getResetIMU() {
         // TODO Auto-generated method stub
+        // return auton.getResetIMU;
         return false;
     }
 
@@ -70,5 +73,9 @@ public class AutonCommader extends RobotCommander{
 
     public Rotation2d getTargetTheta(){
         return auton.targetTheta;
+    }
+
+    public PathPlannerState getInitalState(){
+        return auton.initalState;
     }
 }
