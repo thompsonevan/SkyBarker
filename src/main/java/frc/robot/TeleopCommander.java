@@ -16,12 +16,12 @@ public class TeleopCommander extends RobotCommander{
 
     @Override
     public double getForwardCommand() {
-        return -(modifyAxis(driver.getLeftY()) * MAX_VELOCITY_METERS_PER_SECOND) * .2;
+        return -(modifyAxis(driver.getLeftY()) * MAX_VELOCITY_METERS_PER_SECOND);
     }
 
     @Override
     public double getStrafeCommand() {
-        return -(modifyAxis(driver.getLeftX()) * MAX_VELOCITY_METERS_PER_SECOND) * .2;
+        return -(modifyAxis(driver.getLeftX()) * MAX_VELOCITY_METERS_PER_SECOND);
     }
 
     @Override
@@ -35,8 +35,19 @@ public class TeleopCommander extends RobotCommander{
     public boolean getResetIMU() {
         return driver.getBackButton();
     }
+
+    // public int getArmPosition(){
+        
+    // }
  
-    
+    public boolean getDriveToObject(){
+        return driver.getAButton();
+    }
+
+    public boolean getDriveToScoring(){
+        return driver.getBButton();
+    }
+
     private static double deadband(double value, double deadband, double maxRange){
         if(Math.abs(value) < deadband){
             return 0;
