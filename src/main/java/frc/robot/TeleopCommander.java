@@ -35,11 +35,7 @@ public class TeleopCommander extends RobotCommander{
     public boolean getResetIMU() {
         return driver.getBackButton();
     }
-
-    // public int getArmPosition(){
-        
-    // }
- 
+    
     public boolean getDriveToObject(){
         return driver.getAButton();
     }
