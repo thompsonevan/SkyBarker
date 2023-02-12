@@ -22,6 +22,7 @@ import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.Autons.Auton1;
 import frc.robot.sensors.Pigeon;
+import frc.robot.subsystems.Arm;
 import frc.robot.subsystems.Drivetrain;
 
 import static frc.robot.Constants.*;
@@ -38,6 +39,7 @@ public class Robot extends TimedRobot {
     private Pigeon pigeon;
     private AutonCommader autonCommader;
     private Auton1 auton;
+    private Arm arm;
 
     @Override
     public void robotInit() {
@@ -51,20 +53,25 @@ public class Robot extends TimedRobot {
         pigeon = new Pigeon();
         drivetrain = new Drivetrain();
         autonCommader = new AutonCommader();
+        arm = new Arm();
     }
 
     @Override
     public void robotPeriodic() {
-    }
+        arm.logData();
+     }
 
     @Override
     public void disabledInit() {
         drivetrain.zero();
+        arm.armZeroSensorPos();
     }
 
     @Override
     public void disabledPeriodic() {
         drivetrain.disabled();
+        arm.armPercentOutZero();
+        arm.coastMode();
     }
 
     @Override
@@ -75,6 +82,7 @@ public class Robot extends TimedRobot {
         drivetrain.setPose(trajectory.getInitialPose());
         auton = new Auton1();
         autonCommader.initAuton(auton);
+        
     }
 
     @Override
@@ -88,11 +96,15 @@ public class Robot extends TimedRobot {
     public void teleopInit() {
         drivetrain.zero();
         Pigeon.zeroSensor();
+        arm.armZeroSensorPos();
     }
 
     @Override
     public void teleopPeriodic() {
         pigeon.enabledAction(teleopCommander);
         drivetrain.teleAction(teleopCommander);
+        arm.armTeleAction(teleopCommander);
+        arm.brakeMode();
+        SmartDashboard.putBoolean("ButtonA", teleopCommander.getArmPosition1());
     }
 }

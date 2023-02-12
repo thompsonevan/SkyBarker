@@ -56,4 +56,39 @@ public class TeleopCommander extends RobotCommander{
             return Math.abs(value) * value;
         }
     }
+
+    @Override
+    public boolean getArmPosition1(){
+        return operator.getAButton();
+    }
+
+    @Override
+    public boolean getArmPosition2(){
+        return operator.getBButton();
+    }
+
+    public boolean getArmPosition3(){
+        return operator.getYButton();
+    }
+
+    public boolean getArmPositionPackage(){
+        return operator.getBackButton();
+    }
+
+    public double armShoulder(){     
+        if(Math.abs(operator.getLeftY()) > 0.1){
+            return operator.getLeftY() * 0.5;
+        } else {
+            return 0;
+        }
+    }
+
+    public double armExtension(){
+        if(Math.abs(operator.getRightY()) > 0.1){
+            return operator.getRightY() * 0.5;
+        } else {
+            return 0;
+        }
+        
+    }
 }

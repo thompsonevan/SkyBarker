@@ -54,6 +54,16 @@ public class AutonCommader extends RobotCommander{
         return false;
     }
 
+    @Override
+    public boolean getArmPosition1(){
+        return false;
+    }
+
+    @Override
+    public boolean getArmPosition2(){
+        return false;
+    }
+
     public State getDesiredState(){
         return auton.desState;
     }
