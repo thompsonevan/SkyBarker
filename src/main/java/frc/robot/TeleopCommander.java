@@ -102,7 +102,7 @@ public class TeleopCommander extends RobotCommander{
             aButtonPressed = false;
             bButtonPressed = true;
             xButtonPressed = false;
-        } else if(operator.getAButton()){
+        } else if(operator.getXButton()){
             yButtonPressed = false;
             aButtonPressed = false;
             bButtonPressed = false;
@@ -110,6 +110,10 @@ public class TeleopCommander extends RobotCommander{
         }
 
         if (Math.abs(operator.getLeftY()) > 0.1 || Math.abs(operator.getRightY()) > 0.1){
+            yButtonPressed = false;
+            aButtonPressed = false;
+            bButtonPressed = false;
+            xButtonPressed = false;
             return ArmPos.manual;
         } else {
             if(yButtonPressed){
@@ -121,7 +125,7 @@ public class TeleopCommander extends RobotCommander{
             } else if (xButtonPressed){
                 return ArmPos.lowerNode;
             } else {
-                return ArmPos.packagePos;
+                return ArmPos.stay;
             }
         }
     }

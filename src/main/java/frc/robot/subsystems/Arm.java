@@ -24,7 +24,8 @@ public class Arm {
         middleNode,
         lowerNode,
         packagePos,
-        manual
+        manual,
+        stay
     }
 
     TalonFX shoulder = new TalonFX(SHOULDER);
@@ -154,6 +155,8 @@ public class Arm {
             setPosition(SHOULDER_TARGET_POSITION_MIDDLE, EXTENSION_TARGET_POSITION_MIDDLE, ELBOW_TARGET_POSITION_MIDDLE);
         } else if (commander.getArmPosition() == ArmPos.topNode){
             setPosition(SHOULDER_TARGET_POSITION_HIGH, EXTENSION_TARGET_POSITION_HIGH, ELBOW_TARGET_POSITION_HIGH);
+        } else if (commander.getArmPosition() == ArmPos.stay){
+            armPercentOutZero();
         } else if(commander.getArmPosition() == ArmPos.manual){
             if ((shoulder.getSelectedSensorPosition() / FALCON500_TICKS_PER_REV) > 170 && commander.armShoulder() > 0){
                 shoulder.set(ControlMode.PercentOutput, 0);
