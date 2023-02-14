@@ -1,10 +1,13 @@
 package frc.robot.subsystems;
+
 import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.can.TalonFX;
 import com.ctre.phoenix.motorcontrol.can.TalonSRX;
 import com.ctre.phoenix.sensors.CANCoder;
 
+import edu.wpi.first.cameraserver.CameraServerSharedStore;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import frc.robot.RobotCommander;
 import frc.robot.TeleopCommander;
 
 import com.ctre.phoenix.motorcontrol.FeedbackDevice;
@@ -16,19 +19,23 @@ import com.ctre.phoenix.motorcontrol.TalonSRXFeedbackDevice;
 import static frc.robot.Constants.*;
 
 public class Arm {
+    public static enum ArmPos {
+        topNode,
+        middleNode,
+        lowerNode,
+        packagePos,
+        manual
+    }
+
     TalonFX shoulder = new TalonFX(SHOULDER);
     TalonFX extension = new TalonFX(EXTENSION);
     TalonSRX elbow = new TalonSRX(ELBOW);
-
-    CANCoder absolute = new CANCoder(22);
+    CANCoder shoulderEncoder = new CANCoder(SHOULDER_ENCODER);
 
     public Arm(){
-
         //Configure sensor source for primary PID
         shoulder.configSelectedFeedbackSensor(TalonFXFeedbackDevice.IntegratedSensor, SHOULDER_K_PID_LOOP_IDX,
         ARM_TIMEOUT);   
-
-        //shoulder.configNeutralDeadband(0.001,20);
 
         shoulder.setSensorPhase(false);
         shoulder.setInverted(false);
@@ -42,7 +49,6 @@ public class Arm {
         shoulder.configNominalOutputReverse(0, ARM_TIMEOUT);
         shoulder.configPeakOutputForward(1, ARM_TIMEOUT);
         shoulder.configPeakOutputReverse(-1, ARM_TIMEOUT);
-
 
         /* Set Motion Magic gains in slot0 - see documentation */
         shoulder.selectProfileSlot(SHOULDER_PID_SLOT, SHOULDER_K_PID_LOOP_IDX);
@@ -60,9 +66,7 @@ public class Arm {
 
         //Configure sensor source for primary PID
         extension.configSelectedFeedbackSensor(TalonFXFeedbackDevice.IntegratedSensor, EXTENSION_K_PID_LOOP_IDX,
-        200);   
-
-        //shoulder.configNeutralDeadband(0.001,20);
+        200);
 
         extension.setSensorPhase(false);
         extension.setInverted(false);
@@ -76,7 +80,6 @@ public class Arm {
         extension.configNominalOutputReverse(0, ARM_TIMEOUT);
         extension.configPeakOutputForward(1, ARM_TIMEOUT);
         extension.configPeakOutputReverse(-1, ARM_TIMEOUT);
-
 
         /* Set Motion Magic gains in slot0 - see documentation */
         extension.selectProfileSlot(EXTENSION_PID_SLOT, EXTENSION_K_PID_LOOP_IDX);
@@ -96,8 +99,6 @@ public class Arm {
         elbow.configSelectedFeedbackSensor(FeedbackDevice.CTRE_MagEncoder_Relative, ELBOW_K_PID_LOOP_IDX,
         200);   
 
-        //shoulder.configNeutralDeadband(0.001,20);
-
         elbow.setSensorPhase(true);
         elbow.setInverted(false);
 
@@ -110,7 +111,6 @@ public class Arm {
         elbow.configNominalOutputReverse(0, ARM_TIMEOUT);
         elbow.configPeakOutputForward(1, ARM_TIMEOUT);
         elbow.configPeakOutputReverse(-1, ARM_TIMEOUT);
-
 
         /* Set Motion Magic gains in slot0 - see documentation */
         elbow.selectProfileSlot(ELBOW_PID_SLOT, ELBOW_K_PID_LOOP_IDX);
@@ -134,29 +134,27 @@ public class Arm {
     }
 
     public void armZeroSensorPos(){
-        shoulder.setSelectedSensorPosition(absolute.getAbsolutePosition() * SHOULDER_DEGREES_TO_TICKS);
+        shoulder.setSelectedSensorPosition(shoulderEncoder.getAbsolutePosition() * SHOULDER_DEGREES_TO_TICKS);
         extension.setSelectedSensorPosition(0);
         elbow.setSelectedSensorPosition(0);
     }
 
-    public void armTeleAction(TeleopCommander commander){
-        if(commander.getArmPosition1()){
-            shoulder.set(ControlMode.MotionMagic, SHOULDER_TARGET_POSITION_1);
-            extension.set(ControlMode.MotionMagic, EXTENSION_TARGET_POSITION_1);
-            elbow.set(ControlMode.MotionMagic, ELBOW_TARGET_POSITION_1);
-        } else if (commander.getArmPosition2()){
-            shoulder.set(ControlMode.MotionMagic, SHOULDER_TARGET_POSITION_2);
-            extension.set(ControlMode.MotionMagic, EXTENSION_TARGET_POSITION_2);
-            elbow.set(ControlMode.MotionMagic, ELBOW_TARGET_POSITION_2);
-        } else if (commander.getArmPosition3()){
-            shoulder.set(ControlMode.MotionMagic, SHOULDER_TARGET_POSITION_3);
-            extension.set(ControlMode.MotionMagic, EXTENSION_TARGET_POSITION_3);
-            elbow.set(ControlMode.MotionMagic, ELBOW_TARGET_POSITION_3);
-        } else if(commander.getArmPositionPackage()){
-            shoulder.set(ControlMode.MotionMagic, SHOULDER_TARGET_POSITION_PACKAGE);
-            extension.set(ControlMode.MotionMagic, EXTENSION_TARGET_POSITION_PACKAGE);
-            elbow.set(ControlMode.MotionMagic, ELBOW_TARGET_POSITION_PACKAGE);
-        } else  {
+    public void setPosition(double shoudlerPos, double extensionPos, double elbowPos){
+        shoulder.set(ControlMode.MotionMagic, shoudlerPos);
+        extension.set(ControlMode.MotionMagic, extensionPos);
+        elbow.set(ControlMode.MotionMagic, elbowPos);
+    }
+
+    public void action(RobotCommander commander){
+        if(commander.getArmPosition() == ArmPos.packagePos){
+            setPosition(SHOULDER_TARGET_POSITION_PACKAGE, EXTENSION_TARGET_POSITION_PACKAGE, ELBOW_TARGET_POSITION_PACKAGE);
+        } else if (commander.getArmPosition() == ArmPos.lowerNode){
+            setPosition(SHOULDER_TARGET_POSITION_LOW, EXTENSION_TARGET_POSITION_LOW, ELBOW_TARGET_POSITION_LOW);
+        } else if (commander.getArmPosition() == ArmPos.middleNode){
+            setPosition(SHOULDER_TARGET_POSITION_MIDDLE, EXTENSION_TARGET_POSITION_MIDDLE, ELBOW_TARGET_POSITION_MIDDLE);
+        } else if (commander.getArmPosition() == ArmPos.topNode){
+            setPosition(SHOULDER_TARGET_POSITION_HIGH, EXTENSION_TARGET_POSITION_HIGH, ELBOW_TARGET_POSITION_HIGH);
+        } else if(commander.getArmPosition() == ArmPos.manual){
             if ((shoulder.getSelectedSensorPosition() / FALCON500_TICKS_PER_REV) > 170 && commander.armShoulder() > 0){
                 shoulder.set(ControlMode.PercentOutput, 0);
             } else if((shoulder.getSelectedSensorPosition() / FALCON500_TICKS_PER_REV) < -170  && commander.armShoulder() < 0){
@@ -184,8 +182,8 @@ public class Arm {
         SmartDashboard.putNumber("shoulderVelocity", shoulderPosition / FALCON500_TICKS_PER_REV);
         SmartDashboard.putNumber("extensionVelocity", extensionPosition / FALCON500_TICKS_PER_REV);     
         SmartDashboard.putNumber("elbowVelocity", elbowPosition / FALCON500_TICKS_PER_REV);
-        SmartDashboard.putNumber("Absolute Encoder Ticks", absolute.getAbsolutePosition() * 1.3786);
-        SmartDashboard.putNumber("Absolute Encoder", absolute.getAbsolutePosition());
+        SmartDashboard.putNumber("Absolute Encoder Ticks", shoulderEncoder.getAbsolutePosition() * 1.3786);
+        SmartDashboard.putNumber("Absolute Encoder", shoulderEncoder.getAbsolutePosition());
     }
 
     public void brakeMode(){

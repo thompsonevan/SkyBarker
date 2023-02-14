@@ -57,6 +57,7 @@ public final class Constants {
     public static final int SHOULDER = 13;
     public static final int EXTENSION = 14;
     public static final int ELBOW = 52;
+    public static final int SHOULDER_ENCODER = 22;
 
     //Arm pid motion magic gains
     public static final double SHOULDER_MOTOR_kF = 0;
@@ -74,7 +75,6 @@ public final class Constants {
     public static final double ELBOW_MOTOR_kI = 0;
     public static final double ELBOW_MOTOR_kD = 0;
 
-
     //Arm motion magic parameters
     public static final double SHOULDER_CRUISEVELOCITY = 16000 * 6;
     public static final double SHOULDER_ACCEL = 6000 * 6;
@@ -84,7 +84,6 @@ public final class Constants {
 
     public static final double ELBOW_CRUIESVELOCITY = 1600 * 6;
     public static final double ELBOW_ACCEL = 600 * 6;
-
 
     //Arm pid slots
     public static final int SHOULDER_PID_SLOT = 0;
@@ -100,21 +99,21 @@ public final class Constants {
     public static final double SHOULDER_DEGREES_TO_TICKS = -FALCON500_TICKS_PER_REV * 1.3786;
 
     //Arm motion magic set positions
-    public static final double SHOULDER_TARGET_POSITION_1 = 90 * SHOULDER_DEGREES_TO_TICKS; // In degrees
-    public static final double EXTENSION_TARGET_POSITION_1 = 20 * FALCON500_TICKS_PER_REV; // In Revolutions
-    public static final double ELBOW_TARGET_POSITION_1 = 1;
+    public static final double SHOULDER_TARGET_POSITION_LOW = 90 * SHOULDER_DEGREES_TO_TICKS; // In degrees
+    public static final double EXTENSION_TARGET_POSITION_LOW = 20 * FALCON500_TICKS_PER_REV; // In Revolutions
+    public static final double ELBOW_TARGET_POSITION_LOW = 1;
 
-    public static final double SHOULDER_TARGET_POSITION_2 = -90 * SHOULDER_DEGREES_TO_TICKS;
-    public static final double EXTENSION_TARGET_POSITION_2 = 50 * FALCON500_TICKS_PER_REV;
-    public static final double ELBOW_TARGET_POSITION_2 = 2;
+    public static final double SHOULDER_TARGET_POSITION_MIDDLE = -90 * SHOULDER_DEGREES_TO_TICKS;
+    public static final double EXTENSION_TARGET_POSITION_MIDDLE = 50 * FALCON500_TICKS_PER_REV;
+    public static final double ELBOW_TARGET_POSITION_MIDDLE = 2;
 
-    public static final double SHOULDER_TARGET_POSITION_3 = 45 * SHOULDER_DEGREES_TO_TICKS;
-    public static final double EXTENSION_TARGET_POSITION_3 = 35 * FALCON500_TICKS_PER_REV;
-    public static final double ELBOW_TARGET_POSITION_3 = 2;
+    public static final double SHOULDER_TARGET_POSITION_HIGH = 45 * SHOULDER_DEGREES_TO_TICKS;
+    public static final double EXTENSION_TARGET_POSITION_HIGH = 35 * FALCON500_TICKS_PER_REV;
+    public static final double ELBOW_TARGET_POSITION_HIGH = 2;
 
     public static final double SHOULDER_TARGET_POSITION_PACKAGE = 0 * SHOULDER_DEGREES_TO_TICKS;
     public static final double EXTENSION_TARGET_POSITION_PACKAGE = 0 * FALCON500_TICKS_PER_REV;
-    public static final double ELBOW_TARGET_POSITION_PACKAGE = 2;
+    public static final double ELBOW_TARGET_POSITION_PACKAGE = 0;
 
     public static final int ARM_TIMEOUT = 200;
 }
@@ -211,17 +210,17 @@ public final class Constants {
 //     public static final double SHOULDER_DEGREES_TO_TICKS = -FALCON500_TICKS_PER_REV * 1.3786;
 
 //     //Arm motion magic set positions
-//     public static final double SHOULDER_TARGET_POSITION_1 = 90 * SHOULDER_DEGREES_TO_TICKS; // In degrees
-//     public static final double EXTENSION_TARGET_POSITION_1 = 20 * FALCON500_TICKS_PER_REV; // In Revolutions
-//     public static final double ELBOW_TARGET_POSITION_1 = 1;
+//     public static final double SHOULDER_TARGET_POSITION_LOW = 90 * SHOULDER_DEGREES_TO_TICKS; // In degrees
+//     public static final double EXTENSION_TARGET_POSITION_LOW = 20 * FALCON500_TICKS_PER_REV; // In Revolutions
+//     public static final double ELBOW_TARGET_POSITION_LOW = 1;
 
-//     public static final double SHOULDER_TARGET_POSITION_2 = -90 * SHOULDER_DEGREES_TO_TICKS;
-//     public static final double EXTENSION_TARGET_POSITION_2 = 50 * FALCON500_TICKS_PER_REV;
-//     public static final double ELBOW_TARGET_POSITION_2 = 2;
+//     public static final double SHOULDER_TARGET_POSITION_MIDDLE = -90 * SHOULDER_DEGREES_TO_TICKS;
+//     public static final double EXTENSION_TARGET_POSITION_MIDDLE = 50 * FALCON500_TICKS_PER_REV;
+//     public static final double ELBOW_TARGET_POSITION_MIDDLE = 2;
 
-//     public static final double SHOULDER_TARGET_POSITION_3 = -90 * SHOULDER_DEGREES_TO_TICKS;
-//     public static final double EXTENSION_TARGET_POSITION_3 = 50 * FALCON500_TICKS_PER_REV;
-//     public static final double ELBOW_TARGET_POSITION_3 = 2;
+//     public static final double SHOULDER_TARGET_POSITION_HIGH = -90 * SHOULDER_DEGREES_TO_TICKS;
+//     public static final double EXTENSION_TARGET_POSITION_HIGH = 50 * FALCON500_TICKS_PER_REV;
+//     public static final double ELBOW_TARGET_POSITION_HIGH = 2;
 
 //     public static final double SHOULDER_TARGET_POSITION_PACKAGE = 0 * SHOULDER_DEGREES_TO_TICKS;
 //     public static final double EXTENSION_TARGET_POSITION_PACKAGE = 0 * FALCON500_TICKS_PER_REV;

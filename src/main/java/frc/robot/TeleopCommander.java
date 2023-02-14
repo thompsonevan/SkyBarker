@@ -3,11 +3,19 @@ package frc.robot;
 import edu.wpi.first.wpilibj.XboxController;
 
 import static frc.robot.Constants.*;
+import frc.robot.subsystems.Arm;
+import frc.robot.subsystems.Arm.ArmPos;
 
 public class TeleopCommander extends RobotCommander{
 
     private static XboxController driver;
     private static XboxController operator;
+
+    private boolean yButtonPressed = false;
+    private boolean aButtonPressed = false;
+    private boolean xButtonPressed = false;
+    private boolean bButtonPressed = false;
+
 
     public TeleopCommander() {
         driver = new XboxController(0);
@@ -78,6 +86,46 @@ public class TeleopCommander extends RobotCommander{
         return operator.getYButton();
     }
 
+    public ArmPos getArmPosition(){
+        if(operator.getYButton()){
+            yButtonPressed = true;
+            aButtonPressed = false;
+            bButtonPressed = false;
+            xButtonPressed = false;
+        } else if(operator.getAButton()){
+            yButtonPressed = false;
+            aButtonPressed = true;
+            bButtonPressed = false;
+            xButtonPressed = false;
+        } else if(operator.getBButton()){
+            yButtonPressed = false;
+            aButtonPressed = false;
+            bButtonPressed = true;
+            xButtonPressed = false;
+        } else if(operator.getAButton()){
+            yButtonPressed = false;
+            aButtonPressed = false;
+            bButtonPressed = false;
+            xButtonPressed = true;
+        }
+
+        if (Math.abs(operator.getLeftY()) > 0.1 || Math.abs(operator.getRightY()) > 0.1){
+            return ArmPos.manual;
+        } else {
+            if(yButtonPressed){
+                return ArmPos.topNode;
+            } else if (aButtonPressed){
+                return ArmPos.packagePos;
+            } else if (bButtonPressed){
+                return ArmPos.middleNode;
+            } else if (xButtonPressed){
+                return ArmPos.lowerNode;
+            } else {
+                return ArmPos.packagePos;
+            }
+        }
+    }
+    
     public boolean getArmPositionPackage(){
         return operator.getBackButton();
     }

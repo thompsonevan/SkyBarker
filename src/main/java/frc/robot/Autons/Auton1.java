@@ -8,6 +8,7 @@ import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.sensors.Pigeon;
 import frc.robot.subsystems.Drivetrain;
+import frc.robot.subsystems.Arm.ArmPos;
 
 import javax.sound.midi.Track;
 import javax.swing.TransferHandler;
@@ -91,6 +92,8 @@ PathPlannerTrajectory[] steps;
         //     break;
         // }
 
+        armPos = ArmPos.lowerNode;
+        
         switch(autoState){
             case step1:
                 state = (PathPlannerState) trajectory.sample(timer.get());

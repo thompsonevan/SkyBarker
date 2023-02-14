@@ -112,6 +112,7 @@ public class Robot extends TimedRobot {
         pigeon.enabledAction(teleopCommander);
         autonCommader.runAuto();
         drivetrain.autonAction(autonCommader);
+        arm.action(autonCommader);
     }
 
     @Override
@@ -125,7 +126,7 @@ public class Robot extends TimedRobot {
     public void teleopPeriodic() {
         pigeon.enabledAction(teleopCommander);
         drivetrain.teleAction(teleopCommander);
-        arm.armTeleAction(teleopCommander);
+        arm.action(teleopCommander);
         arm.brakeMode();
     }
 }

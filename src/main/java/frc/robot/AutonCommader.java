@@ -16,6 +16,7 @@ import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.Autons.AutonBase;
 import frc.robot.sensors.Pigeon;
+import frc.robot.subsystems.Arm.ArmPos;
 import frc.robot.subsystems.Drivetrain;
 
 import static frc.robot.Constants.*;
@@ -57,16 +58,6 @@ public class AutonCommader extends RobotCommander{
         return false;
     }
 
-    @Override
-    public boolean getArmPosition1(){
-        return false;
-    }
-
-    @Override
-    public boolean getArmPosition2(){
-        return false;
-    }
-
     public State getDesiredState(){
         return auton.desState;
     }
@@ -77,5 +68,45 @@ public class AutonCommader extends RobotCommander{
 
     public PathPlannerState getInitalState(){
         return auton.initalState;
+    }
+
+    @Override
+    public boolean getArmPosition1(){
+        return false;
+    }
+
+    @Override
+    public boolean getArmPosition2(){
+        return false;
+    }
+
+    @Override
+    public boolean getArmPosition3() {
+        // TODO Auto-generated method stub
+        return false;
+    }
+
+    @Override
+    public boolean getArmPositionPackage() {
+        // TODO Auto-generated method stub
+        return false;
+    }
+
+    @Override
+    public double armShoulder() {
+        // TODO Auto-generated method stub
+        return 0;
+    }
+
+    @Override
+    public double armExtension() {
+        // TODO Auto-generated method stub
+        return 0;
+    }
+
+    @Override
+    public ArmPos getArmPosition() {
+        // TODO Auto-generated method stub
+        return auton.armPos;
     }
 }
