@@ -3,6 +3,8 @@ package frc.robot;
 import edu.wpi.first.wpilibj.XboxController;
 
 import static frc.robot.Constants.*;
+import frc.robot.subsystems.Arm;
+import frc.robot.subsystems.Arm.ArmPos;
 
 public class TeleopCommander extends RobotCommander{
 
@@ -10,7 +12,12 @@ public class TeleopCommander extends RobotCommander{
     private static XboxController operator;
     private static boolean Bumpercheck = false;
     
-    
+    private boolean yButtonPressed = false;
+    private boolean aButtonPressed = false;
+    private boolean xButtonPressed = false;
+    private boolean bButtonPressed = false;
+
+
     public TeleopCommander() {
         driver = new XboxController(0);
         operator = new XboxController(1);
@@ -18,12 +25,12 @@ public class TeleopCommander extends RobotCommander{
 
     @Override
     public double getForwardCommand() {
-        return -(modifyAxis(driver.getLeftY()) * MAX_VELOCITY_METERS_PER_SECOND) * .2;
+        return -(modifyAxis(driver.getLeftY()) * MAX_VELOCITY_METERS_PER_SECOND);
     }
 
     @Override
     public double getStrafeCommand() {
-        return -(modifyAxis(driver.getLeftX()) * MAX_VELOCITY_METERS_PER_SECOND) * .2;
+        return -(modifyAxis(driver.getLeftX()) * MAX_VELOCITY_METERS_PER_SECOND);
     }
 
     @Override
@@ -37,8 +44,15 @@ public class TeleopCommander extends RobotCommander{
     public boolean getResetIMU() {
         return driver.getBackButton();
     }
- 
     
+    public boolean getDriveToObject(){
+        return driver.getAButton();
+    }
+
+    public boolean getDriveToScoring(){
+        return driver.getBButton();
+    }
+
     private static double deadband(double value, double deadband, double maxRange){
         if(Math.abs(value) < deadband){
             return 0;
@@ -59,7 +73,6 @@ public class TeleopCommander extends RobotCommander{
         }
     }
     
-   
     public double[] getintakeposition() {
 
         boolean Dpad_right = (operator.getPOV() > 70 && operator.getPOV() < 110);
@@ -127,5 +140,84 @@ public class TeleopCommander extends RobotCommander{
         
 
         return array;
+    }
+
+    @Override
+    public boolean getArmPosition1(){
+        return operator.getAButton();
+    }
+
+    @Override
+    public boolean getArmPosition2(){
+        return operator.getBButton();
+    }
+
+    public boolean getArmPosition3(){
+        return operator.getYButton();
+    }
+
+    public ArmPos getArmPosition(){
+        if(operator.getYButton()){
+            yButtonPressed = true;
+            aButtonPressed = false;
+            bButtonPressed = false;
+            xButtonPressed = false;
+        } else if(operator.getAButton()){
+            yButtonPressed = false;
+            aButtonPressed = true;
+            bButtonPressed = false;
+            xButtonPressed = false;
+        } else if(operator.getBButton()){
+            yButtonPressed = false;
+            aButtonPressed = false;
+            bButtonPressed = true;
+            xButtonPressed = false;
+        } else if(operator.getXButton()){
+            yButtonPressed = false;
+            aButtonPressed = false;
+            bButtonPressed = false;
+            xButtonPressed = true;
+        }
+
+        if (Math.abs(operator.getLeftY()) > 0.1 || Math.abs(operator.getRightY()) > 0.1){
+            yButtonPressed = false;
+            aButtonPressed = false;
+            bButtonPressed = false;
+            xButtonPressed = false;
+            return ArmPos.manual;
+        } else {
+            if(yButtonPressed){
+                return ArmPos.topNode;
+            } else if (aButtonPressed){
+                return ArmPos.packagePos;
+            } else if (bButtonPressed){
+                return ArmPos.middleNode;
+            } else if (xButtonPressed){
+                return ArmPos.lowerNode;
+            } else {
+                return ArmPos.stay;
+            }
+        }
+    }
+    
+    public boolean getArmPositionPackage(){
+        return operator.getBackButton();
+    }
+
+    public double armShoulder(){     
+        if(Math.abs(operator.getLeftY()) > 0.1){
+            return operator.getLeftY() * 0.5;
+        } else {
+            return 0;
+        }
+    }
+
+    public double armExtension(){
+        if(Math.abs(operator.getRightY()) > 0.1){
+            return operator.getRightY() * 0.5;
+        } else {
+            return 0;
+        }
+        
     }
 }

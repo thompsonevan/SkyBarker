@@ -35,7 +35,7 @@ public class Pigeon{
         return Rotation2d.fromDegrees(getAngle());
     }
 
-    public static void logData() {
+    public void logData() {
         SmartDashboard.putNumber("Theta", getAngle());
 
         HotLogger.Log("Theta", getAngle());
