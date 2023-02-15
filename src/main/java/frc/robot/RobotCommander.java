@@ -9,14 +9,10 @@ public abstract class RobotCommander {
     public abstract double getStrafeCommand();
     public abstract double getTurnCommand();
     public abstract boolean getResetIMU();
-    public abstract boolean getArmPosition1();
-    public abstract boolean getArmPosition2();
-    public abstract boolean getArmPosition3();
-    public abstract boolean getArmPositionPackage();
     public abstract double armShoulder();
     public abstract double armExtension();
     public abstract Arm.ArmPos getArmPosition();
     public abstract double[] getIntakePosition();
     public abstract boolean getPickUpObject();
-
+    public abstract boolean getArmReset();
 }

@@ -63,6 +63,7 @@ public final class Constants {
     public static final int EXTENSION = 14;
     public static final int ELBOW = 52;
     public static final int SHOULDER_ENCODER = 22;
+    public static final int ELBOW_ENCODER = 100;
 
     //Arm pid motion magic gains
     public static final double SHOULDER_MOTOR_kF = 0;
@@ -102,18 +103,19 @@ public final class Constants {
 
     public static final double FALCON500_TICKS_PER_REV = 2048;
     public static final double SHOULDER_DEGREES_TO_TICKS = -FALCON500_TICKS_PER_REV * 1.3786;
+    public static final double ELBOW_DEGREES_TO_TICKS = -FALCON500_TICKS_PER_REV * 1;
 
     //Arm motion magic set positions
     public static final double SHOULDER_TARGET_POSITION_LOW = 90 * SHOULDER_DEGREES_TO_TICKS; // In degrees
-    public static final double EXTENSION_TARGET_POSITION_LOW = 20 * FALCON500_TICKS_PER_REV; // In Revolutions
+    public static final double EXTENSION_TARGET_POSITION_LOW = 0 * FALCON500_TICKS_PER_REV; // In Revolutions
     public static final double ELBOW_TARGET_POSITION_LOW = 1;
 
-    public static final double SHOULDER_TARGET_POSITION_MIDDLE = -90 * SHOULDER_DEGREES_TO_TICKS;
-    public static final double EXTENSION_TARGET_POSITION_MIDDLE = 50 * FALCON500_TICKS_PER_REV;
+    public static final double SHOULDER_TARGET_POSITION_MIDDLE = 80 * SHOULDER_DEGREES_TO_TICKS;
+    public static final double EXTENSION_TARGET_POSITION_MIDDLE = 0 * FALCON500_TICKS_PER_REV;
     public static final double ELBOW_TARGET_POSITION_MIDDLE = 2;
 
     public static final double SHOULDER_TARGET_POSITION_HIGH = 45 * SHOULDER_DEGREES_TO_TICKS;
-    public static final double EXTENSION_TARGET_POSITION_HIGH = 35 * FALCON500_TICKS_PER_REV;
+    public static final double EXTENSION_TARGET_POSITION_HIGH = 50 * FALCON500_TICKS_PER_REV;
     public static final double ELBOW_TARGET_POSITION_HIGH = 2;
 
     public static final double SHOULDER_TARGET_POSITION_PACKAGE = 0 * SHOULDER_DEGREES_TO_TICKS;

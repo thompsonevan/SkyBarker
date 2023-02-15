@@ -133,18 +133,8 @@ public class TeleopCommander extends RobotCommander{
         return intakeArray;
     }
 
-    @Override
-    public boolean getArmPosition1(){
-        return operator.getAButton();
-    }
-
-    @Override
-    public boolean getArmPosition2(){
-        return operator.getBButton();
-    }
-
-    public boolean getArmPosition3(){
-        return operator.getYButton();
+    public boolean getArmReset(){
+        return operator.getBackButton();
     }
 
     public boolean getManualMode(){
@@ -200,10 +190,6 @@ public class TeleopCommander extends RobotCommander{
             }
         }
     }
-    
-    public boolean getArmPositionPackage(){
-        return operator.getBackButton();
-    }
 
     public double armShoulder(){     
         if(Math.abs(operator.getLeftY()) > 0.1){
@@ -219,7 +205,6 @@ public class TeleopCommander extends RobotCommander{
         } else {
             return 0;
         }
-        
     }
 
     @Override

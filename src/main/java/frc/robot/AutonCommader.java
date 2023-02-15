@@ -56,28 +56,6 @@ public class AutonCommader extends RobotCommander{
     }
 
     @Override
-    public boolean getArmPosition1(){
-        return false;
-    }
-
-    @Override
-    public boolean getArmPosition2(){
-        return false;
-    }
-
-    @Override
-    public boolean getArmPosition3() {
-        // TODO Auto-generated method stub
-        return false;
-    }
-
-    @Override
-    public boolean getArmPositionPackage() {
-        // TODO Auto-generated method stub
-        return false;
-    }
-
-    @Override
     public double armShoulder() {
         // TODO Auto-generated method stub
         return 0;
@@ -113,5 +91,11 @@ public class AutonCommader extends RobotCommander{
     public boolean getPickUpObject() {
         // TODO Auto-generated method stub
         return auton.pickUpObject;
+    }
+
+    @Override
+    public boolean getArmReset() {
+        // TODO Auto-generated method stub
+        return false;
     }
 }

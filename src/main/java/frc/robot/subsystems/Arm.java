@@ -27,6 +27,7 @@ public class Arm {
     TalonFX extension = new TalonFX(EXTENSION);
     TalonSRX elbow = new TalonSRX(ELBOW);
     CANCoder shoulderEncoder = new CANCoder(SHOULDER_ENCODER);
+    CANCoder elbowEncoder = new CANCoder(ELBOW_ENCODER);
 
     public Arm(){
         //Configure sensor source for primary PID
@@ -132,7 +133,7 @@ public class Arm {
     public void armZeroSensorPos(){
         shoulder.setSelectedSensorPosition(shoulderEncoder.getAbsolutePosition() * SHOULDER_DEGREES_TO_TICKS);
         extension.setSelectedSensorPosition(0);
-        elbow.setSelectedSensorPosition(0);
+        elbow.setSelectedSensorPosition(elbowEncoder.getAbsolutePosition() * ELBOW_DEGREES_TO_TICKS);
     }
 
     public void setPosition(double shoudlerPos, double extensionPos, double elbowPos){
@@ -142,6 +143,10 @@ public class Arm {
     }
 
     public void action(RobotCommander commander){
+        if(commander.getArmReset()){
+            armZeroSensorPos();
+        }
+
         if(commander.getArmPosition() == ArmPos.packagePos){
             setPosition(SHOULDER_TARGET_POSITION_PACKAGE, EXTENSION_TARGET_POSITION_PACKAGE, ELBOW_TARGET_POSITION_PACKAGE);
         } else if (commander.getArmPosition() == ArmPos.lowerNode){
