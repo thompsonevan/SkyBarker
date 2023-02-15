@@ -129,7 +129,7 @@ public class Robot extends TimedRobot {
     public void teleopPeriodic() {
         pigeon.enabledAction(teleopCommander);
         drivetrain.teleAction(teleopCommander);
-        rip2 = teleopCommander.getintakeposition();
+        rip2 = teleopCommander.getIntakePosition();
         intake.IntakePeriodic(teleopCommander);
         SmartDashboard.putNumber("rip1", rip2[0]);
         SmartDashboard.putNumber("rip2", rip2[1]);

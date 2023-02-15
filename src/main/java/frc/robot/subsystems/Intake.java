@@ -36,7 +36,7 @@ public class Intake {
     }
 
     public void speedPeriodic(TeleopCommander commander){
-        speed = commander.getintakeposition()[1];
+        speed = commander.getIntakePosition()[1];
         speedMotor.set(TalonFXControlMode.PercentOutput, speed);
 
     }
@@ -44,7 +44,7 @@ public class Intake {
     public void anglePeriodic(TeleopCommander commander){
         
         
-        angle = commander.getintakeposition()[0];
+        angle = commander.getIntakePosition()[0];
         double ourAngle = angleEncoder.getAbsolutePosition();
         // thing.setSetpoint(angle);
         double change = thing.calculate(ourAngle, angle);

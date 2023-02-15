@@ -109,4 +109,12 @@ public class AutonCommader extends RobotCommander{
         // TODO Auto-generated method stub
         return auton.armPos;
     }
+
+    @Override
+    public double[] getIntakePosition() {
+        // TODO Auto-generated method stub
+        intakeArray[0] = auton.intakeAngle;
+        intakeArray[1] = auton.intakeSpeed;
+        return intakeArray;
+    }
 }
