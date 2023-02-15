@@ -27,6 +27,7 @@ import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.Autons.Auton1;
 import frc.robot.Autons.Auton67;
+import frc.robot.Autons.AutonLeft;
 import frc.robot.sensors.Camera;
 import frc.robot.sensors.Pigeon;
 import frc.robot.subsystems.Arm;
@@ -52,9 +53,9 @@ public class Robot extends TimedRobot {
     private Intake intake;
     private Arm arm;
     private Auton67 auton67;
+    private AutonLeft autonLeft;
 
-    private int autonSelection = 0;
-
+    private int autonSelection = 2;
 
     @Override
     public void robotInit() {
@@ -72,6 +73,7 @@ public class Robot extends TimedRobot {
         arm = new Arm();
         auton = new Auton1();
         auton67 = new Auton67();
+        autonLeft = new AutonLeft();
     }
 
     @Override
@@ -96,15 +98,16 @@ public class Robot extends TimedRobot {
 
     @Override
     public void autonomousInit() {
-        // if(autonSelection == 0){
-        //     autonCommader.initAuton(auton);
-        // } else if(autonSelection == 1){
-        //     autonCommader.initAuton(auton67test);
-        // } else {
-        //     autonCommader.initAuton(auton);
-        // }
+        if(autonSelection == 0){
+            autonCommader.initAuton(auton);
+        } else if(autonSelection == 1){
+            autonCommader.initAuton(auton67);
+        } else if(autonSelection == 2){
+            autonCommader.initAuton(autonLeft);
+        } else {
+            autonCommader.initAuton(auton);
+        }
 
-        autonCommader.initAuton(auton67);
         autonCommader.auton.reset();
         drivetrain.zero();
         Drivetrain.setPose(autonCommader.getInitalState().poseMeters, autonCommader.getInitalState().holonomicRotation);
@@ -117,7 +120,9 @@ public class Robot extends TimedRobot {
         drivetrain.autonAction(autonCommader);
         arm.action(autonCommader);
     }
+
     private double[] rip2;
+    
     @Override
     public void teleopInit() {
         drivetrain.zero();

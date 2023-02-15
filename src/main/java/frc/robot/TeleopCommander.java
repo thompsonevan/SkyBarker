@@ -12,6 +12,8 @@ public class TeleopCommander extends RobotCommander{
     private static XboxController operator;
     private static boolean Bumpercheck = false;
     
+    private boolean manualMode = false;
+
     private boolean yButtonPressed = false;
     private boolean aButtonPressed = false;
     private boolean xButtonPressed = false;
@@ -150,6 +152,16 @@ public class TeleopCommander extends RobotCommander{
         return operator.getYButton();
     }
 
+    public boolean getManualMode(){
+        if(!manualMode && operator.getStartButtonPressed()){
+            manualMode = true;
+        } else if (manualMode && operator.getStartButtonPressed()){
+            manualMode = false;
+        }
+
+        return manualMode;
+    }
+
     public ArmPos getArmPosition(){
         if(operator.getYButton()){
             yButtonPressed = true;
@@ -173,7 +185,7 @@ public class TeleopCommander extends RobotCommander{
             xButtonPressed = true;
         }
 
-        if (Math.abs(operator.getLeftY()) > 0.1 || Math.abs(operator.getRightY()) > 0.1){
+        if (getManualMode()){
             yButtonPressed = false;
             aButtonPressed = false;
             bButtonPressed = false;

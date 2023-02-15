@@ -113,8 +113,14 @@ public class AutonCommader extends RobotCommander{
     @Override
     public double[] getIntakePosition() {
         // TODO Auto-generated method stub
-        intakeArray[0] = auton.intakeAngle;
-        intakeArray[1] = auton.intakeSpeed;
+        if(auton.intakeOn){
+            intakeArray[0] = Constants.INTAKE_COLLECT_POSITION;
+            intakeArray[1] = Constants.INTAKE_SPEED;
+        } else {
+            intakeArray[0] = Constants.INTAKE_PACKAGE_POSITION;
+            intakeArray[1] = 0;
+        }
+
         return intakeArray;
     }
 }

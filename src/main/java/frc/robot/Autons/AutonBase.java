@@ -14,8 +14,7 @@ public abstract class AutonBase {
     public Timer timer;
     public PathPlannerState initalState;
     public Arm.ArmPos armPos;
-    public double intakeSpeed;
-    public double intakeAngle;
+    public boolean intakeOn;
 
     public abstract void runAuto();
     public abstract void reset();
