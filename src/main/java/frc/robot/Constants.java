@@ -53,6 +53,11 @@ public final class Constants {
     public static final int BACK_RIGHT_MODULE_STEER_ENCODER = 18;
     public static final double BACK_RIGHT_MODULE_STEER_OFFSET = -Math.toRadians(212.2890625);
 
+    public static final double INTAKE_PACKAGE_POSITION = 0;
+    public static final double INTAKE_STATION_POSITION = 45;
+    public static final double INTAKE_COLLECT_POSITION = 90;
+    public static final double INTAKE_SPEED = .45;
+    
     //Arm CAN ID
     public static final int SHOULDER = 13;
     public static final int EXTENSION = 14;

@@ -31,6 +31,7 @@ import frc.robot.sensors.Camera;
 import frc.robot.sensors.Pigeon;
 import frc.robot.subsystems.Arm;
 import frc.robot.subsystems.Drivetrain;
+import frc.robot.subsystems.Intake;
 
 import static frc.robot.Constants.*;
 
@@ -47,6 +48,8 @@ public class Robot extends TimedRobot {
     private Camera camera;
     private AutonCommader autonCommader;
     private Auton1 auton;
+    // private TeleopCommander rip;
+    private Intake intake;
     private Arm arm;
     private Auton67 auton67;
 
@@ -114,7 +117,7 @@ public class Robot extends TimedRobot {
         drivetrain.autonAction(autonCommader);
         arm.action(autonCommader);
     }
-
+    private double[] rip2;
     @Override
     public void teleopInit() {
         drivetrain.zero();
@@ -126,6 +129,10 @@ public class Robot extends TimedRobot {
     public void teleopPeriodic() {
         pigeon.enabledAction(teleopCommander);
         drivetrain.teleAction(teleopCommander);
+        rip2 = teleopCommander.getintakeposition();
+        intake.IntakePeriodic(teleopCommander);
+        SmartDashboard.putNumber("rip1", rip2[0]);
+        SmartDashboard.putNumber("rip2", rip2[1]);
         arm.action(teleopCommander);
         arm.brakeMode();
     }
