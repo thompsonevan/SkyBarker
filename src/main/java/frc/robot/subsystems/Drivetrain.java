@@ -1,17 +1,10 @@
 package frc.robot.subsystems;
 
 import com.ctre.phoenix.motorcontrol.ControlMode;
-import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.ctre.phoenix.motorcontrol.can.TalonFX;
-import com.ctre.phoenix.sensors.CANCoder;
-import com.pathplanner.lib.PathPlannerTrajectory.PathPlannerState;
-import com.swervedrivespecialties.swervelib.AbsoluteEncoder;
-import com.swervedrivespecialties.swervelib.Mk4iSwerveModuleHelper;
 import com.swervedrivespecialties.swervelib.Mk4iSwerveModuleHelper;
 import com.swervedrivespecialties.swervelib.SdsModuleConfigurations;
 import com.swervedrivespecialties.swervelib.SwerveModule;
-import org.hotutilites.hotlogger.HotLogger;
-import edu.wpi.first.math.Nat;
 import edu.wpi.first.math.VecBuilder;
 import edu.wpi.first.math.controller.HolonomicDriveController;
 import edu.wpi.first.math.controller.PIDController;
@@ -22,31 +15,22 @@ import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
-import edu.wpi.first.math.kinematics.SwerveDriveOdometry;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
-// import edu.wpi.first.math.kinematics.SwerveDriveOdometry;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.math.trajectory.Trajectory.State;
 import edu.wpi.first.math.util.Units;
-import edu.wpi.first.math.numbers.N5;
-import edu.wpi.first.math.numbers.N7;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.shuffleboard.BuiltInLayouts;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-import edu.wpi.first.wpilibj2.command.SwerveControllerCommand;
 import frc.robot.AutonCommader;
-import frc.robot.Constants;
-import frc.robot.RobotCommander;
 import frc.robot.TeleopCommander;
 import frc.robot.sensors.Camera;
 import frc.robot.sensors.Pigeon;
 
 import static frc.robot.Constants.*;
-
-import static frc.robot.sensors.Pigeon.*;
 
 public class Drivetrain{
     private final SwerveModule frontLeftModule;
@@ -59,15 +43,15 @@ public class Drivetrain{
     private static TalonFX backLeftDrive;
     private static TalonFX backRightDrive;
 
-    private final TalonFX frontLeftSteer;
-    private final TalonFX frontRightSteer;
-    private final TalonFX backLeftSteer;
-    private final TalonFX backRightSteer;
+    // private final TalonFX frontLeftSteer;
+    // private final TalonFX frontRightSteer;
+    // private final TalonFX backLeftSteer;
+    // private final TalonFX backRightSteer;
 
-    private final AbsoluteEncoder frontLeftEncoder;
-    private final AbsoluteEncoder frontRightEncoder;
-    private final AbsoluteEncoder backLeftEncoder;
-    private final AbsoluteEncoder backRightEncoder;
+    // private final AbsoluteEncoder frontLeftEncoder;
+    // private final AbsoluteEncoder frontRightEncoder;
+    // private final AbsoluteEncoder backLeftEncoder;
+    // private final AbsoluteEncoder backRightEncoder;
 
     static SwerveModulePosition[] positions;
 
@@ -144,15 +128,15 @@ public class Drivetrain{
         backLeftDrive = backLeftModule.getDriveMotor();
         backRightDrive = backRightModule.getDriveMotor();
 
-        frontLeftSteer = frontLeftModule.getSteerMotor();
-        frontRightSteer = frontRightModule.getSteerMotor();
-        backLeftSteer = backLeftModule.getSteerMotor();
-        backRightSteer = backRightModule.getSteerMotor();
+        // frontLeftSteer = frontLeftModule.getSteerMotor();
+        // frontRightSteer = frontRightModule.getSteerMotor();
+        // backLeftSteer = backLeftModule.getSteerMotor();
+        // backRightSteer = backRightModule.getSteerMotor();
 
-        frontLeftEncoder = frontLeftModule.getEncoder();
-        frontRightEncoder = frontRightModule.getEncoder();
-        backLeftEncoder = backLeftModule.getEncoder();
-        backRightEncoder = backRightModule.getEncoder();
+        // frontLeftEncoder = frontLeftModule.getEncoder();
+        // frontRightEncoder = frontRightModule.getEncoder();
+        // backLeftEncoder = backLeftModule.getEncoder();
+        // backRightEncoder = backRightModule.getEncoder();
 
         frontLeftPos = (frontLeftDrive.getSelectedSensorPosition() / 2048) * SdsModuleConfigurations.MK4I_L2.getDriveReduction() * Math.PI * SdsModuleConfigurations.MK4I_L2.getWheelDiameter();
         frontRightPos = (frontRightDrive.getSelectedSensorPosition() / 2048) * SdsModuleConfigurations.MK4I_L2.getDriveReduction() * Math.PI * SdsModuleConfigurations.MK4I_L2.getWheelDiameter();

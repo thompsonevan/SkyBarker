@@ -1,18 +1,14 @@
 package frc.robot.sensors;
 
 import com.ctre.phoenix.sensors.Pigeon2;
-import com.ctre.phoenix.sensors.PigeonIMU;
 import org.hotutilites.hotlogger.HotLogger;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-import frc.robot.AutonCommader;
 import frc.robot.RobotCommander;
 
 import static frc.robot.Constants.*;
 
 public class Pigeon{
-    private static double theta;
-
     private static Pigeon2 pigeon;
 
     public Pigeon() {

@@ -1,28 +1,15 @@
 package frc.robot.Autons;
 
-import java.io.IOException;
-import java.nio.file.Path;
-import java.util.List;
-
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-import frc.robot.sensors.Pigeon;
 import frc.robot.subsystems.Drivetrain;
 import frc.robot.subsystems.Arm.ArmPos;
-
-import javax.sound.midi.Track;
-import javax.swing.TransferHandler;
-
 import com.pathplanner.lib.PathConstraints;
 import com.pathplanner.lib.PathPlanner;
 import com.pathplanner.lib.PathPlannerTrajectory;
 import com.pathplanner.lib.PathPlannerTrajectory.PathPlannerState;
-
 import edu.wpi.first.math.geometry.Pose2d;
-import edu.wpi.first.math.trajectory.Trajectory;
-import edu.wpi.first.math.trajectory.TrajectoryUtil;
 import edu.wpi.first.math.trajectory.Trajectory.State;
-import edu.wpi.first.wpilibj.Filesystem;
 
 public class AutonLeft extends AutonBase{
     enum AutoState {
@@ -117,7 +104,7 @@ public class AutonLeft extends AutonBase{
 
                 if((Drivetrain.getPose().getX() - trajectory1.getEndState().poseMeters.getX()) < .1
                     && (Drivetrain.getPose().getY() - trajectory1.getEndState().poseMeters.getY()) < .1){
-                    autoState = AutoState.pickUpObject;
+                    autoState = AutoState.secondPlace;
                     Drivetrain.stopMotors();
                     timer.reset();
                 }

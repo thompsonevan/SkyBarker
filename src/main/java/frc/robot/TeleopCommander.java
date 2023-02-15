@@ -1,10 +1,10 @@
 package frc.robot;
 
 import edu.wpi.first.wpilibj.XboxController;
+import frc.robot.subsystems.Arm.ArmPos;
 
 import static frc.robot.Constants.*;
-import frc.robot.subsystems.Arm;
-import frc.robot.subsystems.Arm.ArmPos;
+
 
 public class TeleopCommander extends RobotCommander{
 
@@ -78,7 +78,6 @@ public class TeleopCommander extends RobotCommander{
         boolean Trigger_left = (operator.getLeftTriggerAxis() > .3);
         boolean Bumper_push = operator.getRightBumperPressed();
         boolean Bumper_release = operator.getRightBumperReleased();
-        double speed = .45;
 
         if (Trigger_left && !Trigger_right) {
             if (Dpad_left && !(Dpad_right || Dpad_updown)) {
