@@ -8,7 +8,9 @@ public class TeleopCommander extends RobotCommander{
 
     private static XboxController driver;
     private static XboxController operator;
-
+    private static boolean Bumpercheck = false;
+    
+    
     public TeleopCommander() {
         driver = new XboxController(0);
         operator = new XboxController(1);
@@ -55,5 +57,75 @@ public class TeleopCommander extends RobotCommander{
         } else {
             return Math.abs(value) * value;
         }
+    }
+    
+   
+    public double[] getintakeposition() {
+
+        boolean Dpad_right = (operator.getPOV() > 70 && operator.getPOV() < 110);
+        boolean Dpad_left = (operator.getPOV() > 250 && operator.getPOV() < 290);
+        boolean Dpad_updown = ((operator.getPOV() > 160 && operator.getPOV() < 200) || (!(operator.getPOV() < 0) && operator.getPOV() < 20));
+        boolean Trigger_right = (operator.getRightTriggerAxis() > .3);
+        boolean Trigger_left = (operator.getLeftTriggerAxis() > .3);
+        boolean Bumper_push = operator.getRightBumperPressed();
+        boolean Bumper_release = operator.getRightBumperReleased();
+        double speed = .45;
+
+        double[] array = {0, 0};
+        
+
+
+        if (Trigger_left && !Trigger_right) {
+            if (Dpad_left && !(Dpad_right || Dpad_updown)) {
+                array[0] = Constants.INTAKE_PACKAGE_POSITION;
+                array[1] = Constants.INTAKE_SPEED;
+            } else if (Dpad_right && !(Dpad_left || Dpad_updown)) {
+                array[0] = Constants.INTAKE_COLLECT_POSITION;
+                array[1] = Constants.INTAKE_SPEED;
+            } else if (Dpad_updown && !(Dpad_left || Dpad_right)) {
+                array[0] = Constants.INTAKE_STATION_POSITION;
+                array[1] = Constants.INTAKE_SPEED;
+            } else {
+                array[0] = 3;
+                array[1] = Constants.INTAKE_SPEED;
+            }
+        } else if (Trigger_right && !Trigger_left) {
+            if (Dpad_left && !(Dpad_right || Dpad_updown)) {
+                array[0] = Constants.INTAKE_PACKAGE_POSITION;
+                array[1] = -Constants.INTAKE_SPEED;
+            } else if (Dpad_right && !(Dpad_left || Dpad_updown)) {
+                array[0] = Constants.INTAKE_COLLECT_POSITION;
+                array[1] = -Constants.INTAKE_SPEED;
+            } else if (Dpad_updown && !(Dpad_left || Dpad_right)) {
+                array[0] = Constants.INTAKE_STATION_POSITION;
+                array[1] = -Constants.INTAKE_SPEED;
+            } else {
+                array[0] = 3;
+                array[1] = -Constants.INTAKE_SPEED;
+            }
+        } else if (Bumper_push && !(Dpad_left || Dpad_right || Dpad_updown)) {
+            Bumpercheck = true;
+            array[0] = Constants.INTAKE_COLLECT_POSITION;
+            array[1] = 0;
+        } else if (Bumper_release && !(Dpad_left || Dpad_right || Dpad_updown) && Bumpercheck) {
+            Bumpercheck = false;
+            array[0] = Constants.INTAKE_PACKAGE_POSITION;
+            array[1] = 0;
+        } else if (Dpad_left && !(Trigger_right || Trigger_left || Dpad_right || Dpad_updown)) {
+            array[0] = Constants.INTAKE_PACKAGE_POSITION;
+            array[1] = .0;
+        } else if (Dpad_right && !(Trigger_left || Trigger_right || Dpad_left || Dpad_updown)) {
+            array[0] = Constants.INTAKE_COLLECT_POSITION;
+            array[1] = .0;
+        } else if (Dpad_updown && !(Trigger_left || Trigger_right || Dpad_left || Dpad_right)) {
+            array[0] = Constants.INTAKE_STATION_POSITION;
+            array[1] = .0;
+        } else {
+            array[0] = 3;
+            array[1] = .0;
+        } 
+        
+
+        return array;
     }
 }
