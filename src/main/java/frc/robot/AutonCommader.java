@@ -123,4 +123,10 @@ public class AutonCommader extends RobotCommander{
 
         return intakeArray;
     }
+
+    @Override
+    public boolean getPickUpObject() {
+        // TODO Auto-generated method stub
+        return auton.pickUpObject;
+    }
 }

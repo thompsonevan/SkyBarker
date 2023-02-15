@@ -78,6 +78,7 @@ public class AutonLeft extends AutonBase{
                 if(timer.get() > 5){
                     armPos = ArmPos.packagePos;
                     autoState = AutoState.driveToObject;
+                    Drivetrain.stopMotors();
                     Drivetrain.setPose(trajectory.getInitialState().poseMeters, trajectory.getInitialState().holonomicRotation);
                     timer.reset();
                 }
@@ -91,37 +92,42 @@ public class AutonLeft extends AutonBase{
                 if((Drivetrain.getPose().getX() - trajectory.getEndState().poseMeters.getX()) < .1
                     && (Drivetrain.getPose().getY() - trajectory.getEndState().poseMeters.getY()) < .1){
                     autoState = AutoState.pickUpObject;
+                    Drivetrain.stopMotors();
                     timer.reset();
                 }
             break;
             case pickUpObject:
                 intakeOn = true;
+                pickUpObject = true;
 
                 if(timer.get() > 5){
                     intakeOn = false;
+                    pickUpObject = false;
                     autoState = AutoState.driveBack;
+                    Drivetrain.stopMotors();
                     Drivetrain.setPose(trajectory1.getInitialState().poseMeters, trajectory1.getInitialState().holonomicRotation);
                     timer.reset();
                 }
             break;
-                case driveBack:
-                    state = (PathPlannerState) trajectory1.sample(timer.get());
+            case driveBack:
+                state = (PathPlannerState) trajectory1.sample(timer.get());
 
-                    newPose = new Pose2d(state.poseMeters.getX(), state.poseMeters.getY(), state.holonomicRotation);
-                    desState = new State(timer.get(), state.velocityMetersPerSecond, state.accelerationMetersPerSecondSq, newPose, state.curvatureRadPerMeter);
+                newPose = new Pose2d(state.poseMeters.getX(), state.poseMeters.getY(), state.holonomicRotation);
+                desState = new State(timer.get(), state.velocityMetersPerSecond, state.accelerationMetersPerSecondSq, newPose, state.curvatureRadPerMeter);
 
-                    if((Drivetrain.getPose().getX() - trajectory1.getEndState().poseMeters.getX()) < .1
-                        && (Drivetrain.getPose().getY() - trajectory1.getEndState().poseMeters.getY()) < .1){
-                        autoState = AutoState.pickUpObject;
-                        timer.reset();
-                    }
+                if((Drivetrain.getPose().getX() - trajectory1.getEndState().poseMeters.getX()) < .1
+                    && (Drivetrain.getPose().getY() - trajectory1.getEndState().poseMeters.getY()) < .1){
+                    autoState = AutoState.pickUpObject;
+                    Drivetrain.stopMotors();
+                    timer.reset();
+                }
             break;
             case secondPlace:
                 armPos = ArmPos.middleNode;
 
                 if(timer.get() > 5){
                     autoState = AutoState.end;
-                    Drivetrain.setPose(trajectory.getInitialState().poseMeters, trajectory.getInitialState().holonomicRotation);
+                    Drivetrain.stopMotors();
                     timer.reset();
                 }
             break;

@@ -15,6 +15,7 @@ public abstract class AutonBase {
     public PathPlannerState initalState;
     public Arm.ArmPos armPos;
     public boolean intakeOn;
+    public boolean pickUpObject;
 
     public abstract void runAuto();
     public abstract void reset();

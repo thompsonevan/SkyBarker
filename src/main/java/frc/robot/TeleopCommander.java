@@ -45,10 +45,6 @@ public class TeleopCommander extends RobotCommander{
     public boolean getResetIMU() {
         return driver.getBackButton();
     }
-    
-    public boolean getDriveToObject(){
-        return driver.getAButton();
-    }
 
     public boolean getDriveToScoring(){
         return driver.getBButton();
@@ -225,5 +221,11 @@ public class TeleopCommander extends RobotCommander{
             return 0;
         }
         
+    }
+
+    @Override
+    public boolean getPickUpObject() {
+        // TODO Auto-generated method stub
+        return driver.getAButton();
     }
 }

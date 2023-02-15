@@ -264,7 +264,7 @@ public class Drivetrain{
         updatePose();
         // Camera.switchPipe(useApril);
 
-        if(commander.getDriveToObject()){
+        if(commander.getPickUpObject()){
             useApril = false;
             if(Camera.getC().contains("person")){
                 chassisSpeeds = new ChassisSpeeds(
@@ -327,9 +327,25 @@ public class Drivetrain{
     public void autonAction(AutonCommader autonCommader){
         updatePose();
 
-        setSwerveModuleStates(holonomicController.calculate(poseEstimator.getEstimatedPosition(), 
-                                                            autonCommader.getDesiredState(),
-                                                            autonCommader.getDesiredState().poseMeters.getRotation()));
+        if(!autonCommader.getPickUpObject()){
+            chassisSpeeds = holonomicController.calculate(poseEstimator.getEstimatedPosition(), 
+                                                                autonCommader.getDesiredState(),
+                                                                autonCommader.getDesiredState().poseMeters.getRotation());
+        } else {
+            if(Camera.getC().contains("person")){
+                chassisSpeeds = new ChassisSpeeds(
+                    -(Camera.getA() - 20) * .15,
+                    0,//-Camera.getX() * .175,
+                    -Camera.getX() * .15);
+            } else {
+                chassisSpeeds = new ChassisSpeeds(
+                    0,
+                    0,
+                    0);
+            }
+        }
+
+        setSwerveModuleStates(chassisSpeeds);
 
         SmartDashboard.putNumber("Theta", Rotation2d.fromDegrees(Pigeon.getAngle()).getDegrees());
         SmartDashboard.putNumber("X", poseEstimator.getEstimatedPosition().getX());
