@@ -2,42 +2,36 @@ package frc.robot;
 
 import org.hotutilites.hotlogger.HotLogger;
 
-import com.pathplanner.lib.PathConstraints;
-import com.pathplanner.lib.PathPlanner;
-import com.pathplanner.lib.PathPlannerTrajectory;
+import com.revrobotics.CANSparkMax;
+import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 
-import edu.wpi.first.math.geometry.Pose2d;
-import edu.wpi.first.math.geometry.Rotation2d;
-import edu.wpi.first.math.geometry.Translation2d;
-import edu.wpi.first.math.trajectory.Trajectory;
-import edu.wpi.first.math.trajectory.TrajectoryConfig;
-import edu.wpi.first.math.trajectory.TrajectoryGenerator;
-import edu.wpi.first.math.trajectory.TrajectoryUtil;
-import edu.wpi.first.math.trajectory.Trajectory.State;
-import edu.wpi.first.math.trajectory.TrajectoryParameterizer.TrajectoryGenerationException;
-import edu.wpi.first.wpilibj.DriverStation;
-import edu.wpi.first.wpilibj.Filesystem;
 import edu.wpi.first.wpilibj.TimedRobot;
-import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.Autons.Auton1;
+import frc.robot.Autons.Auton67;
+import frc.robot.Autons.AutonLeft;
+import frc.robot.sensors.Camera;
 import frc.robot.sensors.Pigeon;
+import frc.robot.subsystems.Arm;
 import frc.robot.subsystems.Drivetrain;
-
-import static frc.robot.Constants.*;
-
-import java.io.IOException;
-import java.nio.file.Path;
-import java.util.List;
-
-import javax.swing.text.StyleContext.SmallAttributeSet;
+import frc.robot.subsystems.Hopper;
+import frc.robot.subsystems.Intake;
 
 public class Robot extends TimedRobot {
     private TeleopCommander teleopCommander;
     private Drivetrain drivetrain;
+    private Hopper hopper;
+    private Arm arm;
+    private Intake intake;
     private Pigeon pigeon;
+    private Camera camera;
     private AutonCommader autonCommader;
     private Auton1 auton;
+    // private TeleopCommander rip;
+    private Auton67 auton67;
+    private AutonLeft autonLeft;
+
+    private int autonSelection = 2;
 
     @Override
     public void robotInit() {
@@ -49,32 +43,53 @@ public class Robot extends TimedRobot {
 
         teleopCommander = new TeleopCommander();
         pigeon = new Pigeon();
+        camera = new Camera();
         drivetrain = new Drivetrain();
         autonCommader = new AutonCommader();
+        arm = new Arm();
+        auton = new Auton1();
+        auton67 = new Auton67();
+        autonLeft = new AutonLeft();
+        intake = new Intake();
+        hopper = new Hopper();
     }
 
     @Override
     public void robotPeriodic() {
+        arm.logData();
+        camera.logData();
+        pigeon.logData();
+        intake.logData();
     }
 
     @Override
     public void disabledInit() {
         drivetrain.zero();
+        arm.armZeroSensorPos();
     }
 
     @Override
     public void disabledPeriodic() {
         drivetrain.disabled();
+        arm.armPercentOutZero();
+        arm.coastMode();
     }
 
     @Override
     public void autonomousInit() {
-        PathPlannerTrajectory trajectory = PathPlanner.loadPath("simple", new PathConstraints(1,1));
+        if(autonSelection == 0){
+            autonCommader.initAuton(auton);
+        } else if(autonSelection == 1){
+            autonCommader.initAuton(auton67);
+        } else if(autonSelection == 2){
+            autonCommader.initAuton(autonLeft);
+        } else {
+            autonCommader.initAuton(auton);
+        }
 
-        Pigeon.zeroSensor(trajectory.getInitialPose().getRotation().getDegrees());
-        drivetrain.setPose(trajectory.getInitialPose());
-        auton = new Auton1();
-        autonCommader.initAuton(auton);
+        autonCommader.auton.reset();
+        drivetrain.zero();
+        Drivetrain.setPose(autonCommader.getInitalState().poseMeters, autonCommader.getInitalState().holonomicRotation);
     }
 
     @Override
@@ -82,17 +97,29 @@ public class Robot extends TimedRobot {
         pigeon.enabledAction(teleopCommander);
         autonCommader.runAuto();
         drivetrain.autonAction(autonCommader);
+        arm.action(autonCommader);
     }
 
+    private double[] rip2;
+    
     @Override
     public void teleopInit() {
         drivetrain.zero();
         Pigeon.zeroSensor();
+        arm.armZeroSensorPos();
     }
 
     @Override
     public void teleopPeriodic() {
+
         pigeon.enabledAction(teleopCommander);
-        drivetrain.teleAction(teleopCommander);
+        drivetrain.teleAction(   teleopCommander);
+        rip2 = teleopCommander.getIntakePosition();
+        intake.IntakePeriodic(teleopCommander);
+        SmartDashboard.putNumber("rip1", rip2[0]);
+        SmartDashboard.putNumber("rip2", rip2[1]);
+        arm.action(teleopCommander);
+        arm.brakeMode();
+        hopper.enabled(teleopCommander);
     }
 }

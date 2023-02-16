@@ -1,18 +1,14 @@
 package frc.robot.sensors;
 
 import com.ctre.phoenix.sensors.Pigeon2;
-import com.ctre.phoenix.sensors.PigeonIMU;
 import org.hotutilites.hotlogger.HotLogger;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-import frc.robot.AutonCommader;
 import frc.robot.RobotCommander;
 
 import static frc.robot.Constants.*;
 
 public class Pigeon{
-    private static double theta;
-
     private static Pigeon2 pigeon;
 
     public Pigeon() {
@@ -35,7 +31,7 @@ public class Pigeon{
         return Rotation2d.fromDegrees(getAngle());
     }
 
-    public static void logData() {
+    public void logData() {
         SmartDashboard.putNumber("Theta", getAngle());
 
         HotLogger.Log("Theta", getAngle());

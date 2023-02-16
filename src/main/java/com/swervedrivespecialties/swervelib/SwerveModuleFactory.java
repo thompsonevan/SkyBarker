@@ -1,8 +1,6 @@
 package com.swervedrivespecialties.swervelib;
 
 import com.ctre.phoenix.motorcontrol.can.TalonFX;
-
-import edu.wpi.first.wpilibj.shuffleboard.BuiltInLayouts;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardLayout;
 
 public class SwerveModuleFactory<DriveConfiguration, SteerConfiguration> {

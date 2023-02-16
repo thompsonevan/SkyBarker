@@ -1,7 +1,5 @@
 package com.swervedrivespecialties.swervelib;
 
-import com.ctre.phoenix.motorcontrol.can.TalonFX;
-
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardContainer;
 
 @FunctionalInterface
