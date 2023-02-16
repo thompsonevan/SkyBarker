@@ -11,9 +11,9 @@ import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 
 // Swerve Bot Constants
 public final class Constants {
-    public static final double DRIVETRAIN_TRACKWIDTH_METERS = 0.4445;
+    public static final double DRIVETRAIN_TRACKWIDTH_METERS = 0.52705;
 
-    public static final double DRIVETRAIN_WHEELBASE_METERS = 0.4445;
+    public static final double DRIVETRAIN_WHEELBASE_METERS = 0.57785;
 
     public static final double MAX_VOLTAGE = 12.0;
 
@@ -31,37 +31,40 @@ public final class Constants {
         new Translation2d(-DRIVETRAIN_TRACKWIDTH_METERS / 2.0, DRIVETRAIN_WHEELBASE_METERS / 2.0),
         new Translation2d(-DRIVETRAIN_TRACKWIDTH_METERS / 2.0, -DRIVETRAIN_WHEELBASE_METERS / 2.0));
     
-    public static final int DRIVETRAIN_PIGEON_ID = 50;
+    public static final int DRIVETRAIN_PIGEON_ID = 24;
 
     public static final int FRONT_LEFT_MODULE_DRIVE_MOTOR = 1;
-    public static final int FRONT_LEFT_MODULE_STEER_MOTOR = 3;
-    public static final int FRONT_LEFT_MODULE_STEER_ENCODER = 13;
-    public static final double FRONT_LEFT_MODULE_STEER_OFFSET = -Math.toRadians(21.97265625);
+    public static final int FRONT_LEFT_MODULE_STEER_MOTOR = 2;
+    public static final int FRONT_LEFT_MODULE_STEER_ENCODER = 18;
+    public static final double FRONT_LEFT_MODULE_STEER_OFFSET = -Math.toRadians(79.453125);
 
-    public static final int FRONT_RIGHT_MODULE_DRIVE_MOTOR = 5;
-    public static final int FRONT_RIGHT_MODULE_STEER_MOTOR = 7;
-    public static final int FRONT_RIGHT_MODULE_STEER_ENCODER = 17;
-    public static final double FRONT_RIGHT_MODULE_STEER_OFFSET = -Math.toRadians(58.71093750000001);
+    public static final int FRONT_RIGHT_MODULE_DRIVE_MOTOR = 3;
+    public static final int FRONT_RIGHT_MODULE_STEER_MOTOR = 4;
+    public static final int FRONT_RIGHT_MODULE_STEER_ENCODER = 19;
+    public static final double FRONT_RIGHT_MODULE_STEER_OFFSET = -Math.toRadians(92.724609375);
 
-    public static final int BACK_LEFT_MODULE_DRIVE_MOTOR = 2;
-    public static final int BACK_LEFT_MODULE_STEER_MOTOR = 4;
-    public static final int BACK_LEFT_MODULE_STEER_ENCODER = 14;
-    public static final double BACK_LEFT_MODULE_STEER_OFFSET = -Math.toRadians(309.27886962890625);
+    public static final int BACK_LEFT_MODULE_DRIVE_MOTOR = 5;
+    public static final int BACK_LEFT_MODULE_STEER_MOTOR = 6;
+    public static final int BACK_LEFT_MODULE_STEER_ENCODER = 20;
+    public static final double BACK_LEFT_MODULE_STEER_OFFSET = -Math.toRadians(40.166015625);
 
-    public static final int BACK_RIGHT_MODULE_DRIVE_MOTOR = 6;
+    public static final int BACK_RIGHT_MODULE_DRIVE_MOTOR = 7;
     public static final int BACK_RIGHT_MODULE_STEER_MOTOR = 8;
-    public static final int BACK_RIGHT_MODULE_STEER_ENCODER = 18;
-    public static final double BACK_RIGHT_MODULE_STEER_OFFSET = -Math.toRadians(212.2890625);
+    public static final int BACK_RIGHT_MODULE_STEER_ENCODER = 21;
+    public static final double BACK_RIGHT_MODULE_STEER_OFFSET = -Math.toRadians(146.162109375);
 
-    public static final double INTAKE_PACKAGE_POSITION = 0;
-    public static final double INTAKE_STATION_POSITION = 45;
-    public static final double INTAKE_COLLECT_POSITION = 90;
+    public static final double INTAKE_PACKAGE_POSITION = 90;
+    public static final double INTAKE_STATION_POSITION = 135;
+    public static final double INTAKE_COLLECT_POSITION = 180;
     public static final double INTAKE_SPEED = .45;
     
+    // Hopper CAN ID
+    public static final int HOPPER_MOTOR = 11;
+
     //Arm CAN ID
     public static final int SHOULDER = 13;
     public static final int EXTENSION = 14;
-    public static final int ELBOW = 52;
+    public static final int ELBOW = 15;
     public static final int SHOULDER_ENCODER = 22;
     public static final int ELBOW_ENCODER = 100;
 
@@ -102,24 +105,25 @@ public final class Constants {
     public static final int ELBOW_K_PID_LOOP_IDX = 0;
 
     public static final double FALCON500_TICKS_PER_REV = 2048;
+    public static final double BAG_TICKS_PER_REV = 2048;
     public static final double SHOULDER_DEGREES_TO_TICKS = -FALCON500_TICKS_PER_REV * 1.3786;
-    public static final double ELBOW_DEGREES_TO_TICKS = -FALCON500_TICKS_PER_REV * 1;
+    public static final double ELBOW_DEGREES_TO_TICKS = BAG_TICKS_PER_REV * 1;
 
     //Arm motion magic set positions
     public static final double SHOULDER_TARGET_POSITION_LOW = 90 * SHOULDER_DEGREES_TO_TICKS; // In degrees
     public static final double EXTENSION_TARGET_POSITION_LOW = 0 * FALCON500_TICKS_PER_REV; // In Revolutions
-    public static final double ELBOW_TARGET_POSITION_LOW = 1;
+    public static final double ELBOW_TARGET_POSITION_LOW = 1 * ELBOW_DEGREES_TO_TICKS;
 
     public static final double SHOULDER_TARGET_POSITION_MIDDLE = 80 * SHOULDER_DEGREES_TO_TICKS;
     public static final double EXTENSION_TARGET_POSITION_MIDDLE = 0 * FALCON500_TICKS_PER_REV;
-    public static final double ELBOW_TARGET_POSITION_MIDDLE = 2;
+    public static final double ELBOW_TARGET_POSITION_MIDDLE = 2 * ELBOW_DEGREES_TO_TICKS;
 
     public static final double SHOULDER_TARGET_POSITION_HIGH = 45 * SHOULDER_DEGREES_TO_TICKS;
     public static final double EXTENSION_TARGET_POSITION_HIGH = 50 * FALCON500_TICKS_PER_REV;
-    public static final double ELBOW_TARGET_POSITION_HIGH = 2;
+    public static final double ELBOW_TARGET_POSITION_HIGH = 2 * ELBOW_DEGREES_TO_TICKS;
 
-    public static final double SHOULDER_TARGET_POSITION_PACKAGE = 0 * SHOULDER_DEGREES_TO_TICKS;
-    public static final double EXTENSION_TARGET_POSITION_PACKAGE = 0 * FALCON500_TICKS_PER_REV;
+    public static final double SHOULDER_TARGET_POSITION_PACKAGE = 0;
+    public static final double EXTENSION_TARGET_POSITION_PACKAGE = 0;
     public static final double ELBOW_TARGET_POSITION_PACKAGE = 0;
 
     public static final int ARM_TIMEOUT = 200;

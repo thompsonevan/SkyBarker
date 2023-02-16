@@ -1,9 +1,13 @@
 package frc.robot;
 
+import edu.wpi.first.wpilibj.XboxController;
 import frc.robot.subsystems.Arm;
 
 public abstract class RobotCommander {
-    double[] intakeArray = {0, 0};
+    double[] intakeArray = {Constants.INTAKE_PACKAGE_POSITION, 0};
+
+    public XboxController driver;
+    public XboxController operator;
 
     public abstract double getForwardCommand();
     public abstract double getStrafeCommand();

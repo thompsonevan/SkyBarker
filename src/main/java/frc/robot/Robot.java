@@ -1,6 +1,10 @@
 package frc.robot;
 
 import org.hotutilites.hotlogger.HotLogger;
+
+import com.revrobotics.CANSparkMax;
+import com.revrobotics.CANSparkMaxLowLevel.MotorType;
+
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.Autons.Auton1;
@@ -10,18 +14,20 @@ import frc.robot.sensors.Camera;
 import frc.robot.sensors.Pigeon;
 import frc.robot.subsystems.Arm;
 import frc.robot.subsystems.Drivetrain;
+import frc.robot.subsystems.Hopper;
 import frc.robot.subsystems.Intake;
 
 public class Robot extends TimedRobot {
     private TeleopCommander teleopCommander;
     private Drivetrain drivetrain;
+    private Hopper hopper;
+    private Arm arm;
+    private Intake intake;
     private Pigeon pigeon;
     private Camera camera;
     private AutonCommader autonCommader;
     private Auton1 auton;
     // private TeleopCommander rip;
-    private Intake intake;
-    private Arm arm;
     private Auton67 auton67;
     private AutonLeft autonLeft;
 
@@ -44,6 +50,8 @@ public class Robot extends TimedRobot {
         auton = new Auton1();
         auton67 = new Auton67();
         autonLeft = new AutonLeft();
+        intake = new Intake();
+        hopper = new Hopper();
     }
 
     @Override
@@ -51,6 +59,7 @@ public class Robot extends TimedRobot {
         arm.logData();
         camera.logData();
         pigeon.logData();
+        intake.logData();
     }
 
     @Override
@@ -102,13 +111,15 @@ public class Robot extends TimedRobot {
 
     @Override
     public void teleopPeriodic() {
+
         pigeon.enabledAction(teleopCommander);
-        drivetrain.teleAction(teleopCommander);
+        drivetrain.teleAction(   teleopCommander);
         rip2 = teleopCommander.getIntakePosition();
         intake.IntakePeriodic(teleopCommander);
         SmartDashboard.putNumber("rip1", rip2[0]);
         SmartDashboard.putNumber("rip2", rip2[1]);
         arm.action(teleopCommander);
         arm.brakeMode();
+        hopper.enabled(teleopCommander);
     }
 }

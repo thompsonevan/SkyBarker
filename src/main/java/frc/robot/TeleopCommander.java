@@ -8,8 +8,8 @@ import static frc.robot.Constants.*;
 
 public class TeleopCommander extends RobotCommander{
 
-    private static XboxController driver;
-    private static XboxController operator;
+    // public XboxController driver;
+    // public  XboxController operator;
     private static boolean Bumpercheck = false;
     
     private boolean manualMode = false;
@@ -50,7 +50,7 @@ public class TeleopCommander extends RobotCommander{
         return driver.getBButton();
     }
 
-    private static double deadband(double value, double deadband, double maxRange){
+    private double deadband(double value, double deadband, double maxRange){
         if(Math.abs(value) < deadband){
             return 0;
         } else if (value < 0) {
@@ -60,7 +60,7 @@ public class TeleopCommander extends RobotCommander{
         }
     }
   
-    private static double modifyAxis(double value) {
+    private double modifyAxis(double value) {
         boolean deadband = 0.13 > Math.sqrt(Math.pow(driver.getLeftX(), 2) + Math.pow(driver.getLeftY(), 2));
 
         if (deadband) {
@@ -90,7 +90,6 @@ public class TeleopCommander extends RobotCommander{
                 intakeArray[0] = Constants.INTAKE_STATION_POSITION;
                 intakeArray[1] = Constants.INTAKE_SPEED;
             } else {
-                intakeArray[0] = 3;
                 intakeArray[1] = Constants.INTAKE_SPEED;
             }
         } else if (Trigger_right && !Trigger_left) {
@@ -104,7 +103,6 @@ public class TeleopCommander extends RobotCommander{
                 intakeArray[0] = Constants.INTAKE_STATION_POSITION;
                 intakeArray[1] = -Constants.INTAKE_SPEED;
             } else {
-                intakeArray[0] = 3;
                 intakeArray[1] = -Constants.INTAKE_SPEED;
             }
         } else if (Bumper_push && !(Dpad_left || Dpad_right || Dpad_updown)) {
@@ -125,11 +123,9 @@ public class TeleopCommander extends RobotCommander{
             intakeArray[0] = Constants.INTAKE_STATION_POSITION;
             intakeArray[1] = .0;
         } else {
-            intakeArray[0] = 3;
             intakeArray[1] = .0;
-        } 
+        }
         
-
         return intakeArray;
     }
 

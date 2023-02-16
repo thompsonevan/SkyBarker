@@ -195,7 +195,7 @@ public class Drivetrain{
         backLeftPos = (backLeftDrive.getSelectedSensorPosition() / 2048) * SdsModuleConfigurations.MK4I_L2.getDriveReduction() * Math.PI * SdsModuleConfigurations.MK4I_L2.getWheelDiameter();
         backRightPos = (backRightDrive.getSelectedSensorPosition() / 2048) * SdsModuleConfigurations.MK4I_L2.getDriveReduction() * Math.PI * SdsModuleConfigurations.MK4I_L2.getWheelDiameter();
 
-        positions[0].angle = new Rotation2d(backLeftModule.getSteerAngle());
+        positions[0].angle = new Rotation2d(frontLeftModule.getSteerAngle());
         positions[0].distanceMeters = frontLeftPos;
 
         positions[1].angle = new Rotation2d(frontRightModule.getSteerAngle());
@@ -213,6 +213,11 @@ public class Drivetrain{
     }
 
     public static void setPose(Pose2d pose, Rotation2d heading){
+        frontLeftDrive.setSelectedSensorPosition(0);
+        frontRightDrive.setSelectedSensorPosition(0);
+        backLeftDrive.setSelectedSensorPosition(0);
+        backRightDrive.setSelectedSensorPosition(0);
+
         poseEstimator.resetPosition(Pigeon.getRotation2d(),
                                     positions,
                                     pose);

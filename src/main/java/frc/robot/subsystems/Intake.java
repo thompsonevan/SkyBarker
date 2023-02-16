@@ -7,6 +7,8 @@ import com.revrobotics.CANSparkMax;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 
 import edu.wpi.first.math.controller.PIDController;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import frc.robot.RobotCommander;
 import frc.robot.TeleopCommander;
 
 public class Intake {
@@ -20,28 +22,36 @@ public class Intake {
     public Intake(){
         angle = 45;
         speed = 0;
-        speedMotor = new TalonFX(90);
-        angleMotor = new CANSparkMax(90, MotorType.kBrushless);
-        angleEncoder = new CANCoder(20);
-        pidController = new PIDController(.01, 0, 0);
+        speedMotor = new TalonFX(9);
+        angleMotor = new CANSparkMax(10, MotorType.kBrushless);
+        angleEncoder = new CANCoder(23);
+        pidController = new PIDController(.0125, 0, 0);
     }
 
-    public void IntakePeriodic(TeleopCommander commander){
+    public void IntakePeriodic(RobotCommander commander){
+        SmartDashboard.putNumber("Intake Desired Angle", commander.getIntakePosition()[0]);
+        SmartDashboard.putNumber("Intake Desired Speed", commander.getIntakePosition()[1]);
         speedPeriodic(commander);
         anglePeriodic(commander);
     }
 
-    public void speedPeriodic(TeleopCommander commander){
+    public void speedPeriodic(RobotCommander commander){
         speed = commander.getIntakePosition()[1];
-        speedMotor.set(TalonFXControlMode.PercentOutput, speed);
+        SmartDashboard.putNumber("Speed", speed);
+        speedMotor.set(TalonFXControlMode.PercentOutput, -speed);
     }
 
-    public void anglePeriodic(TeleopCommander commander){
+    public void anglePeriodic(RobotCommander commander){
         angle = commander.getIntakePosition()[0];
         double ourAngle = angleEncoder.getAbsolutePosition();
-        double change = pidController.calculate(ourAngle, angle);
+        double change = pidController.calculate(ourAngle + .1, angle);
+        SmartDashboard.putNumber("Change", change);
         if(Math.abs(ourAngle - angle) > 5){
             angleMotor.set(change);
         }
+    }
+
+    public void logData(){
+        SmartDashboard.putNumber("Intake Absolute Encoder", angleEncoder.getAbsolutePosition());
     }
 }
