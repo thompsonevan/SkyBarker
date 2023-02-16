@@ -185,6 +185,11 @@ public class Drivetrain{
     }
 
     public void zero(){
+        frontLeftModule.zeroMotorPos();
+        frontRightModule.zeroMotorPos();
+        backLeftModule.zeroMotorPos();
+        backRightModule.zeroMotorPos();
+        
         frontLeftDrive.setSelectedSensorPosition(0);
         frontRightDrive.setSelectedSensorPosition(0);
         backLeftDrive.setSelectedSensorPosition(0);

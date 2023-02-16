@@ -232,5 +232,9 @@ public final class Falcon500SteerControllerFactoryBuilder {
         public AbsoluteEncoder getEncoder(){
             return absoluteEncoder;
         }
+
+        public void zeroMotorPos(){
+            motor.setSelectedSensorPosition(absoluteEncoder.getAbsoluteAngle() / motorEncoderPositionCoefficient);
+        }
     }
 }

@@ -102,5 +102,9 @@ public class SwerveModuleFactory<DriveConfiguration, SteerConfiguration> {
         public AbsoluteEncoder getEncoder(){
             return steerController.getEncoder();
         }
+        
+        public void zeroMotorPos(){
+            steerController.zeroMotorPos();
+        }
     }
 }

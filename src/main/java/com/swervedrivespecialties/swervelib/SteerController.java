@@ -12,4 +12,6 @@ public interface SteerController {
     TalonFX getMotor();
 
     AbsoluteEncoder getEncoder();
+
+    void zeroMotorPos();
 }

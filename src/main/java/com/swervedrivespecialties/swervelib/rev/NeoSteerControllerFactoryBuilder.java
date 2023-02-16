@@ -179,5 +179,9 @@ public final class NeoSteerControllerFactoryBuilder {
         public AbsoluteEncoder getEncoder(){
             return absoluteEncoder;
         }
+
+        public void zeroMotorPos(){
+            
+        }
     }
 }
