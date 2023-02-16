@@ -13,6 +13,8 @@ import com.ctre.phoenix.motorcontrol.TalonFXFeedbackDevice;
 
 import static frc.robot.Constants.*;
 
+import org.hotutilites.hotlogger.HotLogger;
+
 public class Arm {
     public static enum ArmPos {
         topNode,
@@ -28,6 +30,11 @@ public class Arm {
     TalonSRX elbow = new TalonSRX(ELBOW);
     CANCoder shoulderEncoder = new CANCoder(SHOULDER_ENCODER);
     CANCoder elbowEncoder = new CANCoder(ELBOW_ENCODER);
+
+    double shoulderDesPos;
+    double extensionDesPos;
+    double elbowDesPos;
+
 
     public Arm(){
         //Configure sensor source for primary PID
@@ -149,12 +156,24 @@ public class Arm {
 
         if(commander.getArmPosition() == ArmPos.packagePos){
             setPosition(SHOULDER_TARGET_POSITION_PACKAGE, EXTENSION_TARGET_POSITION_PACKAGE, ELBOW_TARGET_POSITION_PACKAGE);
+            shoulderDesPos = SHOULDER_TARGET_POSITION_PACKAGE;
+            extensionDesPos = EXTENSION_TARGET_POSITION_PACKAGE;
+            elbowDesPos = ELBOW_TARGET_POSITION_PACKAGE;
         } else if (commander.getArmPosition() == ArmPos.lowerNode){
             setPosition(SHOULDER_TARGET_POSITION_LOW, EXTENSION_TARGET_POSITION_LOW, ELBOW_TARGET_POSITION_LOW);
+            shoulderDesPos = SHOULDER_TARGET_POSITION_LOW;
+            extensionDesPos = EXTENSION_TARGET_POSITION_LOW;
+            elbowDesPos = ELBOW_TARGET_POSITION_LOW;
         } else if (commander.getArmPosition() == ArmPos.middleNode){
             setPosition(SHOULDER_TARGET_POSITION_MIDDLE, EXTENSION_TARGET_POSITION_MIDDLE, ELBOW_TARGET_POSITION_MIDDLE);
+            shoulderDesPos = SHOULDER_TARGET_POSITION_MIDDLE;
+            extensionDesPos = EXTENSION_TARGET_POSITION_MIDDLE;
+            elbowDesPos = ELBOW_TARGET_POSITION_MIDDLE;
         } else if (commander.getArmPosition() == ArmPos.topNode){
             setPosition(SHOULDER_TARGET_POSITION_HIGH, EXTENSION_TARGET_POSITION_HIGH, ELBOW_TARGET_POSITION_HIGH);
+            shoulderDesPos = SHOULDER_TARGET_POSITION_HIGH;
+            extensionDesPos = EXTENSION_TARGET_POSITION_HIGH;
+            elbowDesPos = ELBOW_TARGET_POSITION_HIGH;
         } else if (commander.getArmPosition() == ArmPos.stay){
             armPercentOutZero();
         } else if(commander.getArmPosition() == ArmPos.manual){
@@ -187,6 +206,15 @@ public class Arm {
         SmartDashboard.putNumber("elbowVelocity", elbowPosition / FALCON500_TICKS_PER_REV);
         SmartDashboard.putNumber("Absolute Encoder Ticks", shoulderEncoder.getAbsolutePosition() * 1.3786);
         SmartDashboard.putNumber("Absolute Encoder", shoulderEncoder.getAbsolutePosition());
+
+        HotLogger.Log("Shoulder Absolute Pos", shoulderEncoder.getAbsolutePosition());
+        HotLogger.Log("Shoulder Motor Pos", shoulderPosition);
+        HotLogger.Log("Extension Pos", extensionPosition);
+        HotLogger.Log("Elbow Absolute Pos", elbowEncoder.getAbsolutePosition());
+        HotLogger.Log("Elbow Motor Pos", elbowPosition);
+        HotLogger.Log("Shoulder Desired Pos", shoulderDesPos);
+        HotLogger.Log("Extension Desired Pos", extensionDesPos);
+        HotLogger.Log("Elbow Desired Pos", elbowDesPos);
     }
 
     public void brakeMode(){

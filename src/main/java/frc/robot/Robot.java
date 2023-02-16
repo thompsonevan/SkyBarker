@@ -39,7 +39,9 @@ public class Robot extends TimedRobot {
         "Right Front Absolute", "Right Front Assumed",
         "Left Rear Absolute", "Left Rear Assumed",
         "Right Rear Absolute", "Right Rear Assumed",
-        "TargetX", "TargetY", "TargetTheta", "Robot State Theta", "poseX", "poseY");
+        "TargetX", "TargetY", "TargetTheta", "Robot State Theta", "poseX", "poseY",
+        "Shoulder Absolute Pos", "Shoulder Motor Pos", "Extension Pos", "Elbow Absolute Pos", "Elbow Motor Pos",
+        "Shoulder Desired Pos", "Extension Desired Pos", "Elbow Desired Pos");
 
         teleopCommander = new TeleopCommander();
         pigeon = new Pigeon();
