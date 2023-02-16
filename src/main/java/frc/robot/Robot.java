@@ -68,6 +68,7 @@ public class Robot extends TimedRobot {
     public void disabledInit() {
         drivetrain.zero();
         arm.armZeroSensorPos();
+        drivetrain.setBrakeMode(false);
     }
 
     @Override
@@ -79,6 +80,8 @@ public class Robot extends TimedRobot {
 
     @Override
     public void autonomousInit() {
+        drivetrain.setBrakeMode(true);
+
         if(autonSelection == 0){
             autonCommader.initAuton(auton);
         } else if(autonSelection == 1){
@@ -106,6 +109,8 @@ public class Robot extends TimedRobot {
     
     @Override
     public void teleopInit() {
+        drivetrain.setBrakeMode(true);
+
         drivetrain.zero();
         Pigeon.zeroSensor();
         arm.armZeroSensorPos();
@@ -113,7 +118,6 @@ public class Robot extends TimedRobot {
 
     @Override
     public void teleopPeriodic() {
-
         pigeon.enabledAction(teleopCommander);
         drivetrain.teleAction(   teleopCommander);
         rip2 = teleopCommander.getIntakePosition();

@@ -1,6 +1,7 @@
 package frc.robot.subsystems;
 
 import com.ctre.phoenix.motorcontrol.ControlMode;
+import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.ctre.phoenix.motorcontrol.can.TalonFX;
 import com.swervedrivespecialties.swervelib.AbsoluteEncoder;
 import com.swervedrivespecialties.swervelib.Mk4SwerveModuleHelper;
@@ -431,5 +432,29 @@ public class Drivetrain{
         }
 
         poseEstimator.updateWithTime(Timer.getFPGATimestamp(), Pigeon.getRotation2d(), positions);
+    }
+
+    public void setBrakeMode(boolean brake){
+        if(brake){
+            frontLeftDrive.setNeutralMode(NeutralMode.Brake);
+            frontRightDrive.setNeutralMode(NeutralMode.Brake);
+            backLeftDrive.setNeutralMode(NeutralMode.Brake);
+            backRightDrive.setNeutralMode(NeutralMode.Brake);
+    
+            frontLeftSteer.setNeutralMode(NeutralMode.Brake);
+            frontRightSteer.setNeutralMode(NeutralMode.Brake);
+            backLeftSteer.setNeutralMode(NeutralMode.Brake);
+            backRightSteer.setNeutralMode(NeutralMode.Brake);
+        } else {
+            frontLeftDrive.setNeutralMode(NeutralMode.Coast);
+            frontRightDrive.setNeutralMode(NeutralMode.Coast);
+            backLeftDrive.setNeutralMode(NeutralMode.Coast);
+            backRightDrive.setNeutralMode(NeutralMode.Coast);
+    
+            frontLeftSteer.setNeutralMode(NeutralMode.Coast);
+            frontRightSteer.setNeutralMode(NeutralMode.Coast);
+            backLeftSteer.setNeutralMode(NeutralMode.Coast);
+            backRightSteer.setNeutralMode(NeutralMode.Coast);
+        }
     }
 }
