@@ -2,6 +2,7 @@ package frc.robot.subsystems;
 
 import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.can.TalonFX;
+import com.swervedrivespecialties.swervelib.AbsoluteEncoder;
 import com.swervedrivespecialties.swervelib.Mk4SwerveModuleHelper;
 import com.swervedrivespecialties.swervelib.Mk4iSwerveModuleHelper;
 import com.swervedrivespecialties.swervelib.SdsModuleConfigurations;
@@ -44,15 +45,15 @@ public class Drivetrain{
     private static TalonFX backLeftDrive;
     private static TalonFX backRightDrive;
 
-    // private final TalonFX frontLeftSteer;
-    // private final TalonFX frontRightSteer;
-    // private final TalonFX backLeftSteer;
-    // private final TalonFX backRightSteer;
+    private final TalonFX frontLeftSteer;
+    private final TalonFX frontRightSteer;
+    private final TalonFX backLeftSteer;
+    private final TalonFX backRightSteer;
 
-    // private final AbsoluteEncoder frontLeftEncoder;
-    // private final AbsoluteEncoder frontRightEncoder;
-    // private final AbsoluteEncoder backLeftEncoder;
-    // private final AbsoluteEncoder backRightEncoder;
+    private final AbsoluteEncoder frontLeftEncoder;
+    private final AbsoluteEncoder frontRightEncoder;
+    private final AbsoluteEncoder backLeftEncoder;
+    private final AbsoluteEncoder backRightEncoder;
 
     static SwerveModulePosition[] positions;
 
@@ -179,16 +180,15 @@ public class Drivetrain{
         backLeftDrive = backLeftModule.getDriveMotor();
         backRightDrive = backRightModule.getDriveMotor();
 
-        // frontLeftSteer = frontLeftModule.getSteerMotor();
-        // frontRightSteer = frontRightModule.getSteerMotor();
-        // backLeftSteer = backLeftModule.getSteerMotor();
-        // backRightSteer = backRightModule.getSteerMotor();
+        frontLeftSteer = frontLeftModule.getSteerMotor();
+        frontRightSteer = frontRightModule.getSteerMotor();
+        backLeftSteer = backLeftModule.getSteerMotor();
+        backRightSteer = backRightModule.getSteerMotor();
 
-        // frontLeftEncoder = frontLeftModule.getEncoder();
-        // frontRightEncoder = frontRightModule.getEncoder();
-        // backLeftEncoder = backLeftModule.getEncoder();
-        // backRightEncoder = backRightModule.getEncoder();
-
+        frontLeftEncoder = frontLeftModule.getEncoder();
+        frontRightEncoder = frontRightModule.getEncoder();
+        backLeftEncoder = backLeftModule.getEncoder();
+        backRightEncoder = backRightModule.getEncoder();
 
         positions = new SwerveModulePosition[]{
             new SwerveModulePosition(),
