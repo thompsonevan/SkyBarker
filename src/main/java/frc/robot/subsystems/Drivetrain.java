@@ -2,6 +2,7 @@ package frc.robot.subsystems;
 
 import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.can.TalonFX;
+import com.swervedrivespecialties.swervelib.Mk4SwerveModuleHelper;
 import com.swervedrivespecialties.swervelib.Mk4iSwerveModuleHelper;
 import com.swervedrivespecialties.swervelib.SdsModuleConfigurations;
 import com.swervedrivespecialties.swervelib.SwerveModule;
@@ -83,45 +84,95 @@ public class Drivetrain{
     public Drivetrain(){
         ShuffleboardTab tab = Shuffleboard.getTab("Drivetrain");
 
-        frontLeftModule = Mk4iSwerveModuleHelper.createFalcon500(
+        if(realBot){
+            frontLeftModule = Mk4iSwerveModuleHelper.createFalcon500(
+                    tab.getLayout("Front Left Module", BuiltInLayouts.kList)
+                                    .withSize(2, 4)
+                                    .withPosition(0, 0),
+                                    Mk4iSwerveModuleHelper.GearRatio.L2,
+                    FRONT_LEFT_MODULE_DRIVE_MOTOR,
+                    FRONT_LEFT_MODULE_STEER_MOTOR,
+                    FRONT_LEFT_MODULE_STEER_ENCODER,
+                    FRONT_LEFT_MODULE_STEER_OFFSET);
+
+            frontRightModule = Mk4iSwerveModuleHelper.createFalcon500(
+                            tab.getLayout("Front Right Module", BuiltInLayouts.kList)
+                                            .withSize(2, 4)
+                                            .withPosition(2, 0),
+                                            Mk4iSwerveModuleHelper.GearRatio.L2,
+                            FRONT_RIGHT_MODULE_DRIVE_MOTOR,
+                            FRONT_RIGHT_MODULE_STEER_MOTOR,
+                            FRONT_RIGHT_MODULE_STEER_ENCODER,
+                            FRONT_RIGHT_MODULE_STEER_OFFSET);
+
+            backLeftModule = Mk4iSwerveModuleHelper.createFalcon500(
+                            tab.getLayout("Back Left Module", BuiltInLayouts.kList)
+                                            .withSize(2, 4)
+                                            .withPosition(4, 0),
+                            Mk4iSwerveModuleHelper.GearRatio.L2,
+                            BACK_LEFT_MODULE_DRIVE_MOTOR,
+                            BACK_LEFT_MODULE_STEER_MOTOR,
+                            BACK_LEFT_MODULE_STEER_ENCODER,
+                            BACK_LEFT_MODULE_STEER_OFFSET);
+
+            backRightModule = Mk4iSwerveModuleHelper.createFalcon500(
+                            tab.getLayout("Back Right Module", BuiltInLayouts.kList)
+                                            .withSize(2, 4)
+                                            .withPosition(6, 0),
+                            Mk4iSwerveModuleHelper.GearRatio.L2,
+                            BACK_RIGHT_MODULE_DRIVE_MOTOR,
+                            BACK_RIGHT_MODULE_STEER_MOTOR,
+                            BACK_RIGHT_MODULE_STEER_ENCODER,
+                            BACK_RIGHT_MODULE_STEER_OFFSET);
+            frontLeftPos = (frontLeftDrive.getSelectedSensorPosition() / 2048) * SdsModuleConfigurations.MK4I_L2.getDriveReduction() * Math.PI * SdsModuleConfigurations.MK4I_L2.getWheelDiameter();
+            frontRightPos = (frontRightDrive.getSelectedSensorPosition() / 2048) * SdsModuleConfigurations.MK4I_L2.getDriveReduction() * Math.PI * SdsModuleConfigurations.MK4I_L2.getWheelDiameter();
+            backLeftPos = (backLeftDrive.getSelectedSensorPosition() / 2048) * SdsModuleConfigurations.MK4I_L2.getDriveReduction() * Math.PI * SdsModuleConfigurations.MK4I_L2.getWheelDiameter();
+            backRightPos = (backRightDrive.getSelectedSensorPosition() / 2048) * SdsModuleConfigurations.MK4I_L2.getDriveReduction() * Math.PI * SdsModuleConfigurations.MK4I_L2.getWheelDiameter();
+        } else {
+            frontLeftModule = Mk4SwerveModuleHelper.createFalcon500(
                 tab.getLayout("Front Left Module", BuiltInLayouts.kList)
                                 .withSize(2, 4)
                                 .withPosition(0, 0),
-                                Mk4iSwerveModuleHelper.GearRatio.L2,
+                                Mk4SwerveModuleHelper.GearRatio.L2,
                 FRONT_LEFT_MODULE_DRIVE_MOTOR,
                 FRONT_LEFT_MODULE_STEER_MOTOR,
                 FRONT_LEFT_MODULE_STEER_ENCODER,
                 FRONT_LEFT_MODULE_STEER_OFFSET);
 
-        frontRightModule = Mk4iSwerveModuleHelper.createFalcon500(
-                        tab.getLayout("Front Right Module", BuiltInLayouts.kList)
-                                        .withSize(2, 4)
-                                        .withPosition(2, 0),
-                                        Mk4iSwerveModuleHelper.GearRatio.L2,
-                        FRONT_RIGHT_MODULE_DRIVE_MOTOR,
-                        FRONT_RIGHT_MODULE_STEER_MOTOR,
-                        FRONT_RIGHT_MODULE_STEER_ENCODER,
-                        FRONT_RIGHT_MODULE_STEER_OFFSET);
+            frontRightModule = Mk4SwerveModuleHelper.createFalcon500(
+                            tab.getLayout("Front Right Module", BuiltInLayouts.kList)
+                                            .withSize(2, 4)
+                                            .withPosition(2, 0),
+                                            Mk4SwerveModuleHelper.GearRatio.L2,
+                            FRONT_RIGHT_MODULE_DRIVE_MOTOR,
+                            FRONT_RIGHT_MODULE_STEER_MOTOR,
+                            FRONT_RIGHT_MODULE_STEER_ENCODER,
+                            FRONT_RIGHT_MODULE_STEER_OFFSET);
 
-        backLeftModule = Mk4iSwerveModuleHelper.createFalcon500(
-                        tab.getLayout("Back Left Module", BuiltInLayouts.kList)
-                                        .withSize(2, 4)
-                                        .withPosition(4, 0),
-                        Mk4iSwerveModuleHelper.GearRatio.L2,
-                        BACK_LEFT_MODULE_DRIVE_MOTOR,
-                        BACK_LEFT_MODULE_STEER_MOTOR,
-                        BACK_LEFT_MODULE_STEER_ENCODER,
-                        BACK_LEFT_MODULE_STEER_OFFSET);
+            backLeftModule = Mk4SwerveModuleHelper.createFalcon500(
+                            tab.getLayout("Back Left Module", BuiltInLayouts.kList)
+                                            .withSize(2, 4)
+                                            .withPosition(4, 0),
+                                            Mk4SwerveModuleHelper.GearRatio.L2,
+                            BACK_LEFT_MODULE_DRIVE_MOTOR,
+                            BACK_LEFT_MODULE_STEER_MOTOR,
+                            BACK_LEFT_MODULE_STEER_ENCODER,
+                            BACK_LEFT_MODULE_STEER_OFFSET);
 
-        backRightModule = Mk4iSwerveModuleHelper.createFalcon500(
-                        tab.getLayout("Back Right Module", BuiltInLayouts.kList)
-                                        .withSize(2, 4)
-                                        .withPosition(6, 0),
-                        Mk4iSwerveModuleHelper.GearRatio.L2,
-                        BACK_RIGHT_MODULE_DRIVE_MOTOR,
-                        BACK_RIGHT_MODULE_STEER_MOTOR,
-                        BACK_RIGHT_MODULE_STEER_ENCODER,
-                        BACK_RIGHT_MODULE_STEER_OFFSET);
+            backRightModule = Mk4SwerveModuleHelper.createFalcon500(
+                            tab.getLayout("Back Right Module", BuiltInLayouts.kList)
+                                            .withSize(2, 4)
+                                            .withPosition(6, 0),
+                                            Mk4SwerveModuleHelper.GearRatio.L2,
+                            BACK_RIGHT_MODULE_DRIVE_MOTOR,
+                            BACK_RIGHT_MODULE_STEER_MOTOR,
+                            BACK_RIGHT_MODULE_STEER_ENCODER,
+                            BACK_RIGHT_MODULE_STEER_OFFSET);
+            frontLeftPos = (frontLeftDrive.getSelectedSensorPosition() / 2048) * SdsModuleConfigurations.MK4_L2.getDriveReduction() * Math.PI * SdsModuleConfigurations.MK4_L2.getWheelDiameter();
+            frontRightPos = (frontRightDrive.getSelectedSensorPosition() / 2048) * SdsModuleConfigurations.MK4_L2.getDriveReduction() * Math.PI * SdsModuleConfigurations.MK4_L2.getWheelDiameter();
+            backLeftPos = (backLeftDrive.getSelectedSensorPosition() / 2048) * SdsModuleConfigurations.MK4_L2.getDriveReduction() * Math.PI * SdsModuleConfigurations.MK4_L2.getWheelDiameter();
+            backRightPos = (backRightDrive.getSelectedSensorPosition() / 2048) * SdsModuleConfigurations.MK4_L2.getDriveReduction() * Math.PI * SdsModuleConfigurations.MK4_L2.getWheelDiameter();
+        }
 
         frontLeftDrive = frontLeftModule.getDriveMotor();
         frontRightDrive = frontRightModule.getDriveMotor();
@@ -138,10 +189,6 @@ public class Drivetrain{
         // backLeftEncoder = backLeftModule.getEncoder();
         // backRightEncoder = backRightModule.getEncoder();
 
-        frontLeftPos = (frontLeftDrive.getSelectedSensorPosition() / 2048) * SdsModuleConfigurations.MK4I_L2.getDriveReduction() * Math.PI * SdsModuleConfigurations.MK4I_L2.getWheelDiameter();
-        frontRightPos = (frontRightDrive.getSelectedSensorPosition() / 2048) * SdsModuleConfigurations.MK4I_L2.getDriveReduction() * Math.PI * SdsModuleConfigurations.MK4I_L2.getWheelDiameter();
-        backLeftPos = (backLeftDrive.getSelectedSensorPosition() / 2048) * SdsModuleConfigurations.MK4I_L2.getDriveReduction() * Math.PI * SdsModuleConfigurations.MK4I_L2.getWheelDiameter();
-        backRightPos = (backRightDrive.getSelectedSensorPosition() / 2048) * SdsModuleConfigurations.MK4I_L2.getDriveReduction() * Math.PI * SdsModuleConfigurations.MK4I_L2.getWheelDiameter();
 
         positions = new SwerveModulePosition[]{
             new SwerveModulePosition(),
@@ -195,10 +242,17 @@ public class Drivetrain{
         backLeftDrive.setSelectedSensorPosition(0);
         backRightDrive.setSelectedSensorPosition(0);
 
-        frontLeftPos = (frontLeftDrive.getSelectedSensorPosition() / 2048) * SdsModuleConfigurations.MK4I_L2.getDriveReduction() * Math.PI * SdsModuleConfigurations.MK4I_L2.getWheelDiameter();
-        frontRightPos = (frontRightDrive.getSelectedSensorPosition() / 2048) * SdsModuleConfigurations.MK4I_L2.getDriveReduction() * Math.PI * SdsModuleConfigurations.MK4I_L2.getWheelDiameter();
-        backLeftPos = (backLeftDrive.getSelectedSensorPosition() / 2048) * SdsModuleConfigurations.MK4I_L2.getDriveReduction() * Math.PI * SdsModuleConfigurations.MK4I_L2.getWheelDiameter();
-        backRightPos = (backRightDrive.getSelectedSensorPosition() / 2048) * SdsModuleConfigurations.MK4I_L2.getDriveReduction() * Math.PI * SdsModuleConfigurations.MK4I_L2.getWheelDiameter();
+        if(realBot){
+            frontLeftPos = (frontLeftDrive.getSelectedSensorPosition() / 2048) * SdsModuleConfigurations.MK4I_L2.getDriveReduction() * Math.PI * SdsModuleConfigurations.MK4I_L2.getWheelDiameter();
+            frontRightPos = (frontRightDrive.getSelectedSensorPosition() / 2048) * SdsModuleConfigurations.MK4I_L2.getDriveReduction() * Math.PI * SdsModuleConfigurations.MK4I_L2.getWheelDiameter();
+            backLeftPos = (backLeftDrive.getSelectedSensorPosition() / 2048) * SdsModuleConfigurations.MK4I_L2.getDriveReduction() * Math.PI * SdsModuleConfigurations.MK4I_L2.getWheelDiameter();
+            backRightPos = (backRightDrive.getSelectedSensorPosition() / 2048) * SdsModuleConfigurations.MK4I_L2.getDriveReduction() * Math.PI * SdsModuleConfigurations.MK4I_L2.getWheelDiameter();
+        } else {
+            frontLeftPos = (frontLeftDrive.getSelectedSensorPosition() / 2048) * SdsModuleConfigurations.MK4_L2.getDriveReduction() * Math.PI * SdsModuleConfigurations.MK4_L2.getWheelDiameter();
+            frontRightPos = (frontRightDrive.getSelectedSensorPosition() / 2048) * SdsModuleConfigurations.MK4_L2.getDriveReduction() * Math.PI * SdsModuleConfigurations.MK4_L2.getWheelDiameter();
+            backLeftPos = (backLeftDrive.getSelectedSensorPosition() / 2048) * SdsModuleConfigurations.MK4_L2.getDriveReduction() * Math.PI * SdsModuleConfigurations.MK4_L2.getWheelDiameter();
+            backRightPos = (backRightDrive.getSelectedSensorPosition() / 2048) * SdsModuleConfigurations.MK4_L2.getDriveReduction() * Math.PI * SdsModuleConfigurations.MK4_L2.getWheelDiameter();
+        }
 
         positions[0].angle = new Rotation2d(frontLeftModule.getSteerAngle());
         positions[0].distanceMeters = frontLeftPos;
@@ -348,10 +402,17 @@ public class Drivetrain{
     }
 
     public void updatePose(){
-        frontLeftPos = (frontLeftDrive.getSelectedSensorPosition() / 2048) * SdsModuleConfigurations.MK4I_L2.getDriveReduction() * Math.PI * SdsModuleConfigurations.MK4I_L2.getWheelDiameter();
-        frontRightPos = (frontRightDrive.getSelectedSensorPosition() / 2048) * SdsModuleConfigurations.MK4I_L2.getDriveReduction() * Math.PI * SdsModuleConfigurations.MK4I_L2.getWheelDiameter();
-        backLeftPos = (backLeftDrive.getSelectedSensorPosition() / 2048) * SdsModuleConfigurations.MK4I_L2.getDriveReduction() * Math.PI * SdsModuleConfigurations.MK4I_L2.getWheelDiameter();
-        backRightPos = (backRightDrive.getSelectedSensorPosition() / 2048) * SdsModuleConfigurations.MK4I_L2.getDriveReduction() * Math.PI * SdsModuleConfigurations.MK4I_L2.getWheelDiameter();
+        if(realBot){
+            frontLeftPos = (frontLeftDrive.getSelectedSensorPosition() / 2048) * SdsModuleConfigurations.MK4I_L2.getDriveReduction() * Math.PI * SdsModuleConfigurations.MK4I_L2.getWheelDiameter();
+            frontRightPos = (frontRightDrive.getSelectedSensorPosition() / 2048) * SdsModuleConfigurations.MK4I_L2.getDriveReduction() * Math.PI * SdsModuleConfigurations.MK4I_L2.getWheelDiameter();
+            backLeftPos = (backLeftDrive.getSelectedSensorPosition() / 2048) * SdsModuleConfigurations.MK4I_L2.getDriveReduction() * Math.PI * SdsModuleConfigurations.MK4I_L2.getWheelDiameter();
+            backRightPos = (backRightDrive.getSelectedSensorPosition() / 2048) * SdsModuleConfigurations.MK4I_L2.getDriveReduction() * Math.PI * SdsModuleConfigurations.MK4I_L2.getWheelDiameter();
+        } else {
+            frontLeftPos = (frontLeftDrive.getSelectedSensorPosition() / 2048) * SdsModuleConfigurations.MK4_L2.getDriveReduction() * Math.PI * SdsModuleConfigurations.MK4_L2.getWheelDiameter();
+            frontRightPos = (frontRightDrive.getSelectedSensorPosition() / 2048) * SdsModuleConfigurations.MK4_L2.getDriveReduction() * Math.PI * SdsModuleConfigurations.MK4_L2.getWheelDiameter();
+            backLeftPos = (backLeftDrive.getSelectedSensorPosition() / 2048) * SdsModuleConfigurations.MK4_L2.getDriveReduction() * Math.PI * SdsModuleConfigurations.MK4_L2.getWheelDiameter();
+            backRightPos = (backRightDrive.getSelectedSensorPosition() / 2048) * SdsModuleConfigurations.MK4_L2.getDriveReduction() * Math.PI * SdsModuleConfigurations.MK4_L2.getWheelDiameter();
+        }
 
         positions[0].angle = new Rotation2d(frontLeftModule.getSteerAngle());
         positions[0].distanceMeters = frontLeftPos;
