@@ -260,6 +260,7 @@ public class Drivetrain{
 
         if(commander.getPickUpObject()){
             useApril = false;
+            firstLoop = true;
             if(Camera.getC().contains("person")){
                 chassisSpeeds = new ChassisSpeeds(
                     -(Camera.getA() - 20) * .15,
