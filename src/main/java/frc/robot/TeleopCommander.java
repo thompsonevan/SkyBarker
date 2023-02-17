@@ -26,12 +26,12 @@ public class TeleopCommander extends RobotCommander{
 
     @Override
     public double getForwardCommand() {
-        return -(modifyAxis(driver.getLeftY()) * MAX_VELOCITY_METERS_PER_SECOND);
+        return (modifyAxis(driver.getLeftY()) * MAX_VELOCITY_METERS_PER_SECOND);
     }
 
     @Override
     public double getStrafeCommand() {
-        return -(modifyAxis(driver.getLeftX()) * MAX_VELOCITY_METERS_PER_SECOND);
+        return (modifyAxis(driver.getLeftX()) * MAX_VELOCITY_METERS_PER_SECOND);
     }
 
     @Override

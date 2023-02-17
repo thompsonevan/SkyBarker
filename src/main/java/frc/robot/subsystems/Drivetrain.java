@@ -46,15 +46,15 @@ public class Drivetrain{
     private static TalonFX backLeftDrive;
     private static TalonFX backRightDrive;
 
-    private final TalonFX frontLeftSteer;
-    private final TalonFX frontRightSteer;
-    private final TalonFX backLeftSteer;
-    private final TalonFX backRightSteer;
+    // private final TalonFX frontLeftSteer;
+    // private final TalonFX frontRightSteer;
+    // private final TalonFX backLeftSteer;
+    // private final TalonFX backRightSteer;
 
-    private final AbsoluteEncoder frontLeftEncoder;
-    private final AbsoluteEncoder frontRightEncoder;
-    private final AbsoluteEncoder backLeftEncoder;
-    private final AbsoluteEncoder backRightEncoder;
+    // private final AbsoluteEncoder frontLeftEncoder;
+    // private final AbsoluteEncoder frontRightEncoder;
+    // private final AbsoluteEncoder backLeftEncoder;
+    // private final AbsoluteEncoder backRightEncoder;
 
     static SwerveModulePosition[] positions;
 
@@ -66,11 +66,17 @@ public class Drivetrain{
 
     Timer timer = new Timer();
 
+    // private final SwerveDriveKinematics kinematics = new SwerveDriveKinematics(
+    //                 new Translation2d(DRIVETRAIN_TRACKWIDTH_METERS / 2.0, DRIVETRAIN_WHEELBASE_METERS / 2.0),
+    //                 new Translation2d(DRIVETRAIN_TRACKWIDTH_METERS / 2.0, -DRIVETRAIN_WHEELBASE_METERS / 2.0),
+    //                 new Translation2d(-DRIVETRAIN_TRACKWIDTH_METERS / 2.0, DRIVETRAIN_WHEELBASE_METERS / 2.0),
+    //                 new Translation2d(-DRIVETRAIN_TRACKWIDTH_METERS / 2.0, -DRIVETRAIN_WHEELBASE_METERS / 2.0));
+
     private final SwerveDriveKinematics kinematics = new SwerveDriveKinematics(
-                    new Translation2d(DRIVETRAIN_TRACKWIDTH_METERS / 2.0, DRIVETRAIN_WHEELBASE_METERS / 2.0),
-                    new Translation2d(DRIVETRAIN_TRACKWIDTH_METERS / 2.0, -DRIVETRAIN_WHEELBASE_METERS / 2.0),
-                    new Translation2d(-DRIVETRAIN_TRACKWIDTH_METERS / 2.0, DRIVETRAIN_WHEELBASE_METERS / 2.0),
-                    new Translation2d(-DRIVETRAIN_TRACKWIDTH_METERS / 2.0, -DRIVETRAIN_WHEELBASE_METERS / 2.0));
+        new Translation2d(DRIVETRAIN_TRACKWIDTH_METERS / 2.0, DRIVETRAIN_WHEELBASE_METERS / 2.0),
+        new Translation2d(DRIVETRAIN_TRACKWIDTH_METERS / 2.0, -DRIVETRAIN_WHEELBASE_METERS / 2.0),
+        new Translation2d(-DRIVETRAIN_TRACKWIDTH_METERS / 2.0, DRIVETRAIN_WHEELBASE_METERS / 2.0),
+        new Translation2d(-DRIVETRAIN_TRACKWIDTH_METERS / 2.0, -DRIVETRAIN_WHEELBASE_METERS / 2.0));
 
     private HolonomicDriveController holonomicController;
 
@@ -126,6 +132,12 @@ public class Drivetrain{
                             BACK_RIGHT_MODULE_STEER_MOTOR,
                             BACK_RIGHT_MODULE_STEER_ENCODER,
                             BACK_RIGHT_MODULE_STEER_OFFSET);
+
+            frontLeftDrive = frontLeftModule.getDriveMotor();
+            frontRightDrive = frontRightModule.getDriveMotor();
+            backLeftDrive = backLeftModule.getDriveMotor();
+            backRightDrive = backRightModule.getDriveMotor();
+
             frontLeftPos = (frontLeftDrive.getSelectedSensorPosition() / 2048) * SdsModuleConfigurations.MK4I_L2.getDriveReduction() * Math.PI * SdsModuleConfigurations.MK4I_L2.getWheelDiameter();
             frontRightPos = (frontRightDrive.getSelectedSensorPosition() / 2048) * SdsModuleConfigurations.MK4I_L2.getDriveReduction() * Math.PI * SdsModuleConfigurations.MK4I_L2.getWheelDiameter();
             backLeftPos = (backLeftDrive.getSelectedSensorPosition() / 2048) * SdsModuleConfigurations.MK4I_L2.getDriveReduction() * Math.PI * SdsModuleConfigurations.MK4I_L2.getWheelDiameter();
@@ -170,26 +182,29 @@ public class Drivetrain{
                             BACK_RIGHT_MODULE_STEER_MOTOR,
                             BACK_RIGHT_MODULE_STEER_ENCODER,
                             BACK_RIGHT_MODULE_STEER_OFFSET);
+
+            frontLeftDrive = frontLeftModule.getDriveMotor();
+            frontRightDrive = frontRightModule.getDriveMotor();
+            backLeftDrive = backLeftModule.getDriveMotor();
+            backRightDrive = backRightModule.getDriveMotor();
+
             frontLeftPos = (frontLeftDrive.getSelectedSensorPosition() / 2048) * SdsModuleConfigurations.MK4_L2.getDriveReduction() * Math.PI * SdsModuleConfigurations.MK4_L2.getWheelDiameter();
             frontRightPos = (frontRightDrive.getSelectedSensorPosition() / 2048) * SdsModuleConfigurations.MK4_L2.getDriveReduction() * Math.PI * SdsModuleConfigurations.MK4_L2.getWheelDiameter();
             backLeftPos = (backLeftDrive.getSelectedSensorPosition() / 2048) * SdsModuleConfigurations.MK4_L2.getDriveReduction() * Math.PI * SdsModuleConfigurations.MK4_L2.getWheelDiameter();
             backRightPos = (backRightDrive.getSelectedSensorPosition() / 2048) * SdsModuleConfigurations.MK4_L2.getDriveReduction() * Math.PI * SdsModuleConfigurations.MK4_L2.getWheelDiameter();
         }
 
-        frontLeftDrive = frontLeftModule.getDriveMotor();
-        frontRightDrive = frontRightModule.getDriveMotor();
-        backLeftDrive = backLeftModule.getDriveMotor();
-        backRightDrive = backRightModule.getDriveMotor();
 
-        frontLeftSteer = frontLeftModule.getSteerMotor();
-        frontRightSteer = frontRightModule.getSteerMotor();
-        backLeftSteer = backLeftModule.getSteerMotor();
-        backRightSteer = backRightModule.getSteerMotor();
 
-        frontLeftEncoder = frontLeftModule.getEncoder();
-        frontRightEncoder = frontRightModule.getEncoder();
-        backLeftEncoder = backLeftModule.getEncoder();
-        backRightEncoder = backRightModule.getEncoder();
+        // frontLeftSteer = frontLeftModule.getSteerMotor();
+        // frontRightSteer = frontRightModule.getSteerMotor();
+        // backLeftSteer = backLeftModule.getSteerMotor();
+        // backRightSteer = backRightModule.getSteerMotor();
+
+        // frontLeftEncoder = frontLeftModule.getEncoder();
+        // frontRightEncoder = frontRightModule.getEncoder();
+        // backLeftEncoder = backLeftModule.getEncoder();
+        // backRightEncoder = backRightModule.getEncoder();
 
         positions = new SwerveModulePosition[]{
             new SwerveModulePosition(),
@@ -223,7 +238,7 @@ public class Drivetrain{
             thetaController); // (2Pk,PI) constrains to 1 2pi/sec
 
         poseEstimator = new SwerveDrivePoseEstimator(
-            KINEMATICS,
+            kinematics,
             Pigeon.getRotation2d(),
             positions,
             new Pose2d(),
@@ -434,27 +449,27 @@ public class Drivetrain{
         poseEstimator.updateWithTime(Timer.getFPGATimestamp(), Pigeon.getRotation2d(), positions);
     }
 
-    public void setBrakeMode(boolean brake){
-        if(brake){
-            frontLeftDrive.setNeutralMode(NeutralMode.Brake);
-            frontRightDrive.setNeutralMode(NeutralMode.Brake);
-            backLeftDrive.setNeutralMode(NeutralMode.Brake);
-            backRightDrive.setNeutralMode(NeutralMode.Brake);
+    // public void setBrakeMode(boolean brake){
+    //     if(brake){
+    //         frontLeftDrive.setNeutralMode(NeutralMode.Brake);
+    //         frontRightDrive.setNeutralMode(NeutralMode.Brake);
+    //         backLeftDrive.setNeutralMode(NeutralMode.Brake);
+    //         backRightDrive.setNeutralMode(NeutralMode.Brake);
     
-            frontLeftSteer.setNeutralMode(NeutralMode.Brake);
-            frontRightSteer.setNeutralMode(NeutralMode.Brake);
-            backLeftSteer.setNeutralMode(NeutralMode.Brake);
-            backRightSteer.setNeutralMode(NeutralMode.Brake);
-        } else {
-            frontLeftDrive.setNeutralMode(NeutralMode.Coast);
-            frontRightDrive.setNeutralMode(NeutralMode.Coast);
-            backLeftDrive.setNeutralMode(NeutralMode.Coast);
-            backRightDrive.setNeutralMode(NeutralMode.Coast);
+    //         frontLeftSteer.setNeutralMode(NeutralMode.Brake);
+    //         frontRightSteer.setNeutralMode(NeutralMode.Brake);
+    //         backLeftSteer.setNeutralMode(NeutralMode.Brake);
+    //         backRightSteer.setNeutralMode(NeutralMode.Brake);
+    //     } else {
+    //         frontLeftDrive.setNeutralMode(NeutralMode.Coast);
+    //         frontRightDrive.setNeutralMode(NeutralMode.Coast);
+    //         backLeftDrive.setNeutralMode(NeutralMode.Coast);
+    //         backRightDrive.setNeutralMode(NeutralMode.Coast);
     
-            frontLeftSteer.setNeutralMode(NeutralMode.Coast);
-            frontRightSteer.setNeutralMode(NeutralMode.Coast);
-            backLeftSteer.setNeutralMode(NeutralMode.Coast);
-            backRightSteer.setNeutralMode(NeutralMode.Coast);
-        }
-    }
+    //         frontLeftSteer.setNeutralMode(NeutralMode.Coast);
+    //         frontRightSteer.setNeutralMode(NeutralMode.Coast);
+    //         backLeftSteer.setNeutralMode(NeutralMode.Coast);
+    //         backRightSteer.setNeutralMode(NeutralMode.Coast);
+    //     }
+    // }
 }

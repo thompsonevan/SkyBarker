@@ -25,7 +25,7 @@ public class Intake {
         speedMotor = new TalonFX(9);
         angleMotor = new CANSparkMax(10, MotorType.kBrushless);
         angleEncoder = new CANCoder(23);
-        pidController = new PIDController(.0125, 0, 0);
+        pidController = new PIDController(.01, 0, 0);
     }
 
     public void IntakePeriodic(RobotCommander commander){
@@ -44,10 +44,12 @@ public class Intake {
     public void anglePeriodic(RobotCommander commander){
         angle = commander.getIntakePosition()[0];
         double ourAngle = angleEncoder.getAbsolutePosition();
-        double change = pidController.calculate(ourAngle + .1, angle);
+        double change = pidController.calculate(ourAngle, angle);
         SmartDashboard.putNumber("Change", change);
-        if(Math.abs(ourAngle - angle) > 5){
+        if(Math.abs(ourAngle - angle) > 10){
             angleMotor.set(change);
+        } else {
+            angleMotor.set(0);
         }
     }
 
