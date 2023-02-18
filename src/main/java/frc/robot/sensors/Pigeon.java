@@ -12,11 +12,15 @@ public class Pigeon{
     private static Pigeon2 pigeon;
 
     public Pigeon() {
-        pigeon = new Pigeon2(DRIVETRAIN_PIGEON_ID, "drivetrain");
+        if(realBot){
+            pigeon = new Pigeon2(DRIVETRAIN_PIGEON_ID, "drivetrain");
+        } else {
+            pigeon = new Pigeon2(DRIVETRAIN_PIGEON_ID);
+        }
     }
 
     public static void zeroSensor() {
-        pigeon.setYaw(180);
+        pigeon.setYaw(0);
     }
 
     public static void zeroSensor(double angle) {
@@ -39,7 +43,7 @@ public class Pigeon{
 
     public void enabledAction(RobotCommander commander) {
         if (commander.getResetIMU()) {
-            pigeon.setYaw(180);
+            pigeon.setYaw(0);
         }
     }
 }

@@ -2,6 +2,7 @@ package frc.robot.Autons;
 
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import frc.robot.sensors.Pigeon;
 import frc.robot.subsystems.Drivetrain;
 import frc.robot.subsystems.Arm.ArmPos;
 import com.pathplanner.lib.PathConstraints;
@@ -18,6 +19,7 @@ public class AutonLeft extends AutonBase{
         pickUpObject,
         driveBack,
         secondPlace,
+        chargingStation,
         end
     } 
 
@@ -34,8 +36,8 @@ public class AutonLeft extends AutonBase{
         timer.reset();
         timer.start();
 
-        trajectory = PathPlanner.loadPath("path1", new PathConstraints(1,1));
-        trajectory1 = PathPlanner.loadPath("path2", new PathConstraints(1,1));
+        trajectory = PathPlanner.loadPath("path1", new PathConstraints(3,2));
+        trajectory1 = PathPlanner.loadPath("path2", new PathConstraints(3,2));
 
         desState = new State();
 
@@ -62,6 +64,8 @@ public class AutonLeft extends AutonBase{
             case firstPlace:
                 armPos = ArmPos.topNode;
 
+                Drivetrain.setPose(Drivetrain.getPose(), Pigeon.getRotation2d());
+
                 if(timer.get() > 5){
                     armPos = ArmPos.packagePos;
                     autoState = AutoState.driveToObject;
@@ -73,19 +77,24 @@ public class AutonLeft extends AutonBase{
             case driveToObject:
                 state = (PathPlannerState) trajectory.sample(timer.get());
 
-                newPose = new Pose2d(state.poseMeters.getX(), state.poseMeters.getY(), state.holonomicRotation);
-                desState = new State(timer.get(), state.velocityMetersPerSecond, state.accelerationMetersPerSecondSq, newPose, state.curvatureRadPerMeter);
+                // newPose = new Pose2d(state.poseMeters.getX(), state.poseMeters.getY(), state.holonomicRotation);
+                // desState = new State(timer.get(), state.velocityMetersPerSecond, state.accelerationMetersPerSecondSq, newPose, state.curvatureRadPerMeter);
 
-                if((Drivetrain.getPose().getX() - trajectory.getEndState().poseMeters.getX()) < .1
-                    && (Drivetrain.getPose().getY() - trajectory.getEndState().poseMeters.getY()) < .1){
-                    autoState = AutoState.pickUpObject;
-                    Drivetrain.stopMotors();
-                    timer.reset();
-                }
+                // if((Drivetrain.getPose().getX() - trajectory.getEndState().poseMeters.getX()) < .1
+                //     && (Drivetrain.getPose().getY() - trajectory.getEndState().poseMeters.getY()) < .1){
+                //         autoState = AutoState.pickUpObject;
+                //         Drivetrain.stopMotors();
+                //         timer.reset();
+                // }
+                autoState = AutoState.pickUpObject;
+                Drivetrain.stopMotors();
+                timer.reset();
             break;
             case pickUpObject:
                 intakeOn = true;
                 pickUpObject = true;
+
+                Drivetrain.setPose(Drivetrain.getPose(), Pigeon.getRotation2d());
 
                 if(timer.get() > 5){
                     intakeOn = false;
@@ -117,6 +126,9 @@ public class AutonLeft extends AutonBase{
                     Drivetrain.stopMotors();
                     timer.reset();
                 }
+            break;
+            case chargingStation:
+
             break;
             case end:
                 armPos = ArmPos.packagePos;

@@ -5,7 +5,11 @@ import org.hotutilites.hotlogger.HotLogger;
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 
+import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.TimedRobot;
+import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.Autons.Auton1;
 import frc.robot.Autons.Auton67;
@@ -22,7 +26,7 @@ public class Robot extends TimedRobot {
     private Drivetrain drivetrain;
     private Hopper hopper;
     private Arm arm;
-    // private Intake intake;
+    private Intake intake;
     private Pigeon pigeon;
     private Camera camera;
     private AutonCommader autonCommader;
@@ -41,7 +45,7 @@ public class Robot extends TimedRobot {
         "TargetX", "TargetY", "TargetTheta", "Robot State Theta", "poseX", "poseY",
         "Shoulder Absolute Pos", "Shoulder Motor Pos", "Extension Pos", "Elbow Absolute Pos", "Elbow Motor Pos",
         "Shoulder Desired Pos", "Extension Desired Pos", "Elbow Desired Pos");
-
+        intake = new Intake();
         teleopCommander = new TeleopCommander();
         pigeon = new Pigeon();
         camera = new Camera();
@@ -51,7 +55,6 @@ public class Robot extends TimedRobot {
         auton = new Auton1();
         auton67 = new Auton67();
         autonLeft = new AutonLeft();
-        // intake = new Intake();
         hopper = new Hopper();
     }
 
@@ -60,7 +63,10 @@ public class Robot extends TimedRobot {
         arm.logData();
         camera.logData();
         pigeon.logData();
-        // intake.logData();
+        intake.logData();
+        
+        SmartDashboard.putNumber("Match Time", DriverStation.getMatchTime());
+        SmartDashboard.putNumber("FPGA Time", Timer.getFPGATimestamp());
     }
 
     @Override
@@ -68,6 +74,7 @@ public class Robot extends TimedRobot {
         drivetrain.zero();
         arm.armZeroSensorPos();
         // drivetrain.setBrakeMode(false);
+        SmartDashboard.putString("Robot Mode", "Disabled");
     }
 
     @Override
@@ -80,6 +87,7 @@ public class Robot extends TimedRobot {
     @Override
     public void autonomousInit() {
         // drivetrain.setBrakeMode(true);
+        SmartDashboard.putString("Robot Mode", "Autonomous");
 
         if(autonSelection == 0){
             autonCommader.initAuton(auton);
@@ -93,15 +101,17 @@ public class Robot extends TimedRobot {
 
         autonCommader.auton.reset();
         drivetrain.zero();
-        Drivetrain.setPose(autonCommader.getInitalState().poseMeters, autonCommader.getInitalState().holonomicRotation);
+        // Drivetrain.setPose(autonCommader.getInitalState().poseMeters, autonCommader.getInitalState().holonomicRotation);
+        // Drivetrain.setPose(new Pose2d(0,0, Rotation2d.fromDegrees(180)), Rotation2d.fromDegrees(180));
     }
 
     @Override
     public void autonomousPeriodic() {
-        pigeon.enabledAction(teleopCommander);
         autonCommader.runAuto();
+        pigeon.enabledAction(teleopCommander);
         drivetrain.autonAction(autonCommader);
-        arm.action(autonCommader);
+        // arm.action(autonCommader);
+        intake.IntakePeriodic(autonCommader);
     }
 
     private double[] rip2;
@@ -109,6 +119,7 @@ public class Robot extends TimedRobot {
     @Override
     public void teleopInit() {
         // drivetrain.setBrakeMode(true);
+        SmartDashboard.putString("Robot Mode", "Teleop");
 
         drivetrain.zero();
         Pigeon.zeroSensor();
@@ -120,7 +131,7 @@ public class Robot extends TimedRobot {
         pigeon.enabledAction(teleopCommander);
         drivetrain.teleAction(   teleopCommander);
         rip2 = teleopCommander.getIntakePosition();
-        // intake.IntakePeriodic(teleopCommander);
+        intake.IntakePeriodic(teleopCommander);
         SmartDashboard.putNumber("rip1", rip2[0]);
         SmartDashboard.putNumber("rip2", rip2[1]);
         arm.action(teleopCommander);

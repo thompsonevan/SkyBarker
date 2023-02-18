@@ -35,7 +35,6 @@ public class Arm {
     double extensionDesPos;
     double elbowDesPos;
 
-
     public Arm(){
         //Configure sensor source for primary PID
         shoulder.configSelectedFeedbackSensor(TalonFXFeedbackDevice.IntegratedSensor, SHOULDER_K_PID_LOOP_IDX,
