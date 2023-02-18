@@ -12,7 +12,11 @@ public class Pigeon{
     private static Pigeon2 pigeon;
 
     public Pigeon() {
-        pigeon = new Pigeon2(DRIVETRAIN_PIGEON_ID);
+        if(realBot){
+            pigeon = new Pigeon2(DRIVETRAIN_PIGEON_ID, "drivetrain");
+        } else {
+            pigeon = new Pigeon2(DRIVETRAIN_PIGEON_ID);
+        }
     }
 
     public static void zeroSensor() {

@@ -8,6 +8,8 @@ import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardContainer;
 
 import static com.swervedrivespecialties.swervelib.ctre.CtreUtils.checkCtreError;
 
+import static frc.robot.Constants.*;
+
 public final class Falcon500SteerControllerFactoryBuilder {
     private static final int CAN_TIMEOUT_MS = 250;
     private static final int STATUS_FRAME_GENERAL_PERIOD_MS = 250;
@@ -115,7 +117,14 @@ public final class Falcon500SteerControllerFactoryBuilder {
                 motorConfiguration.supplyCurrLimit.enable = true;
             }
 
-            TalonFX motor = new TalonFX(steerConfiguration.getMotorPort(), "drivetrain");
+            TalonFX motor;
+
+            if(realBot){
+                motor = new TalonFX(steerConfiguration.getMotorPort(), "drivetrain");
+            } else {
+                motor = new TalonFX(steerConfiguration.getMotorPort());
+            }
+
             checkCtreError(motor.configAllSettings(motorConfiguration, CAN_TIMEOUT_MS), "Failed to configure Falcon 500 settings");
 
             if (hasVoltageCompensation()) {
@@ -231,6 +240,10 @@ public final class Falcon500SteerControllerFactoryBuilder {
 
         public AbsoluteEncoder getEncoder(){
             return absoluteEncoder;
+        }
+
+        public void zeroMotorPos(){
+            motor.setSelectedSensorPosition(absoluteEncoder.getAbsoluteAngle() / motorEncoderPositionCoefficient);
         }
     }
 }

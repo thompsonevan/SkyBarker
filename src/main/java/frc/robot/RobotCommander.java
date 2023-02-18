@@ -2,9 +2,10 @@ package frc.robot;
 
 import edu.wpi.first.wpilibj.XboxController;
 import frc.robot.subsystems.Arm;
+import frc.robot.subsystems.Intake;
 
 public abstract class RobotCommander {
-    double[] intakeArray = {Constants.INTAKE_PACKAGE_POSITION, 0};
+    double[] intakeArray = {10000, 0};
 
     public XboxController driver;
     public XboxController operator;

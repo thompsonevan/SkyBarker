@@ -12,4 +12,5 @@ public interface SwerveModule {
     public TalonFX getDriveMotor();
     public TalonFX getSteerMotor();
     public AbsoluteEncoder getEncoder();
+    public void zeroMotorPos();
 }

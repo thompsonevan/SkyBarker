@@ -26,11 +26,11 @@ public class Camera {
     }
 
     public static void switchPipe(boolean aprilTag){
-        if(aprilTag){
-            NetworkTableInstance.getDefault().getTable("limelight").getEntry("pipeline").setNumber(0);
-        } else {
-            NetworkTableInstance.getDefault().getTable("limelight").getEntry("pipeline").setNumber(1);
-        }
+        // if(aprilTag){
+        //     NetworkTableInstance.getDefault().getTable("limelight").getEntry("pipeline").setNumber(0);
+        // } else {
+        //     NetworkTableInstance.getDefault().getTable("limelight").getEntry("pipeline").setNumber(1);
+        // }
     }
 
     // public static Pose2d getBotPose(){

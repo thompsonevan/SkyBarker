@@ -17,6 +17,8 @@ public class Hopper {
     public void enabled(RobotCommander commander){
         if(Math.abs(commander.operator.getLeftY()) > .2){
             hopper.set(commander.operator.getLeftY() * .6);
+        } else {
+            hopper.set(0);
         }
     }
 }

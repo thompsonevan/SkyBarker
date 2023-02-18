@@ -7,6 +7,9 @@ import com.ctre.phoenix.sensors.CANCoderStatusFrame;
 import com.swervedrivespecialties.swervelib.AbsoluteEncoder;
 import com.swervedrivespecialties.swervelib.AbsoluteEncoderFactory;
 
+import static frc.robot.Constants.*;
+
+
 public class CanCoderFactoryBuilder {
     private Direction direction = Direction.COUNTER_CLOCKWISE;
     private int periodMilliseconds = 10;
@@ -28,7 +31,14 @@ public class CanCoderFactoryBuilder {
             config.magnetOffsetDegrees = Math.toDegrees(configuration.getOffset());
             config.sensorDirection = direction == Direction.CLOCKWISE;
 
-            CANCoder encoder = new CANCoder(configuration.getId(), "drivetrain");
+            CANCoder encoder;
+
+            if(realBot){
+                encoder = new CANCoder(configuration.getId(), "drivetrain");
+            } else {
+                encoder = new CANCoder(configuration.getId());
+            }
+
             CtreUtils.checkCtreError(encoder.configAllSettings(config, 250), "Failed to configure CANCoder");
 
             CtreUtils.checkCtreError(encoder.setStatusFramePeriod(CANCoderStatusFrame.SensorData, periodMilliseconds, 250), "Failed to configure CANCoder update rate");

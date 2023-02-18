@@ -19,6 +19,8 @@ public class TeleopCommander extends RobotCommander{
     private boolean xButtonPressed = false;
     private boolean bButtonPressed = false;
 
+    private boolean cubeMode = true; // true ball, false cone
+
     public TeleopCommander() {
         driver = new XboxController(0);
         operator = new XboxController(1);
@@ -26,19 +28,19 @@ public class TeleopCommander extends RobotCommander{
 
     @Override
     public double getForwardCommand() {
-        return -(modifyAxis(driver.getLeftY()) * MAX_VELOCITY_METERS_PER_SECOND);
+        return (modifyAxis(driver.getLeftY()) * MAX_VELOCITY_METERS_PER_SECOND);
     }
 
     @Override
     public double getStrafeCommand() {
-        return -(modifyAxis(driver.getLeftX()) * MAX_VELOCITY_METERS_PER_SECOND);
+        return (modifyAxis(driver.getLeftX()) * MAX_VELOCITY_METERS_PER_SECOND);
     }
 
     @Override
     public double getTurnCommand() {
         double value = deadband(Math.abs(driver.getRightX()) * driver.getRightX(), 0.13, 0.4) * (MAX_ANGULAR_VELOCITY_RADIANS_PER_SECOND);
 
-        return -value;
+        return value;
     }
 
     @Override
@@ -79,51 +81,100 @@ public class TeleopCommander extends RobotCommander{
         boolean Bumper_push = operator.getRightBumperPressed();
         boolean Bumper_release = operator.getRightBumperReleased();
 
-        if (Trigger_left && !Trigger_right) {
-            if (Dpad_left && !(Dpad_right || Dpad_updown)) {
-                intakeArray[0] = Constants.INTAKE_PACKAGE_POSITION;
-                intakeArray[1] = Constants.INTAKE_SPEED;
-            } else if (Dpad_right && !(Dpad_left || Dpad_updown)) {
+        if(getCubeMode()){
+            if (Trigger_left && !Trigger_right) {
+                if (Dpad_left && !(Dpad_right || Dpad_updown)) {
+                    intakeArray[0] = Constants.INTAKE_PACKAGE_POSITION;
+                    intakeArray[1] = Constants.INTAKE_SPEED_CUBE;
+                } else if (Dpad_right && !(Dpad_left || Dpad_updown)) {
+                    intakeArray[0] = Constants.INTAKE_COLLECT_POSITION;
+                    intakeArray[1] = Constants.INTAKE_SPEED_CUBE;
+                } else if (Dpad_updown && !(Dpad_left || Dpad_right)) {
+                    intakeArray[0] = Constants.INTAKE_STATION_POSITION;
+                    intakeArray[1] = Constants.INTAKE_SPEED_CUBE;
+                } else {
+                    intakeArray[1] = Constants.INTAKE_SPEED_CUBE;
+                }
+            } else if (Trigger_right && !Trigger_left) {
+                if (Dpad_left && !(Dpad_right || Dpad_updown)) {
+                    intakeArray[0] = Constants.INTAKE_PACKAGE_POSITION;
+                    intakeArray[1] = -Constants.INTAKE_SPEED_CUBE;
+                } else if (Dpad_right && !(Dpad_left || Dpad_updown)) {
+                    intakeArray[0] = Constants.INTAKE_COLLECT_POSITION;
+                    intakeArray[1] = -Constants.INTAKE_SPEED_CUBE;
+                } else if (Dpad_updown && !(Dpad_left || Dpad_right)) {
+                    intakeArray[0] = Constants.INTAKE_STATION_POSITION;
+                    intakeArray[1] = -Constants.INTAKE_SPEED_CUBE;
+                } else {
+                    intakeArray[1] = -Constants.INTAKE_SPEED_CUBE;
+                }
+            } else if (Bumper_push && !(Dpad_left || Dpad_right || Dpad_updown)) {
+                Bumpercheck = true;
                 intakeArray[0] = Constants.INTAKE_COLLECT_POSITION;
-                intakeArray[1] = Constants.INTAKE_SPEED;
-            } else if (Dpad_updown && !(Dpad_left || Dpad_right)) {
-                intakeArray[0] = Constants.INTAKE_STATION_POSITION;
-                intakeArray[1] = Constants.INTAKE_SPEED;
-            } else {
-                intakeArray[1] = Constants.INTAKE_SPEED;
-            }
-        } else if (Trigger_right && !Trigger_left) {
-            if (Dpad_left && !(Dpad_right || Dpad_updown)) {
+                intakeArray[1] = 0;
+            } else if (Bumper_release && !(Dpad_left || Dpad_right || Dpad_updown) && Bumpercheck) {
+                Bumpercheck = false;
                 intakeArray[0] = Constants.INTAKE_PACKAGE_POSITION;
-                intakeArray[1] = -Constants.INTAKE_SPEED;
-            } else if (Dpad_right && !(Dpad_left || Dpad_updown)) {
+                intakeArray[1] = 0;
+            } else if (Dpad_left && !(Trigger_right || Trigger_left || Dpad_right || Dpad_updown)) {
+                intakeArray[0] = Constants.INTAKE_PACKAGE_POSITION;
+                intakeArray[1] = .0;
+            } else if (Dpad_right && !(Trigger_left || Trigger_right || Dpad_left || Dpad_updown)) {
                 intakeArray[0] = Constants.INTAKE_COLLECT_POSITION;
-                intakeArray[1] = -Constants.INTAKE_SPEED;
-            } else if (Dpad_updown && !(Dpad_left || Dpad_right)) {
+                intakeArray[1] = .0;
+            } else if (Dpad_updown && !(Trigger_left || Trigger_right || Dpad_left || Dpad_right)) {
                 intakeArray[0] = Constants.INTAKE_STATION_POSITION;
-                intakeArray[1] = -Constants.INTAKE_SPEED;
+                intakeArray[1] = .0;
             } else {
-                intakeArray[1] = -Constants.INTAKE_SPEED;
+                intakeArray[1] = .0;
             }
-        } else if (Bumper_push && !(Dpad_left || Dpad_right || Dpad_updown)) {
-            Bumpercheck = true;
-            intakeArray[0] = Constants.INTAKE_COLLECT_POSITION;
-            intakeArray[1] = 0;
-        } else if (Bumper_release && !(Dpad_left || Dpad_right || Dpad_updown) && Bumpercheck) {
-            Bumpercheck = false;
-            intakeArray[0] = Constants.INTAKE_PACKAGE_POSITION;
-            intakeArray[1] = 0;
-        } else if (Dpad_left && !(Trigger_right || Trigger_left || Dpad_right || Dpad_updown)) {
-            intakeArray[0] = Constants.INTAKE_PACKAGE_POSITION;
-            intakeArray[1] = .0;
-        } else if (Dpad_right && !(Trigger_left || Trigger_right || Dpad_left || Dpad_updown)) {
-            intakeArray[0] = Constants.INTAKE_COLLECT_POSITION;
-            intakeArray[1] = .0;
-        } else if (Dpad_updown && !(Trigger_left || Trigger_right || Dpad_left || Dpad_right)) {
-            intakeArray[0] = Constants.INTAKE_STATION_POSITION;
-            intakeArray[1] = .0;
         } else {
-            intakeArray[1] = .0;
+            if (Trigger_left && !Trigger_right) {
+                if (Dpad_left && !(Dpad_right || Dpad_updown)) {
+                    intakeArray[0] = Constants.INTAKE_PACKAGE_POSITION;
+                    intakeArray[1] = Constants.INTAKE_SPEED_CONE;
+                } else if (Dpad_right && !(Dpad_left || Dpad_updown)) {
+                    intakeArray[0] = Constants.INTAKE_COLLECT_POSITION;
+                    intakeArray[1] = Constants.INTAKE_SPEED_CONE;
+                } else if (Dpad_updown && !(Dpad_left || Dpad_right)) {
+                    intakeArray[0] = Constants.INTAKE_STATION_POSITION;
+                    intakeArray[1] = Constants.INTAKE_SPEED_CONE;
+                } else {
+                    intakeArray[1] = Constants.INTAKE_SPEED_CONE;
+                }
+            } else if (Trigger_right && !Trigger_left) {
+                if (Dpad_left && !(Dpad_right || Dpad_updown)) {
+                    intakeArray[0] = Constants.INTAKE_PACKAGE_POSITION;
+                    intakeArray[1] = -Constants.INTAKE_SPEED_CONE;
+                } else if (Dpad_right && !(Dpad_left || Dpad_updown)) {
+                    intakeArray[0] = Constants.INTAKE_COLLECT_POSITION;
+                    intakeArray[1] = -Constants.INTAKE_SPEED_CONE;
+                } else if (Dpad_updown && !(Dpad_left || Dpad_right)) {
+                    intakeArray[0] = Constants.INTAKE_STATION_POSITION;
+                    intakeArray[1] = -Constants.INTAKE_SPEED_CONE;
+                } else {
+                    intakeArray[1] = -Constants.INTAKE_SPEED_CONE;
+                }
+            } else if (Bumper_push && !(Dpad_left || Dpad_right || Dpad_updown)) {
+                Bumpercheck = true;
+                intakeArray[0] = Constants.INTAKE_COLLECT_POSITION;
+                intakeArray[1] = 0;
+            } else if (Bumper_release && !(Dpad_left || Dpad_right || Dpad_updown) && Bumpercheck) {
+                Bumpercheck = false;
+                intakeArray[0] = Constants.INTAKE_PACKAGE_POSITION;
+                intakeArray[1] = 0;
+            } else if (Dpad_left && !(Trigger_right || Trigger_left || Dpad_right || Dpad_updown)) {
+                intakeArray[0] = Constants.INTAKE_PACKAGE_POSITION;
+                intakeArray[1] = .0;
+            } else if (Dpad_right && !(Trigger_left || Trigger_right || Dpad_left || Dpad_updown)) {
+                intakeArray[0] = Constants.INTAKE_COLLECT_POSITION;
+                intakeArray[1] = .0;
+            } else if (Dpad_updown && !(Trigger_left || Trigger_right || Dpad_left || Dpad_right)) {
+                intakeArray[0] = Constants.INTAKE_STATION_POSITION;
+                intakeArray[1] = .0;
+            } else {
+                intakeArray[1] = .0;
+            }
         }
         
         return intakeArray;
@@ -185,6 +236,16 @@ public class TeleopCommander extends RobotCommander{
                 return ArmPos.stay;
             }
         }
+    }
+
+    public boolean getCubeMode(){
+        if(!cubeMode && operator.getLeftStickButton()){
+            cubeMode = true;
+        } else if(cubeMode && operator.getRightStickButton()){
+            cubeMode = false;
+        }
+
+        return cubeMode;
     }
 
     public double armShoulder(){     
