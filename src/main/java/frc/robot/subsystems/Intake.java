@@ -4,6 +4,7 @@ import com.ctre.phoenix.motorcontrol.TalonFXControlMode;
 import com.ctre.phoenix.motorcontrol.can.TalonFX;
 import com.ctre.phoenix.sensors.CANCoder;
 import com.revrobotics.CANSparkMax;
+import com.revrobotics.CANSparkMax.IdleMode;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 
 import edu.wpi.first.math.controller.PIDController;
@@ -26,6 +27,7 @@ public class Intake {
         angleMotor = new CANSparkMax(10, MotorType.kBrushless);
         angleEncoder = new CANCoder(23);
         pidController = new PIDController(.01, 0, 0);
+        angleMotor.setIdleMode(IdleMode.kBrake);
     }
 
     public void IntakePeriodic(RobotCommander commander){
@@ -34,7 +36,7 @@ public class Intake {
         speedPeriodic(commander);
         anglePeriodic(commander);
     }
-
+    
     public void speedPeriodic(RobotCommander commander){
         speed = commander.getIntakePosition()[1];
         SmartDashboard.putNumber("Speed", speed);
