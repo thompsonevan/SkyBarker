@@ -420,7 +420,7 @@ public class Drivetrain{
         SmartDashboard.putNumber("Estimated X", poseEstimator.getEstimatedPosition().getX());
         SmartDashboard.putNumber("Estimated Y", poseEstimator.getEstimatedPosition().getY());
 
-        SmartDashboard.putNumber("Commanded Theta", autonCommader.getTargetTheta().getDegrees());
+        SmartDashboard.putNumber("Commanded Theta", autonCommader.getDesiredState().poseMeters.getRotation().getDegrees());
         SmartDashboard.putNumber("Commanded X", autonCommader.getDesiredState().poseMeters.getX());
         SmartDashboard.putNumber("Commanded Y", autonCommader.getDesiredState().poseMeters.getY());
     }
