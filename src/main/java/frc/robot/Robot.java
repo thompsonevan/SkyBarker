@@ -63,8 +63,7 @@ public class Robot extends TimedRobot {
         arm.logData();
         camera.logData();
         pigeon.logData();
-        intake.logData();
-        
+        intake.logData();   
         SmartDashboard.putNumber("Match Time", DriverStation.getMatchTime());
         SmartDashboard.putNumber("FPGA Time", Timer.getFPGATimestamp());
     }
