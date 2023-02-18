@@ -22,7 +22,7 @@ public class Robot extends TimedRobot {
     private Drivetrain drivetrain;
     private Hopper hopper;
     private Arm arm;
-    // private Intake intake;
+    private Intake intake;
     private Pigeon pigeon;
     private Camera camera;
     private AutonCommader autonCommader;
@@ -51,7 +51,7 @@ public class Robot extends TimedRobot {
         auton = new Auton1();
         auton67 = new Auton67();
         autonLeft = new AutonLeft();
-        // intake = new Intake();
+        intake = new Intake();
         hopper = new Hopper();
     }
 
@@ -60,7 +60,7 @@ public class Robot extends TimedRobot {
         arm.logData();
         camera.logData();
         pigeon.logData();
-        // intake.logData();
+        intake.logData();
     }
 
     @Override
@@ -120,7 +120,7 @@ public class Robot extends TimedRobot {
         pigeon.enabledAction(teleopCommander);
         drivetrain.teleAction(   teleopCommander);
         rip2 = teleopCommander.getIntakePosition();
-        // intake.IntakePeriodic(teleopCommander);
+        intake.IntakePeriodic(teleopCommander);
         SmartDashboard.putNumber("rip1", rip2[0]);
         SmartDashboard.putNumber("rip2", rip2[1]);
         arm.action(teleopCommander);
