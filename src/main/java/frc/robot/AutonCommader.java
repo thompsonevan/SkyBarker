@@ -1,6 +1,8 @@
 package frc.robot;
 
 import com.pathplanner.lib.PathPlannerTrajectory.PathPlannerState;
+
+import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.trajectory.Trajectory.State;
 import frc.robot.Autons.AutonBase;
@@ -51,8 +53,8 @@ public class AutonCommader extends RobotCommander{
         return auton.targetTheta;
     }
 
-    public PathPlannerState getInitalState(){
-        return auton.initalState;
+    public Pose2d getInitalPose(){
+        return auton.initalPose;
     }
 
     @Override
@@ -97,5 +99,15 @@ public class AutonCommader extends RobotCommander{
     public boolean getArmReset() {
         // TODO Auto-generated method stub
         return false;
+    }
+    
+    public boolean isDriving(){
+        return auton.driving;
+    }
+
+    @Override
+    public double armElbow() {
+        // TODO Auto-generated method stub
+        return 0;
     }
 }

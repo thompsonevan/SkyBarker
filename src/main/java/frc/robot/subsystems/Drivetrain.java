@@ -3,6 +3,8 @@ package frc.robot.subsystems;
 import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.ctre.phoenix.motorcontrol.can.TalonFX;
+import com.pathplanner.lib.PathPlanner;
+import com.pathplanner.lib.PathPlannerTrajectory;
 import com.swervedrivespecialties.swervelib.AbsoluteEncoder;
 import com.swervedrivespecialties.swervelib.Mk4SwerveModuleHelper;
 import com.swervedrivespecialties.swervelib.Mk4iSwerveModuleHelper;
@@ -22,6 +24,9 @@ import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
+import edu.wpi.first.math.trajectory.Trajectory;
+import edu.wpi.first.math.trajectory.TrajectoryConfig;
+import edu.wpi.first.math.trajectory.TrajectoryGenerator;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.math.trajectory.Trajectory.State;
 import edu.wpi.first.math.util.Units;
@@ -36,6 +41,9 @@ import frc.robot.sensors.Camera;
 import frc.robot.sensors.Pigeon;
 
 import static frc.robot.Constants.*;
+
+import java.net.PasswordAuthentication;
+import java.util.List;
 
 public class Drivetrain{
     private final SwerveModule frontLeftModule;
@@ -68,23 +76,17 @@ public class Drivetrain{
 
     Timer timer = new Timer();
 
-    // private final SwerveDriveKinematics kinematics = new SwerveDriveKinematics(
-    //                 new Translation2d(DRIVETRAIN_TRACKWIDTH_METERS / 2.0, DRIVETRAIN_WHEELBASE_METERS / 2.0),
-    //                 new Translation2d(DRIVETRAIN_TRACKWIDTH_METERS / 2.0, -DRIVETRAIN_WHEELBASE_METERS / 2.0),
-    //                 new Translation2d(-DRIVETRAIN_TRACKWIDTH_METERS / 2.0, DRIVETRAIN_WHEELBASE_METERS / 2.0),
-    //                 new Translation2d(-DRIVETRAIN_TRACKWIDTH_METERS / 2.0, -DRIVETRAIN_WHEELBASE_METERS / 2.0));
-
-    // private final SwerveDriveKinematics kinematics = new SwerveDriveKinematics(
-    //     new Translation2d(DRIVETRAIN_TRACKWIDTH_METERS / 2.0, DRIVETRAIN_WHEELBASE_METERS / 2.0),
-    //     new Translation2d(DRIVETRAIN_TRACKWIDTH_METERS / 2.0, -DRIVETRAIN_WHEELBASE_METERS / 2.0),
-    //     new Translation2d(-DRIVETRAIN_TRACKWIDTH_METERS / 2.0, DRIVETRAIN_WHEELBASE_METERS / 2.0),
-    //     new Translation2d(-DRIVETRAIN_TRACKWIDTH_METERS / 2.0, -DRIVETRAIN_WHEELBASE_METERS / 2.0));
-    
-    public static final SwerveDriveKinematics kinematics = new SwerveDriveKinematics(
-        new Translation2d(-DRIVETRAIN_TRACKWIDTH_METERS / 2.0, -DRIVETRAIN_WHEELBASE_METERS / 2.0),
-        new Translation2d(-DRIVETRAIN_TRACKWIDTH_METERS / 2.0, DRIVETRAIN_WHEELBASE_METERS / 2.0),
+    private final SwerveDriveKinematics kinematics = new SwerveDriveKinematics(
+        new Translation2d(DRIVETRAIN_TRACKWIDTH_METERS / 2.0, DRIVETRAIN_WHEELBASE_METERS / 2.0),
         new Translation2d(DRIVETRAIN_TRACKWIDTH_METERS / 2.0, -DRIVETRAIN_WHEELBASE_METERS / 2.0),
-        new Translation2d(DRIVETRAIN_TRACKWIDTH_METERS / 2.0, DRIVETRAIN_WHEELBASE_METERS / 2.0));
+        new Translation2d(-DRIVETRAIN_TRACKWIDTH_METERS / 2.0, DRIVETRAIN_WHEELBASE_METERS / 2.0),
+        new Translation2d(-DRIVETRAIN_TRACKWIDTH_METERS / 2.0, -DRIVETRAIN_WHEELBASE_METERS / 2.0));
+    
+    // public static final SwerveDriveKinematics kinematics = new SwerveDriveKinematics(
+    //     new Translation2d(-DRIVETRAIN_TRACKWIDTH_METERS / 2.0, -DRIVETRAIN_WHEELBASE_METERS / 2.0),
+    //     new Translation2d(-DRIVETRAIN_TRACKWIDTH_METERS / 2.0, DRIVETRAIN_WHEELBASE_METERS / 2.0),
+    //     new Translation2d(DRIVETRAIN_TRACKWIDTH_METERS / 2.0, -DRIVETRAIN_WHEELBASE_METERS / 2.0),
+    //     new Translation2d(DRIVETRAIN_TRACKWIDTH_METERS / 2.0, DRIVETRAIN_WHEELBASE_METERS / 2.0));
 
 
     private HolonomicDriveController holonomicController;
@@ -236,14 +238,14 @@ public class Drivetrain{
 
         states = kinematics.toSwerveModuleStates(new ChassisSpeeds());
 
-        ProfiledPIDController thetaController = new ProfiledPIDController(.2, .3, 0,
+        ProfiledPIDController thetaController = new ProfiledPIDController(.2, .05, 0,
                                                 new TrapezoidProfile.Constraints(6.28, 3.14));
 
         thetaController.enableContinuousInput(-Math.PI, Math.PI);
 
         holonomicController = new HolonomicDriveController(
-            new PIDController(1.5, .5, 0),  //x Long side of field
-            new PIDController(2, .5, 0), //y Short side of field
+            new PIDController(2, .2, 0),  //x Long side of field
+            new PIDController(2, .2, 0), //y Short side of field
             thetaController); // (2Pk,PI) constrains to 1 2pi/sec
 
         poseEstimator = new SwerveDrivePoseEstimator(
@@ -302,7 +304,7 @@ public class Drivetrain{
         backLeftDrive.setSelectedSensorPosition(0);
         backRightDrive.setSelectedSensorPosition(0);
 
-        Pigeon.zeroSensor(MathUtil.inputModulus(heading.getDegrees(), -180, 180));
+        Pigeon.zeroSensor(heading.getDegrees());
 
         poseEstimator.resetPosition(heading,
                                     positions,
@@ -333,8 +335,16 @@ public class Drivetrain{
     boolean firstLoop = true;
     boolean useApril = false;
 
+    Trajectory traj = 
+        TrajectoryGenerator.generateTrajectory(
+            new Pose2d(0, 0, Pigeon.getRotation2d()),
+            List.of(), new Pose2d(0, 5, Rotation2d.fromDegrees(0)),
+            new TrajectoryConfig(3,2));
+
+
+    // PathPlannerTrajectory traj = PathPlanner.generatePath();
+
     public void teleAction(TeleopCommander commander){
-        updatePose();
         // Camera.switchPipe(useApril);
 
         if(commander.getPickUpObject()){
@@ -351,14 +361,12 @@ public class Drivetrain{
             useApril = true;
             if(firstLoop){
                 timer.reset();
-                if(Camera.getV() == 1){
-                    // setPose(Camera.getBotPose(), Camera.getBotPose().getRotation());
-                } else {
-                    setPose(new Pose2d(0, 0, Rotation2d.fromDegrees(90)), Rotation2d.fromDegrees(90));
-                }
+                timer.start();
+                setPose(new Pose2d(0, 0, Rotation2d.fromDegrees(0)), Rotation2d.fromDegrees(0));
+
                 firstLoop = false;
             }
-            driveToPos(scoringPose, timer.get());
+            driveToPos(traj.sample(timer.get()), timer.get());
         } else {
             firstLoop = true;
             useApril = true;
@@ -371,6 +379,9 @@ public class Drivetrain{
 
             setSwerveModuleStates(chassisSpeeds);
         }
+
+        // SmartDashboard.putNumber("Timer get", timer.get());
+        // driveToPos(traj.sample(timer.get()), timer.get());
     }
 
     public void disabled(){
@@ -387,19 +398,30 @@ public class Drivetrain{
         backRightDrive.set(ControlMode.PercentOutput, 0);
     }
 
-    public void driveToPos(Pose2d pose, double time){
+    public void driveToPos(State state, double time){
         setSwerveModuleStates(holonomicController.calculate(poseEstimator.getEstimatedPosition(), 
-           new State(time, 1,1, pose, 1000),
-           pose.getRotation()));
+           state,
+           state.poseMeters.getRotation()));
+
+
+        SmartDashboard.putNumber("Estimated Theta", Rotation2d.fromDegrees(Pigeon.getAngle()).getDegrees());
+        SmartDashboard.putNumber("Estimated X", poseEstimator.getEstimatedPosition().getX());
+        SmartDashboard.putNumber("Estimated Y", poseEstimator.getEstimatedPosition().getY());
+
+        SmartDashboard.putNumber("Commanded Theta",state.poseMeters.getRotation().getDegrees());
+        SmartDashboard.putNumber("Commanded X", state.poseMeters.getX());
+        SmartDashboard.putNumber("Commanded Y", state.poseMeters.getY());
     }
 
     public void autonAction(AutonCommader autonCommader){
-        updatePose();
-
         if(!autonCommader.getPickUpObject()){
-            chassisSpeeds = holonomicController.calculate(poseEstimator.getEstimatedPosition(), 
-                                                                autonCommader.getDesiredState(),
-                                                                autonCommader.getDesiredState().poseMeters.getRotation());
+            if(autonCommader.isDriving()){
+                chassisSpeeds = holonomicController.calculate(poseEstimator.getEstimatedPosition(), 
+                    autonCommader.getDesiredState(),
+                   autonCommader.getDesiredState().poseMeters.getRotation());
+            } else {
+                chassisSpeeds = new ChassisSpeeds(0,0,0);
+            }
         } else {
             if(Camera.getC().contains("person")){
                 chassisSpeeds = new ChassisSpeeds(
@@ -454,7 +476,7 @@ public class Drivetrain{
             // poseEstimator.addVisionMeasurement(Camera.getBotPose(), Timer.getFPGATimestamp());
         }
 
-        poseEstimator.updateWithTime(Timer.getFPGATimestamp(), Pigeon.getRotation2d(), positions);
+        poseEstimator.update(Pigeon.getRotation2d(), positions);
     }
 
     // public void setBrakeMode(boolean brake){

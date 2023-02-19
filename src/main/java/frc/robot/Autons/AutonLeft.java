@@ -5,11 +5,24 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.sensors.Pigeon;
 import frc.robot.subsystems.Drivetrain;
 import frc.robot.subsystems.Arm.ArmPos;
+
+import java.util.List;
+
+import javax.sound.midi.Track;
+
 import com.pathplanner.lib.PathConstraints;
 import com.pathplanner.lib.PathPlanner;
 import com.pathplanner.lib.PathPlannerTrajectory;
+import com.pathplanner.lib.PathPoint;
 import com.pathplanner.lib.PathPlannerTrajectory.PathPlannerState;
+import com.pathplanner.lib.server.PathPlannerServer;
+
 import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.geometry.Translation2d;
+import edu.wpi.first.math.trajectory.Trajectory;
+import edu.wpi.first.math.trajectory.TrajectoryConfig;
+import edu.wpi.first.math.trajectory.TrajectoryGenerator;
 import edu.wpi.first.math.trajectory.Trajectory.State;
 
 public class AutonLeft extends AutonBase{
@@ -31,17 +44,7 @@ public class AutonLeft extends AutonBase{
     PathPlannerTrajectory trajectory1;
 
     public AutonLeft(){
-        autoState = AutoState.firstPlace;
-
-        timer.reset();
-        timer.start();
-
-        trajectory = PathPlanner.loadPath("path1", new PathConstraints(3,2));
-        trajectory1 = PathPlanner.loadPath("path2", new PathConstraints(3,2));
-
-        desState = new State();
-
-        initalState = trajectory.getInitialState();
+        reset();
     }
 
     public void reset(){
@@ -49,95 +52,39 @@ public class AutonLeft extends AutonBase{
 
         desState = new State();
 
-        initalState = trajectory.getInitialState();
+        trajectory = PathPlanner.loadPath("test", new PathConstraints(3,2));
+
+        // trajectory = PathPlanner.generatePath(
+        //     new PathConstraints(4, 2), 
+        //     new PathPoint(new Translation2d(0,0), Rotation2d.fromDegrees(0), Rotation2d.fromDegrees(0)),
+        //     new PathPoint(new Translation2d(0,-3), Rotation2d.fromDegrees(0), Rotation2d.fromDegrees(-90)));
+
+        // trajectory = TrajectoryGenerator.generateTrajectory(
+        //     new Pose2d(0,0,ROt), null, initalPose, null)
+        
+        // initalPose = new Pose2d(0,0, Rotation2d.fromDegrees(0));
+
+        initalPose = trajectory.getInitialPose();
+
+        // Drivetrain.setPose(initalPose, initalPose.getRotation());
+
+        Drivetrain.setPose(initalPose, trajectory.getInitialState().holonomicRotation);
 
         timer.reset();
         timer.start();
     }
 
-    PathPlannerState state;
-
+    State state;
     Pose2d newPose;
 
     public void runAuto(){
-        switch(autoState){
-            case firstPlace:
-                armPos = ArmPos.topNode;
+        driving = true;
 
-                Drivetrain.setPose(Drivetrain.getPose(), Pigeon.getRotation2d());
-
-                if(timer.get() > 5){
-                    armPos = ArmPos.packagePos;
-                    autoState = AutoState.driveToObject;
-                    Drivetrain.stopMotors();
-                    Drivetrain.setPose(trajectory.getInitialState().poseMeters, trajectory.getInitialState().holonomicRotation);
-                    timer.reset();
-                }
-            break;
-            case driveToObject:
-                state = (PathPlannerState) trajectory.sample(timer.get());
-
-                // newPose = new Pose2d(state.poseMeters.getX(), state.poseMeters.getY(), state.holonomicRotation);
-                // desState = new State(timer.get(), state.velocityMetersPerSecond, state.accelerationMetersPerSecondSq, newPose, state.curvatureRadPerMeter);
-
-                // if((Drivetrain.getPose().getX() - trajectory.getEndState().poseMeters.getX()) < .1
-                //     && (Drivetrain.getPose().getY() - trajectory.getEndState().poseMeters.getY()) < .1){
-                //         autoState = AutoState.pickUpObject;
-                //         Drivetrain.stopMotors();
-                //         timer.reset();
-                // }
-                autoState = AutoState.pickUpObject;
-                Drivetrain.stopMotors();
-                timer.reset();
-            break;
-            case pickUpObject:
-                intakeOn = true;
-                pickUpObject = true;
-
-                Drivetrain.setPose(Drivetrain.getPose(), Pigeon.getRotation2d());
-
-                if(timer.get() > 5){
-                    intakeOn = false;
-                    pickUpObject = false;
-                    autoState = AutoState.driveBack;
-                    Drivetrain.stopMotors();
-                    Drivetrain.setPose(trajectory1.getInitialState().poseMeters, trajectory1.getInitialState().holonomicRotation);
-                    timer.reset();
-                }
-            break;
-            case driveBack:
-                state = (PathPlannerState) trajectory1.sample(timer.get());
-
-                newPose = new Pose2d(state.poseMeters.getX(), state.poseMeters.getY(), state.holonomicRotation);
-                desState = new State(timer.get(), state.velocityMetersPerSecond, state.accelerationMetersPerSecondSq, newPose, state.curvatureRadPerMeter);
-
-                if((Drivetrain.getPose().getX() - trajectory1.getEndState().poseMeters.getX()) < .1
-                    && (Drivetrain.getPose().getY() - trajectory1.getEndState().poseMeters.getY()) < .1){
-                    autoState = AutoState.secondPlace;
-                    Drivetrain.stopMotors();
-                    timer.reset();
-                }
-            break;
-            case secondPlace:
-                armPos = ArmPos.middleNode;
-
-                if(timer.get() > 5){
-                    autoState = AutoState.end;
-                    Drivetrain.stopMotors();
-                    timer.reset();
-                }
-            break;
-            case chargingStation:
-
-            break;
-            case end:
-                armPos = ArmPos.packagePos;
-                Drivetrain.stopMotors();
-            break;
-        }
-
-        SmartDashboard.putNumber("Des X", desState.poseMeters.getX());
-        SmartDashboard.putNumber("Des Y", desState.poseMeters.getY());
-        SmartDashboard.putNumber("Des Theta", desState.poseMeters.getRotation().getDegrees());
+        PathPlannerState state = (PathPlannerState) trajectory.sample(timer.get());
+        desState = new State(timer.get(), 
+            state.velocityMetersPerSecond,
+            state.accelerationMetersPerSecondSq,
+            new Pose2d(state.poseMeters.getX(), state.poseMeters.getY(), state.holonomicRotation),
+            1000);
     }
 }

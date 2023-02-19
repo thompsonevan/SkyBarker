@@ -3,6 +3,7 @@ package frc.robot.subsystems;
 import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.can.TalonFX;
 import com.ctre.phoenix.motorcontrol.can.TalonSRX;
+import com.ctre.phoenix.motorcontrol.can.VictorSPX;
 import com.ctre.phoenix.sensors.CANCoder;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.RobotCommander;
@@ -27,7 +28,7 @@ public class Arm {
 
     TalonFX shoulder = new TalonFX(SHOULDER);
     TalonFX extension = new TalonFX(EXTENSION);
-    TalonSRX elbow = new TalonSRX(ELBOW);
+    VictorSPX elbow = new VictorSPX(ELBOW);
     CANCoder shoulderEncoder = new CANCoder(SHOULDER_ENCODER);
     CANCoder elbowEncoder = new CANCoder(ELBOW_ENCODER);
 
@@ -106,8 +107,8 @@ public class Arm {
         elbow.setInverted(false);
 
         /* Set relevant frame periods to be at least as fast as periodic rate */
-        elbow.setStatusFramePeriod(StatusFrameEnhanced.Status_13_Base_PIDF0, 10, ARM_TIMEOUT);
-        elbow.setStatusFramePeriod(StatusFrameEnhanced.Status_10_MotionMagic,10);
+        // elbow.setStatusFramePeriod(StatusFrameEnhanced.Status_13_Base_PIDF0, 10, ARM_TIMEOUT);
+        // elbow.setStatusFramePeriod(StatusFrameEnhanced.Status_10_MotionMagic,10);
 
         /* Set the peak and nominal outputs */
         elbow.configNominalOutputForward(0, ARM_TIMEOUT);
@@ -139,7 +140,7 @@ public class Arm {
     public void armZeroSensorPos(){
         shoulder.setSelectedSensorPosition(shoulderEncoder.getAbsolutePosition() * SHOULDER_DEGREES_TO_TICKS);
         extension.setSelectedSensorPosition(0);
-        elbow.setSelectedSensorPosition(elbowEncoder.getAbsolutePosition() * ELBOW_DEGREES_TO_TICKS);
+        elbow.setSelectedSensorPosition(0);//elbowEncoder.getAbsolutePosition() * ELBOW_DEGREES_TO_TICKS
     }
 
     public void setPosition(double shoudlerPos, double extensionPos, double elbowPos){
@@ -191,6 +192,13 @@ public class Arm {
             } else{
                 extension.set(ControlMode.PercentOutput, commander.armExtension());
             }
+
+            if(Math.abs(commander.operator.getRightX()) > .2){
+                elbow.set(ControlMode.PercentOutput, commander.operator.getRightX());
+            } else {
+                elbow.set(ControlMode.PercentOutput, 0);
+            }
+
         }
     }
 

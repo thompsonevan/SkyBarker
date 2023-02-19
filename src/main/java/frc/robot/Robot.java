@@ -1,5 +1,7 @@
 package frc.robot;
 
+import java.util.List;
+
 import org.hotutilites.hotlogger.HotLogger;
 
 import com.revrobotics.CANSparkMax;
@@ -7,12 +9,16 @@ import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.geometry.Translation2d;
+import edu.wpi.first.math.trajectory.Trajectory;
+import edu.wpi.first.math.trajectory.TrajectoryConfig;
+import edu.wpi.first.math.trajectory.TrajectoryGenerator;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-import frc.robot.Autons.Auton1;
-import frc.robot.Autons.Auton67;
+// import frc.robot.Autons.Auton1;
+// import frc.robot.Autons.Auton67;
 import frc.robot.Autons.AutonLeft;
 import frc.robot.sensors.Camera;
 import frc.robot.sensors.Pigeon;
@@ -30,11 +36,13 @@ public class Robot extends TimedRobot {
     private Pigeon pigeon;
     private Camera camera;
     private AutonCommader autonCommader;
-    private Auton1 auton;
-    private Auton67 auton67;
+    // private Auton1 auton;
+    // private Auton67 auton67;
     private AutonLeft autonLeft;
 
     private int autonSelection = 2;
+
+
 
     @Override
     public void robotInit() {
@@ -52,8 +60,8 @@ public class Robot extends TimedRobot {
         drivetrain = new Drivetrain();
         autonCommader = new AutonCommader();
         arm = new Arm();
-        auton = new Auton1();
-        auton67 = new Auton67();
+        // auton = new Auton1();
+        // auton67 = new Auton67();
         autonLeft = new AutonLeft();
         hopper = new Hopper();
     }
@@ -66,42 +74,39 @@ public class Robot extends TimedRobot {
         intake.logData();   
         SmartDashboard.putNumber("Match Time", DriverStation.getMatchTime());
         SmartDashboard.putNumber("FPGA Time", Timer.getFPGATimestamp());
+        drivetrain.updatePose();
     }
 
     @Override
     public void disabledInit() {
         drivetrain.zero();
         arm.armZeroSensorPos();
-        // drivetrain.setBrakeMode(false);
         SmartDashboard.putString("Robot Mode", "Disabled");
     }
 
     @Override
     public void disabledPeriodic() {
-        drivetrain.disabled();
         arm.armPercentOutZero();
         arm.coastMode();
     }
 
     @Override
     public void autonomousInit() {
-        // drivetrain.setBrakeMode(true);
         SmartDashboard.putString("Robot Mode", "Autonomous");
 
         if(autonSelection == 0){
-            autonCommader.initAuton(auton);
+            // autonCommader.initAuton(auton);
         } else if(autonSelection == 1){
-            autonCommader.initAuton(auton67);
+            // autonCommader.initAuton(auton67);
         } else if(autonSelection == 2){
             autonCommader.initAuton(autonLeft);
         } else {
-            autonCommader.initAuton(auton);
+            // autonCommader.initAuton(auton);
         }
 
-        autonCommader.auton.reset();
         drivetrain.zero();
-        // Drivetrain.setPose(autonCommader.getInitalState().poseMeters, autonCommader.getInitalState().holonomicRotation);
-        // Drivetrain.setPose(new Pose2d(0,0, Rotation2d.fromDegrees(180)), Rotation2d.fromDegrees(180));
+        autonCommader.auton.reset();
+        // Drivetrain.setPose(new Pose2d(0,0, Rotation2d.fromDegrees(-180)), Rotation2d.fromDegrees(-180));
     }
 
     @Override
