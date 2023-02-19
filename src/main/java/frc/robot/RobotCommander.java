@@ -21,4 +21,6 @@ public abstract class RobotCommander {
     public abstract boolean getPickUpObject();
     public abstract boolean getArmReset();
     public abstract double armElbow();
+    public abstract boolean hopperOverrideLeft();
+    public abstract boolean hopperOverrideRight();
 }

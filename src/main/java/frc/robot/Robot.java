@@ -52,7 +52,10 @@ public class Robot extends TimedRobot {
         "Right Rear Absolute", "Right Rear Assumed",
         "TargetX", "TargetY", "TargetTheta", "Robot State Theta", "poseX", "poseY",
         "Shoulder Absolute Pos", "Shoulder Motor Pos", "Extension Pos", "Elbow Absolute Pos", "Elbow Motor Pos",
-        "Shoulder Desired Pos", "Extension Desired Pos", "Elbow Desired Pos");
+        "Shoulder Desired Pos", "Extension Desired Pos", "Elbow Desired Pos",
+        "HopSensor Bottom", "HopSensor Left", "HopSensor Right", "HopSensor Top", "Hopper Override");
+
+
         intake = new Intake();
         teleopCommander = new TeleopCommander();
         pigeon = new Pigeon();
@@ -72,6 +75,7 @@ public class Robot extends TimedRobot {
         camera.logData();
         pigeon.logData();
         intake.logData();   
+        hopper.logData();
         SmartDashboard.putNumber("Match Time", DriverStation.getMatchTime());
         SmartDashboard.putNumber("FPGA Time", Timer.getFPGATimestamp());
         drivetrain.updatePose();
@@ -116,6 +120,7 @@ public class Robot extends TimedRobot {
         drivetrain.autonAction(autonCommader);
         // arm.action(autonCommader);
         intake.IntakePeriodic(autonCommader);
+        hopper.HopperPeriodic(autonCommader);
     }
 
     private double[] rip2;
@@ -140,6 +145,6 @@ public class Robot extends TimedRobot {
         SmartDashboard.putNumber("rip2", rip2[1]);
         arm.action(teleopCommander);
         arm.brakeMode();
-        hopper.enabled(teleopCommander);
+        hopper.HopperPeriodic(teleopCommander);
     }
 }
