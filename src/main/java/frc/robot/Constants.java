@@ -64,6 +64,12 @@ public final class Constants {
     
     // Hopper CAN ID
     public static final int HOPPER_MOTOR = 11;
+    public static final int FINGER_SERVO = 2;
+    public static final int LEFT_SENSOR = 0;
+    public static final int TOP_SENSOR = 1;
+    public static final int BOTTOM_SENSOR = 2;
+    public static final int RIGHT_SENSOR = 3;
+    public static final double HOPPER_OVERRIDE_SPEED = 0.5;
 
     //Arm CAN ID
     public static final int SHOULDER = 13;
