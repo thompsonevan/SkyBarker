@@ -187,7 +187,7 @@ public class TeleopCommander extends RobotCommander{
     public boolean getManualMode(){
         if(!manualMode && operator.getStartButtonPressed()){
             manualMode = true;
-        } else if (manualMode && operator.getStartButtonPressed()){
+        } else if (manualMode && operator.getBackButton()){
             manualMode = false;
         }
 
@@ -217,25 +217,25 @@ public class TeleopCommander extends RobotCommander{
             xButtonPressed = true;
         }
 
-        if (getManualMode()){
-            yButtonPressed = false;
-            aButtonPressed = false;
-            bButtonPressed = false;
-            xButtonPressed = false;
-            return ArmPos.manual;
-        } else {
-            if(yButtonPressed){
-                return ArmPos.topNode;
-            } else if (aButtonPressed){
-                return ArmPos.packagePos;
-            } else if (bButtonPressed){
-                return ArmPos.middleNode;
-            } else if (xButtonPressed){
-                return ArmPos.lowerNode;
-            } else {
-                return ArmPos.stay;
-            }
-        }
+        // if (getManualMode()){
+            // yButtonPressed = false;
+            // aButtonPressed = false;
+            // bButtonPressed = false;
+            // xButtonPressed = false;
+        return ArmPos.manual;
+        // } else {
+        //     if(yButtonPressed){
+        //         return ArmPos.topNode;
+        //     } else if (aButtonPressed){
+        //         return ArmPos.packagePos;
+        //     } else if (bButtonPressed){
+        //         return ArmPos.middleNode;
+        //     } else if (xButtonPressed){
+        //         return ArmPos.lowerNode;
+        //     } else {
+        //         return ArmPos.stay;
+        //     }
+        // }
     }
 
     public boolean getCubeMode(){
@@ -249,8 +249,8 @@ public class TeleopCommander extends RobotCommander{
     }
 
     public double armShoulder(){     
-        if(Math.abs(operator.getLeftY()) > 0.1){
-            return operator.getLeftY() * 0.5;
+        if(Math.abs(operator.getLeftX()) > 0.1){
+            return operator.getLeftX() * 0.8;
         } else {
             return 0;
         }
@@ -258,7 +258,15 @@ public class TeleopCommander extends RobotCommander{
 
     public double armExtension(){
         if(Math.abs(operator.getRightY()) > 0.1){
-            return operator.getRightY() * 0.5;
+            return -operator.getRightY() * 0.8;
+        } else {
+            return 0;
+        }
+    }
+
+    public double armElbow(){
+        if(Math.abs(operator.getRightX()) > 0.2){
+            return operator.getRightX() * 0.5;
         } else {
             return 0;
         }
