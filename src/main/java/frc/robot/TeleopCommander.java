@@ -28,19 +28,19 @@ public class TeleopCommander extends RobotCommander{
 
     @Override
     public double getForwardCommand() {
-        return (modifyAxis(driver.getLeftY()) * MAX_VELOCITY_METERS_PER_SECOND);
+        return -(modifyAxis(driver.getLeftY()) * MAX_VELOCITY_METERS_PER_SECOND);
     }
 
     @Override
     public double getStrafeCommand() {
-        return (modifyAxis(driver.getLeftX()) * MAX_VELOCITY_METERS_PER_SECOND);
+        return -(modifyAxis(driver.getLeftX()) * MAX_VELOCITY_METERS_PER_SECOND);
     }
 
     @Override
     public double getTurnCommand() {
         double value = deadband(Math.abs(driver.getRightX()) * driver.getRightX(), 0.13, 0.4) * (MAX_ANGULAR_VELOCITY_RADIANS_PER_SECOND);
 
-        return value;
+        return -value;
     }
 
     @Override
@@ -185,7 +185,7 @@ public class TeleopCommander extends RobotCommander{
     }
 
     public boolean getManualMode(){
-        if(!manualMode && operator.getStartButtonPressed()){
+        if(!manualMode && operator.getStartButton()){
             manualMode = true;
         } else if (manualMode && operator.getBackButton()){
             manualMode = false;
@@ -217,25 +217,25 @@ public class TeleopCommander extends RobotCommander{
             xButtonPressed = true;
         }
 
-        // if (getManualMode()){
-            // yButtonPressed = false;
-            // aButtonPressed = false;
-            // bButtonPressed = false;
-            // xButtonPressed = false;
-        return ArmPos.manual;
-        // } else {
-        //     if(yButtonPressed){
-        //         return ArmPos.topNode;
-        //     } else if (aButtonPressed){
-        //         return ArmPos.packagePos;
-        //     } else if (bButtonPressed){
-        //         return ArmPos.middleNode;
-        //     } else if (xButtonPressed){
-        //         return ArmPos.lowerNode;
-        //     } else {
-        //         return ArmPos.stay;
-        //     }
-        // }
+        if (getManualMode()){
+            yButtonPressed = false;
+            aButtonPressed = false;
+            bButtonPressed = false;
+            xButtonPressed = false;
+            return ArmPos.manual;
+        } else {
+            if(yButtonPressed){
+                return ArmPos.topNode;
+            } else if (aButtonPressed){
+                return ArmPos.packagePos;
+            } else if (bButtonPressed){
+                return ArmPos.middleNode;
+            } else if (xButtonPressed){
+                return ArmPos.lowerNode;
+            } else {
+                return ArmPos.stay;
+            }
+        }
     }
 
     public boolean getCubeMode(){

@@ -87,6 +87,12 @@ public class Drivetrain{
                 new Translation2d(-DRIVETRAIN_TRACKWIDTH_METERS / 2.0, DRIVETRAIN_WHEELBASE_METERS / 2.0),
                 new Translation2d(-DRIVETRAIN_TRACKWIDTH_METERS / 2.0, -DRIVETRAIN_WHEELBASE_METERS / 2.0));
 
+            // kinematics = new SwerveDriveKinematics(
+            //     new Translation2d(-DRIVETRAIN_TRACKWIDTH_METERS / 2.0, -DRIVETRAIN_WHEELBASE_METERS / 2.0),
+            //     new Translation2d(-DRIVETRAIN_TRACKWIDTH_METERS / 2.0, DRIVETRAIN_WHEELBASE_METERS / 2.0),
+            //     new Translation2d(DRIVETRAIN_TRACKWIDTH_METERS / 2.0, -DRIVETRAIN_WHEELBASE_METERS / 2.0),
+            //     new Translation2d(DRIVETRAIN_TRACKWIDTH_METERS / 2.0, DRIVETRAIN_WHEELBASE_METERS / 2.0));
+
             frontLeftModule = Mk4iSwerveModuleHelper.createFalcon500(
                     tab.getLayout("Front Left Module", BuiltInLayouts.kList)
                                     .withSize(2, 4)
@@ -215,14 +221,14 @@ public class Drivetrain{
 
         states = kinematics.toSwerveModuleStates(new ChassisSpeeds());
 
-        ProfiledPIDController thetaController = new ProfiledPIDController(.4, .3, 0,
+        ProfiledPIDController thetaController = new ProfiledPIDController(1, .25, 0,
                                                 new TrapezoidProfile.Constraints(6.28, 3.14));
 
         thetaController.enableContinuousInput(-Math.PI, Math.PI);
 
         holonomicController = new HolonomicDriveController(
-            new PIDController(1.5, .5, 0),  //x Long side of field
-            new PIDController(2, .5, 0), //y Short side of field
+            new PIDController(3.5, .6, .025),  //x Long side of field
+            new PIDController(3.5, .6, .025), //y Short side of field
             thetaController); // (2Pk,PI) constrains to 1 2pi/sec
 
         poseEstimator = new SwerveDrivePoseEstimator(

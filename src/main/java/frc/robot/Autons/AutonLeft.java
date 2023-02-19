@@ -42,8 +42,8 @@ public class AutonLeft extends AutonBase{
 
     public Timer timer = new Timer();
 
-    PathPlannerTrajectory trajectory;
-    PathPlannerTrajectory trajectory1;
+    Trajectory trajectory;
+    Trajectory trajectory1;
 
     public AutonLeft(){
         reset();
@@ -54,28 +54,19 @@ public class AutonLeft extends AutonBase{
 
         desState = new PathPlannerState();
 
-        trajectory = PathPlanner.loadPath("path", new PathConstraints(3,2));
+        initalPose = new Pose2d(new Translation2d(1.75,4.45), Rotation2d.fromDegrees(-90));
+        endingPose = new Pose2d(new Translation2d(6.62,4.63), Rotation2d.fromDegrees(0));
 
-        // trajectory = PathPlanner.generatePath(
-        //     new PathConstraints(4, 2), 
-        //     new PathPoint(new Translation2d(0,0), Rotation2d.fromDegrees(0), Rotation2d.fromDegrees(0)),
-        //     new PathPoint(new Translation2d(0,-3), Rotation2d.fromDegrees(0), Rotation2d.fromDegrees(-90)));
+        double headingAngle = Math.toDegrees(Math.atan2(endingPose.getY()-initalPose.getY(), 
+                                                        endingPose.getX()-initalPose.getX()));
 
-        // trajectory = TrajectoryGenerator.generateTrajectory(
-        //     new Pose2d(0,0,ROt), null, initalPose, null)
-        
-        // initalPose = new Pose2d(0,0, Rotation2d.fromDegrees(0));
+        trajectory = TrajectoryGenerator.generateTrajectory(
+            new Pose2d(initalPose.getTranslation(), Rotation2d.fromDegrees(headingAngle)),
+            List.of(),
+            new Pose2d(endingPose.getTranslation(), Rotation2d.fromDegrees(headingAngle)),
+            new TrajectoryConfig(7, 2.5));
 
-        initalPose = trajectory.getInitialPose();
-
-        // Drivetrain.setPose(initalPose, initalPose.getRotation());
-
-        Drivetrain.setPose(initalPose, trajectory.getInitialHolonomicPose().getRotation());
-
-        // Drivetrain.setPose(initalPose, trajectory.getInitialPose().getRotation());
-
-        SmartDashboard.putNumber("Inital Holomonic Pose", trajectory.getInitialHolonomicPose().getRotation().getDegrees());
-        SmartDashboard.putNumber("Inital Non Holomonic Pose", trajectory.getInitialPose().getRotation().getDegrees());
+        Drivetrain.setPose(initalPose, initalPose.getRotation());
 
         timer.reset();
         timer.start();
@@ -85,16 +76,45 @@ public class AutonLeft extends AutonBase{
     Pose2d newPose;
 
     public void runAuto(){
-        driving = true;
-        PathPlannerState state = (PathPlannerState) trajectory.sample(timer.get());
-        
-        desState = new State(timer.get(), 
-            state.velocityMetersPerSecond,
-            state.accelerationMetersPerSecondSq,
-            new Pose2d(state.poseMeters.getX(), state.poseMeters.getY(), state.holonomicRotation),
-            1000);
+        if(autoState == AutoState.firstPlace){
+            driving = true;
+            desState = trajectory.sample(timer.get());
+            
     
-        // SwerveAutoBuilder autoBuilder = new SwerveAutoBuilder(
-        //     , null, null, null, null, null, null)
+            desState = new State(timer.get(),
+                desState.velocityMetersPerSecond,
+                desState.accelerationMetersPerSecondSq,
+                new Pose2d(desState.poseMeters.getX(), desState.poseMeters.getY(), Rotation2d.fromDegrees(0)),
+                1000);
+
+            if(timer.get() > trajectory.getTotalTimeSeconds() + 5){
+                initalPose = new Pose2d(new Translation2d(6.62,4.63), Pigeon.getRotation2d());
+                endingPose = new Pose2d(new Translation2d(1.75,4.45), Rotation2d.fromDegrees(-90));
+        
+                double headingAngle = Math.toDegrees(Math.atan2(endingPose.getY()-initalPose.getY(), 
+                                                                endingPose.getX()-initalPose.getX()));
+        
+                trajectory1 = TrajectoryGenerator.generateTrajectory(
+                    new Pose2d(initalPose.getTranslation(), Rotation2d.fromDegrees(headingAngle)),
+                    List.of(),
+                    new Pose2d(endingPose.getTranslation(), Rotation2d.fromDegrees(headingAngle)),
+                    new TrajectoryConfig(7, 2.5));
+        
+                Drivetrain.setPose(initalPose, initalPose.getRotation());
+
+                autoState = AutoState.driveBack;
+                timer.reset();
+            } 
+        } else {
+            driving = true;
+            desState = trajectory1.sample(timer.get());
+            
+            desState = new State(timer.get(),
+                desState.velocityMetersPerSecond,
+                desState.accelerationMetersPerSecondSq,
+                new Pose2d(desState.poseMeters.getX(), desState.poseMeters.getY(), Rotation2d.fromDegrees(-90)),
+                1000);
+        }
+
     }
 }

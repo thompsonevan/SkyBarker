@@ -13,6 +13,7 @@ public abstract class AutonBase {
     public Rotation2d targetTheta;
     public Timer timer;
     public Pose2d initalPose;
+    public Pose2d endingPose;
     public Arm.ArmPos armPos;
     public boolean intakeOn;
     public boolean pickUpObject;
