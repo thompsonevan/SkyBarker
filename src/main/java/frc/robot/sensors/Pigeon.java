@@ -40,7 +40,7 @@ public class Pigeon{
 
         HotLogger.Log("Theta", getAngle());
     }
-
+    
     public void enabledAction(RobotCommander commander) {
         if (commander.getResetIMU()) {
             pigeon.setYaw(0);
