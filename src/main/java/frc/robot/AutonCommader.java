@@ -98,4 +98,16 @@ public class AutonCommader extends RobotCommander{
         // TODO Auto-generated method stub
         return false;
     }
+
+    @Override
+    public boolean hopperOverrideLeft() {
+        // No hopper override in auton
+        return false;
+    }
+
+    @Override
+    public boolean hopperOverrideRight() {
+        // No hopper override in auton
+        return false;
+    }
 }

@@ -20,4 +20,6 @@ public abstract class RobotCommander {
     public abstract double[] getIntakePosition();
     public abstract boolean getPickUpObject();
     public abstract boolean getArmReset();
+    public abstract boolean hopperOverrideLeft();
+    public abstract boolean hopperOverrideRight();
 }

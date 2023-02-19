@@ -269,4 +269,14 @@ public class TeleopCommander extends RobotCommander{
         // TODO Auto-generated method stub
         return driver.getAButton();
     }
+
+    @Override
+    public boolean hopperOverrideLeft() {
+        return operator.getXButton();
+    }
+
+    @Override
+    public boolean hopperOverrideRight() {
+        return operator.getBButton();
+    }
 }
