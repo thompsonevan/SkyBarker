@@ -17,6 +17,7 @@ import com.pathplanner.lib.PathPoint;
 import com.pathplanner.lib.PathPlannerTrajectory.PathPlannerState;
 import com.pathplanner.lib.server.PathPlannerServer;
 
+import edu.wpi.first.math.controller.HolonomicDriveController;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
@@ -68,7 +69,7 @@ public class AutonLeft extends AutonBase{
 
         // Drivetrain.setPose(initalPose, initalPose.getRotation());
 
-        Drivetrain.setPose(initalPose, trajectory.getInitialState().holonomicRotation);
+        Drivetrain.setPose(initalPose, Rotation2d.fromDegrees(trajectory.getInitialState().holonomicRotation.getDegrees() + 180));
 
         timer.reset();
         timer.start();
@@ -79,6 +80,7 @@ public class AutonLeft extends AutonBase{
 
     public void runAuto(){
         driving = true;
+
 
         PathPlannerState state = (PathPlannerState) trajectory.sample(timer.get());
         desState = new State(timer.get(), 
