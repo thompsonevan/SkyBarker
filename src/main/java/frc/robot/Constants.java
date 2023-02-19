@@ -71,7 +71,7 @@ public final class Constants {
     public static final int EXTENSION = 14;
     public static final int ELBOW = 17;
     public static final int SHOULDER_ENCODER = 22;
-    public static final int ELBOW_ENCODER = 0;
+    public static final int ELBOW_ENCODER = 25;
 
     //Arm pid motion magic gains
     public static final double SHOULDER_MOTOR_kF = 0;

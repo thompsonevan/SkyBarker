@@ -128,8 +128,9 @@ public class Arm {
         elbow.configMotionCruiseVelocity(ELBOW_CRUIESVELOCITY, ARM_TIMEOUT);
         elbow.configMotionAcceleration(ELBOW_ACCEL, ARM_TIMEOUT);
 
-        /* Zero the sensor once on robot boot up */
-        elbow.setSelectedSensorPosition(0, ELBOW_K_PID_LOOP_IDX, ARM_TIMEOUT);
+        elbow.configRemoteFeedbackFilter(elbowEncoder, 0);
+        elbow.configSelectedFeedbackCoefficient(.081743869209);
+        elbow.configSelectedFeedbackSensor(FeedbackDevice.RemoteSensor0);
 
         shoulderEncoder.configAbsoluteSensorRange(AbsoluteSensorRange.Signed_PlusMinus180);
         elbowEncoder.configAbsoluteSensorRange(AbsoluteSensorRange.Signed_PlusMinus180);
