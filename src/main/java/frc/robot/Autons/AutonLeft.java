@@ -57,14 +57,7 @@ public class AutonLeft extends AutonBase{
         initalPose = new Pose2d(new Translation2d(1.75,4.45), Rotation2d.fromDegrees(-90));
         endingPose = new Pose2d(new Translation2d(6.62,4.63), Rotation2d.fromDegrees(0));
 
-        double headingAngle = Math.toDegrees(Math.atan2(endingPose.getY()-initalPose.getY(), 
-                                                        endingPose.getX()-initalPose.getX()));
-
-        trajectory = TrajectoryGenerator.generateTrajectory(
-            new Pose2d(initalPose.getTranslation(), Rotation2d.fromDegrees(headingAngle)),
-            List.of(),
-            new Pose2d(endingPose.getTranslation(), Rotation2d.fromDegrees(headingAngle)),
-            new TrajectoryConfig(7, 2.5));
+        trajectory = createTrajectory(initalPose, endingPose);
 
         Drivetrain.setPose(initalPose, initalPose.getRotation());
 
@@ -72,33 +65,16 @@ public class AutonLeft extends AutonBase{
         timer.start();
     }
 
-    State state;
-    Pose2d newPose;
-
     public void runAuto(){
         if(autoState == AutoState.firstPlace){
             driving = true;
-            desState = trajectory.sample(timer.get());
-            
-    
-            desState = new State(timer.get(),
-                desState.velocityMetersPerSecond,
-                desState.accelerationMetersPerSecondSq,
-                new Pose2d(desState.poseMeters.getX(), desState.poseMeters.getY(), Rotation2d.fromDegrees(0)),
-                1000);
+            desState = getState(timer.get(), trajectory, endingPose.getRotation());
 
             if(timer.get() > trajectory.getTotalTimeSeconds() + 5){
                 initalPose = new Pose2d(new Translation2d(6.62,4.63), Pigeon.getRotation2d());
                 endingPose = new Pose2d(new Translation2d(1.75,4.45), Rotation2d.fromDegrees(-90));
         
-                double headingAngle = Math.toDegrees(Math.atan2(endingPose.getY()-initalPose.getY(), 
-                                                                endingPose.getX()-initalPose.getX()));
-        
-                trajectory1 = TrajectoryGenerator.generateTrajectory(
-                    new Pose2d(initalPose.getTranslation(), Rotation2d.fromDegrees(headingAngle)),
-                    List.of(),
-                    new Pose2d(endingPose.getTranslation(), Rotation2d.fromDegrees(headingAngle)),
-                    new TrajectoryConfig(7, 2.5));
+                trajectory1 = createTrajectory(initalPose, endingPose);
         
                 Drivetrain.setPose(initalPose, initalPose.getRotation());
 
@@ -107,14 +83,7 @@ public class AutonLeft extends AutonBase{
             } 
         } else {
             driving = true;
-            desState = trajectory1.sample(timer.get());
-            
-            desState = new State(timer.get(),
-                desState.velocityMetersPerSecond,
-                desState.accelerationMetersPerSecondSq,
-                new Pose2d(desState.poseMeters.getX(), desState.poseMeters.getY(), Rotation2d.fromDegrees(-90)),
-                1000);
+            desState = getState(timer.get(), trajectory, endingPose.getRotation());
         }
-
     }
 }
