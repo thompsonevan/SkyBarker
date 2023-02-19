@@ -15,6 +15,7 @@ import com.pathplanner.lib.PathPlanner;
 import com.pathplanner.lib.PathPlannerTrajectory;
 import com.pathplanner.lib.PathPoint;
 import com.pathplanner.lib.PathPlannerTrajectory.PathPlannerState;
+import com.pathplanner.lib.auto.SwerveAutoBuilder;
 import com.pathplanner.lib.server.PathPlannerServer;
 
 import edu.wpi.first.math.controller.HolonomicDriveController;
@@ -51,9 +52,9 @@ public class AutonLeft extends AutonBase{
     public void reset(){
         autoState = AutoState.firstPlace;
 
-        desState = new State();
+        desState = new PathPlannerState();
 
-        trajectory = PathPlanner.loadPath("test", new PathConstraints(3,2));
+        trajectory = PathPlanner.loadPath("path", new PathConstraints(3,2));
 
         // trajectory = PathPlanner.generatePath(
         //     new PathConstraints(4, 2), 
@@ -69,7 +70,12 @@ public class AutonLeft extends AutonBase{
 
         // Drivetrain.setPose(initalPose, initalPose.getRotation());
 
-        Drivetrain.setPose(initalPose, Rotation2d.fromDegrees(trajectory.getInitialState().holonomicRotation.getDegrees() + 180));
+        Drivetrain.setPose(initalPose, trajectory.getInitialHolonomicPose().getRotation());
+
+        // Drivetrain.setPose(initalPose, trajectory.getInitialPose().getRotation());
+
+        SmartDashboard.putNumber("Inital Holomonic Pose", trajectory.getInitialHolonomicPose().getRotation().getDegrees());
+        SmartDashboard.putNumber("Inital Non Holomonic Pose", trajectory.getInitialPose().getRotation().getDegrees());
 
         timer.reset();
         timer.start();
@@ -80,13 +86,15 @@ public class AutonLeft extends AutonBase{
 
     public void runAuto(){
         driving = true;
-
-
         PathPlannerState state = (PathPlannerState) trajectory.sample(timer.get());
+        
         desState = new State(timer.get(), 
             state.velocityMetersPerSecond,
             state.accelerationMetersPerSecondSq,
             new Pose2d(state.poseMeters.getX(), state.poseMeters.getY(), state.holonomicRotation),
             1000);
+    
+        // SwerveAutoBuilder autoBuilder = new SwerveAutoBuilder(
+        //     , null, null, null, null, null, null)
     }
 }
