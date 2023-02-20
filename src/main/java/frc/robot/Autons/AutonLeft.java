@@ -36,14 +36,19 @@ public class AutonLeft extends AutonBase{
         secondPlace,
         chargingStation,
         end
-    } 
+    }
 
     public AutoState autoState;
 
     public Timer timer = new Timer();
 
-    PathPlannerTrajectory trajectory;
-    PathPlannerTrajectory trajectory1;
+    int point = 0;
+
+    Trajectory trajectory;
+
+    List<Pose2d> path = List.of(new Pose2d(new Translation2d(1.75,4.45), Rotation2d.fromDegrees(-90)),
+                                new Pose2d(new Translation2d(6.62,4.63), Rotation2d.fromDegrees(0)),
+                                new Pose2d(new Translation2d(1.75,4.45), Rotation2d.fromDegrees(-90)));
 
     public AutonLeft(){
         reset();
@@ -52,49 +57,91 @@ public class AutonLeft extends AutonBase{
     public void reset(){
         autoState = AutoState.firstPlace;
 
-        desState = new PathPlannerState();
+        point = 0;
 
-        trajectory = PathPlanner.loadPath("path", new PathConstraints(3,2));
-
-        // trajectory = PathPlanner.generatePath(
-        //     new PathConstraints(4, 2), 
-        //     new PathPoint(new Translation2d(0,0), Rotation2d.fromDegrees(0), Rotation2d.fromDegrees(0)),
-        //     new PathPoint(new Translation2d(0,-3), Rotation2d.fromDegrees(0), Rotation2d.fromDegrees(-90)));
-
-        // trajectory = TrajectoryGenerator.generateTrajectory(
-        //     new Pose2d(0,0,ROt), null, initalPose, null)
-        
-        // initalPose = new Pose2d(0,0, Rotation2d.fromDegrees(0));
-
-        initalPose = trajectory.getInitialPose();
-
-        // Drivetrain.setPose(initalPose, initalPose.getRotation());
-
-        Drivetrain.setPose(initalPose, trajectory.getInitialHolonomicPose().getRotation());
-
-        // Drivetrain.setPose(initalPose, trajectory.getInitialPose().getRotation());
-
-        SmartDashboard.putNumber("Inital Holomonic Pose", trajectory.getInitialHolonomicPose().getRotation().getDegrees());
-        SmartDashboard.putNumber("Inital Non Holomonic Pose", trajectory.getInitialPose().getRotation().getDegrees());
+        desState = new State();
 
         timer.reset();
         timer.start();
     }
 
-    State state;
-    Pose2d newPose;
-
     public void runAuto(){
-        driving = true;
-        PathPlannerState state = (PathPlannerState) trajectory.sample(timer.get());
-        
-        desState = new State(timer.get(), 
-            state.velocityMetersPerSecond,
-            state.accelerationMetersPerSecondSq,
-            new Pose2d(state.poseMeters.getX(), state.poseMeters.getY(), state.holonomicRotation),
-            1000);
-    
-        // SwerveAutoBuilder autoBuilder = new SwerveAutoBuilder(
-        //     , null, null, null, null, null, null)
+        switch(autoState){
+            case firstPlace:
+                driving = false;
+                armPos = ArmPos.topNode;
+                intakeOn = false;
+
+                if(timer.get() > 3){
+                    trajectory = createTrajectory(path.get(point), path.get(point+1));
+            
+                    Drivetrain.setPose(path.get(point), path.get(point).getRotation());
+
+                    point++;
+
+                    timer.reset();
+
+                    autoState = AutoState.driveToObject;
+                }
+            break;
+            case driveToObject:
+                driving = true;
+                armPos = ArmPos.packagePos;
+                intakeOn = false;
+                
+                desState = getState(timer.get(), trajectory, path.get(point).getRotation());
+
+                if(timer.get() > trajectory.getTotalTimeSeconds()){
+                    timer.reset();
+
+                    autoState = AutoState.pickUpObject;
+                }
+            break;
+            case pickUpObject:
+                driving = false;
+                armPos = ArmPos.packagePos;
+                intakeOn = true;
+
+                if(timer.get() > 3){
+                    trajectory = createTrajectory(path.get(point), path.get(point+1));
+            
+                    Drivetrain.setPose(path.get(point), path.get(point).getRotation());
+
+                    point++;
+
+                    timer.reset();
+
+                    autoState = AutoState.driveBack;
+                }
+            break;
+            case driveBack:
+                driving = true;
+                armPos = ArmPos.packagePos;
+                intakeOn = false;
+
+                desState = getState(timer.get(), trajectory, path.get(point).getRotation());
+
+                if(timer.get() > trajectory.getTotalTimeSeconds()){
+                    timer.reset();
+
+                    autoState = AutoState.secondPlace;
+                }
+            break;
+            case secondPlace:
+                driving = false;
+                armPos = ArmPos.middleNode;
+                intakeOn = false;
+
+                if(timer.get() > 3){
+                    autoState = AutoState.end;
+                }
+            break;
+            case chargingStation:
+                        
+            break;
+            case end:
+                                    
+            break;
+        }
     }
 }

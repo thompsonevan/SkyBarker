@@ -4,6 +4,7 @@ import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.can.TalonFX;
 import com.ctre.phoenix.motorcontrol.can.TalonSRX;
 import com.ctre.phoenix.motorcontrol.can.VictorSPX;
+import com.ctre.phoenix.sensors.AbsoluteSensorRange;
 import com.ctre.phoenix.sensors.CANCoder;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.RobotCommander;
@@ -39,7 +40,7 @@ public class Arm {
     public Arm(){
         //Configure sensor source for primary PID
         shoulder.configSelectedFeedbackSensor(TalonFXFeedbackDevice.IntegratedSensor, SHOULDER_K_PID_LOOP_IDX,
-        ARM_TIMEOUT);   
+        ARM_TIMEOUT);
 
         shoulder.setSensorPhase(false);
         shoulder.setInverted(false);
@@ -100,8 +101,8 @@ public class Arm {
         extension.setSelectedSensorPosition(0, EXTENSION_K_PID_LOOP_IDX, ARM_TIMEOUT);
 
         //Configure sensor source for primary PID
-        elbow.configSelectedFeedbackSensor(FeedbackDevice.CTRE_MagEncoder_Relative, ELBOW_K_PID_LOOP_IDX,
-        200);   
+        elbow.configSelectedFeedbackSensor(FeedbackDevice.IntegratedSensor, ELBOW_K_PID_LOOP_IDX,
+        200);
 
         elbow.setSensorPhase(true);
         elbow.setInverted(false);
@@ -127,8 +128,12 @@ public class Arm {
         elbow.configMotionCruiseVelocity(ELBOW_CRUIESVELOCITY, ARM_TIMEOUT);
         elbow.configMotionAcceleration(ELBOW_ACCEL, ARM_TIMEOUT);
 
-        /* Zero the sensor once on robot boot up */
-        elbow.setSelectedSensorPosition(0, ELBOW_K_PID_LOOP_IDX, ARM_TIMEOUT);
+        elbow.configRemoteFeedbackFilter(elbowEncoder, 0);
+        elbow.configSelectedFeedbackCoefficient(.081743869209);
+        elbow.configSelectedFeedbackSensor(FeedbackDevice.RemoteSensor0);
+
+        shoulderEncoder.configAbsoluteSensorRange(AbsoluteSensorRange.Signed_PlusMinus180);
+        elbowEncoder.configAbsoluteSensorRange(AbsoluteSensorRange.Signed_PlusMinus180);
     }
     
     public void armPercentOutZero(){
@@ -138,9 +143,9 @@ public class Arm {
     }
 
     public void armZeroSensorPos(){
-        shoulder.setSelectedSensorPosition(shoulderEncoder.getAbsolutePosition() * SHOULDER_DEGREES_TO_TICKS);
+        shoulder.setSelectedSensorPosition((shoulderEncoder.getAbsolutePosition()+78.5) * SHOULDER_DEGREES_TO_TICKS);
         extension.setSelectedSensorPosition(0);
-        elbow.setSelectedSensorPosition(0);//elbowEncoder.getAbsolutePosition() * ELBOW_DEGREES_TO_TICKS
+        elbow.setSelectedSensorPosition(elbowEncoder.getAbsolutePosition());//elbowEncoder.getAbsolutePosition() * ELBOW_DEGREES_TO_TICKS
     }
 
     public void setPosition(double shoudlerPos, double extensionPos, double elbowPos){
@@ -200,6 +205,8 @@ public class Arm {
             }
 
         }
+
+        SmartDashboard.putString("Arm State", commander.getArmPosition().toString());
     }
 
     public void logData(){
@@ -208,11 +215,12 @@ public class Arm {
         double extensionPosition = extension.getSelectedSensorPosition();
         double elbowPosition = elbow.getSelectedSensorPosition();
 
-        SmartDashboard.putNumber("shoulderVelocity", shoulderPosition / FALCON500_TICKS_PER_REV);
-        SmartDashboard.putNumber("extensionVelocity", extensionPosition / FALCON500_TICKS_PER_REV);     
-        SmartDashboard.putNumber("elbowVelocity", elbowPosition / FALCON500_TICKS_PER_REV);
-        SmartDashboard.putNumber("Absolute Encoder Ticks", shoulderEncoder.getAbsolutePosition() * 1.3786);
-        SmartDashboard.putNumber("Absolute Encoder", shoulderEncoder.getAbsolutePosition());
+        SmartDashboard.putNumber("Shoulder Pos", shoulderPosition / FALCON500_TICKS_PER_REV);
+        SmartDashboard.putNumber("Extension Pos", extensionPosition / FALCON500_TICKS_PER_REV);     
+        SmartDashboard.putNumber("Elbow Pos", elbowPosition);
+        SmartDashboard.putNumber("Shoulder Absolute Encoder Ticks", shoulderEncoder.getAbsolutePosition() * 1.3786);
+        SmartDashboard.putNumber("Shoulder Absolute Encoder", shoulderEncoder.getAbsolutePosition() + 78.5);
+        SmartDashboard.putNumber("Elbow Absolute Encoder", elbowEncoder.getAbsolutePosition() - 40);
 
         HotLogger.Log("Shoulder Absolute Pos", shoulderEncoder.getAbsolutePosition());
         HotLogger.Log("Shoulder Motor Pos", shoulderPosition);
