@@ -70,6 +70,7 @@ public class AutonLeft extends AutonBase{
             case firstPlace:
                 driving = false;
                 armPos = ArmPos.topNode;
+                intakeOn = false;
 
                 if(timer.get() > 3){
                     trajectory = createTrajectory(path.get(point), path.get(point+1));
@@ -86,6 +87,8 @@ public class AutonLeft extends AutonBase{
             case driveToObject:
                 driving = true;
                 armPos = ArmPos.packagePos;
+                intakeOn = false;
+                
                 desState = getState(timer.get(), trajectory, path.get(point).getRotation());
 
                 if(timer.get() > trajectory.getTotalTimeSeconds()){
@@ -113,7 +116,9 @@ public class AutonLeft extends AutonBase{
             break;
             case driveBack:
                 driving = true;
+                armPos = ArmPos.packagePos;
                 intakeOn = false;
+
                 desState = getState(timer.get(), trajectory, path.get(point).getRotation());
 
                 if(timer.get() > trajectory.getTotalTimeSeconds()){
@@ -125,6 +130,7 @@ public class AutonLeft extends AutonBase{
             case secondPlace:
                 driving = false;
                 armPos = ArmPos.middleNode;
+                intakeOn = false;
 
                 if(timer.get() > 3){
                     autoState = AutoState.end;
