@@ -36,14 +36,19 @@ public class AutonLeft extends AutonBase{
         secondPlace,
         chargingStation,
         end
-    } 
+    }
 
     public AutoState autoState;
 
     public Timer timer = new Timer();
 
+    int point = 0;
+
     Trajectory trajectory;
-    Trajectory trajectory1;
+
+    List<Pose2d> path = List.of(new Pose2d(new Translation2d(1.75,4.45), Rotation2d.fromDegrees(-90)),
+                                new Pose2d(new Translation2d(6.62,4.63), Rotation2d.fromDegrees(0)),
+                                new Pose2d(new Translation2d(1.75,4.45), Rotation2d.fromDegrees(-90)));
 
     public AutonLeft(){
         reset();
@@ -52,38 +57,85 @@ public class AutonLeft extends AutonBase{
     public void reset(){
         autoState = AutoState.firstPlace;
 
-        desState = new PathPlannerState();
+        point = 0;
 
-        initalPose = new Pose2d(new Translation2d(1.75,4.45), Rotation2d.fromDegrees(-90));
-        endingPose = new Pose2d(new Translation2d(6.62,4.63), Rotation2d.fromDegrees(0));
-
-        trajectory = createTrajectory(initalPose, endingPose);
-
-        Drivetrain.setPose(initalPose, initalPose.getRotation());
+        desState = new State();
 
         timer.reset();
         timer.start();
     }
 
     public void runAuto(){
-        if(autoState == AutoState.firstPlace){
-            driving = true;
-            desState = getState(timer.get(), trajectory, endingPose.getRotation());
+        switch(autoState){
+            case firstPlace:
+                driving = false;
+                armPos = ArmPos.topNode;
 
-            if(timer.get() > trajectory.getTotalTimeSeconds() + 5){
-                initalPose = new Pose2d(new Translation2d(6.62,4.63), Pigeon.getRotation2d());
-                endingPose = new Pose2d(new Translation2d(1.75,4.45), Rotation2d.fromDegrees(-90));
-        
-                trajectory1 = createTrajectory(initalPose, endingPose);
-        
-                Drivetrain.setPose(initalPose, initalPose.getRotation());
+                if(timer.get() > 3){
+                    trajectory = createTrajectory(path.get(point), path.get(point+1));
+            
+                    Drivetrain.setPose(path.get(point), path.get(point).getRotation());
 
-                autoState = AutoState.driveBack;
-                timer.reset();
-            } 
-        } else {
-            driving = true;
-            desState = getState(timer.get(), trajectory, endingPose.getRotation());
+                    point++;
+
+                    timer.reset();
+
+                    autoState = AutoState.driveToObject;
+                }
+            break;
+            case driveToObject:
+                driving = true;
+                armPos = ArmPos.packagePos;
+                desState = getState(timer.get(), trajectory, path.get(point).getRotation());
+
+                if(timer.get() > trajectory.getTotalTimeSeconds()){
+                    timer.reset();
+
+                    autoState = AutoState.pickUpObject;
+                }
+            break;
+            case pickUpObject:
+                driving = false;
+                armPos = ArmPos.packagePos;
+                intakeOn = true;
+
+                if(timer.get() > 3){
+                    trajectory = createTrajectory(path.get(point), path.get(point+1));
+            
+                    Drivetrain.setPose(path.get(point), path.get(point).getRotation());
+
+                    point++;
+
+                    timer.reset();
+
+                    autoState = AutoState.driveBack;
+                }
+            break;
+            case driveBack:
+                driving = true;
+                intakeOn = false;
+                desState = getState(timer.get(), trajectory, path.get(point).getRotation());
+
+                if(timer.get() > trajectory.getTotalTimeSeconds()){
+                    timer.reset();
+
+                    autoState = AutoState.secondPlace;
+                }
+            break;
+            case secondPlace:
+                driving = false;
+                armPos = ArmPos.middleNode;
+
+                if(timer.get() > 3){
+                    autoState = AutoState.end;
+                }
+            break;
+            case chargingStation:
+                        
+            break;
+            case end:
+                                    
+            break;
         }
     }
 }
