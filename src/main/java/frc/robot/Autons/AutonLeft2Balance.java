@@ -8,26 +8,13 @@ import frc.robot.subsystems.Arm.ArmPos;
 
 import java.util.List;
 
-import javax.sound.midi.Track;
-
-import com.pathplanner.lib.PathConstraints;
-import com.pathplanner.lib.PathPlanner;
-import com.pathplanner.lib.PathPlannerTrajectory;
-import com.pathplanner.lib.PathPoint;
-import com.pathplanner.lib.PathPlannerTrajectory.PathPlannerState;
-import com.pathplanner.lib.auto.SwerveAutoBuilder;
-import com.pathplanner.lib.server.PathPlannerServer;
-
-import edu.wpi.first.math.controller.HolonomicDriveController;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.trajectory.Trajectory;
-import edu.wpi.first.math.trajectory.TrajectoryConfig;
-import edu.wpi.first.math.trajectory.TrajectoryGenerator;
 import edu.wpi.first.math.trajectory.Trajectory.State;
 
-public class AutonLeft extends AutonBase{
+public class AutonLeft2Balance extends AutonBase{
     enum AutoState {
         firstPlace,
         driveToObject,
@@ -48,9 +35,10 @@ public class AutonLeft extends AutonBase{
 
     List<Pose2d> path = List.of(new Pose2d(new Translation2d(1.75,4.45), Rotation2d.fromDegrees(-90)),
                                 new Pose2d(new Translation2d(6.62,4.63), Rotation2d.fromDegrees(0)),
-                                new Pose2d(new Translation2d(1.75,4.45), Rotation2d.fromDegrees(-90)));
+                                new Pose2d(new Translation2d(1.75,4.45), Rotation2d.fromDegrees(-90)),
+                                new Pose2d(new Translation2d(3.9,2.9), Rotation2d.fromDegrees(-90)));
 
-    public AutonLeft(){
+    public AutonLeft2Balance(){
         reset();
     }
 
@@ -133,10 +121,23 @@ public class AutonLeft extends AutonBase{
                 intakeOn = false;
 
                 if(timer.get() > 3){
-                    autoState = AutoState.end;
+                    trajectory = createTrajectory(path.get(point), path.get(point+1));
+            
+                    Drivetrain.setPose(path.get(point), path.get(point).getRotation());
+
+                    point++;
+
+                    timer.reset();
+
+                    autoState = AutoState.chargingStation;
                 }
             break;
             case chargingStation:
+                driving = true;
+                armPos = ArmPos.packagePos;
+                intakeOn = false;
+
+                desState = getState(timer.get(), trajectory, path.get(point).getRotation());
                         
             break;
             case end:

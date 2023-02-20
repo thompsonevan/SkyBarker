@@ -17,9 +17,10 @@ import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import frc.robot.Autons.AutonLeft1Balance;
 // import frc.robot.Autons.Auton1;
 // import frc.robot.Autons.Auton67;
-import frc.robot.Autons.AutonLeft;
+import frc.robot.Autons.AutonLeft2Balance;
 import frc.robot.sensors.Camera;
 import frc.robot.sensors.Pigeon;
 import frc.robot.subsystems.Arm;
@@ -38,9 +39,10 @@ public class Robot extends TimedRobot {
     private AutonCommader autonCommader;
     // private Auton1 auton;
     // private Auton67 auton67;
-    private AutonLeft autonLeft;
+    private AutonLeft2Balance autonLeft;
+    private AutonLeft1Balance autonLeft1Balance;
 
-    private int autonSelection = 2;
+    private int autonSelection = 1;
 
 
 
@@ -65,7 +67,8 @@ public class Robot extends TimedRobot {
         arm = new Arm();
         // auton = new Auton1();
         // auton67 = new Auton67();
-        autonLeft = new AutonLeft();
+        autonLeft1Balance = new AutonLeft1Balance();
+        autonLeft = new AutonLeft2Balance();
         hopper = new Hopper();
     }
 
@@ -101,7 +104,7 @@ public class Robot extends TimedRobot {
         if(autonSelection == 0){
             // autonCommader.initAuton(auton);
         } else if(autonSelection == 1){
-            // autonCommader.initAuton(auton67);
+            autonCommader.initAuton(autonLeft1Balance);
         } else if(autonSelection == 2){
             autonCommader.initAuton(autonLeft);
         } else {

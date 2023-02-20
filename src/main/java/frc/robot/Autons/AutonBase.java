@@ -41,7 +41,7 @@ public abstract class AutonBase {
     public State getState(double time, Trajectory traj, Rotation2d heading){
         State curState = traj.sample(time);
             
-        return new State(timer.get(),
+        return new State(time,
             curState.velocityMetersPerSecond,
             curState.accelerationMetersPerSecondSq,
             new Pose2d(curState.poseMeters.getX(), curState.poseMeters.getY(), heading),

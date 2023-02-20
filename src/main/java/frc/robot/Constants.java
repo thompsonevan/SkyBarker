@@ -49,6 +49,8 @@ public final class Constants {
     public static final int BACK_RIGHT_MODULE_STEER_ENCODER = 21;
     public static final double BACK_RIGHT_MODULE_STEER_OFFSET = -Math.toRadians(237.48046875);
 
+    public static final double SLOW_SPEED_MULTIPLIER = .5;
+
     public static final double INTAKE_PACKAGE_POSITION = 90;
     public static final double INTAKE_STATION_POSITION = 135;
     public static final double INTAKE_COLLECT_POSITION = 172.5;
@@ -72,6 +74,7 @@ public final class Constants {
     public static final int ELBOW = 17;
     public static final int SHOULDER_ENCODER = 22;
     public static final int ELBOW_ENCODER = 25;
+    
 
     //Arm pid motion magic gains
     public static final double SHOULDER_MOTOR_kF = 0;
@@ -137,7 +140,7 @@ public final class Constants {
 }
 
 
-// Practice Bot Constants
+// Swerve Bot Constants
 // public final class Constants {
 //     public static final boolean realBot = false;
 
@@ -177,23 +180,30 @@ public final class Constants {
 //     public static final int BACK_RIGHT_MODULE_STEER_ENCODER = 18;
 //     public static final double BACK_RIGHT_MODULE_STEER_OFFSET = -Math.toRadians(212.2890625);
 
-    
 //     public static final double INTAKE_PACKAGE_POSITION = 90;
 //     public static final double INTAKE_STATION_POSITION = 135;
 //     public static final double INTAKE_COLLECT_POSITION = 172.5;
 //     public static final double INTAKE_SPEED_CUBE = .5;
 //     public static final double INTAKE_SPEED_CONE = 1;
 //     public static final int INTAKE_TIMEOUT = 200;
-    
+
 //     // Hopper CAN ID
 //     public static final int HOPPER_MOTOR = 11;
+//     public static final int FINGER_SERVO = 2;
+//     public static final int LEFT_SENSOR = 0;
+//     public static final int TOP_SENSOR = 1;
+//     public static final int BOTTOM_SENSOR = 2;
+//     public static final int RIGHT_SENSOR = 3;
+//     public static final double HOPPER_OVERRIDE_SPEED = 0.5;
+//     public static final double HOPPER_SPEED = 0;
 
 //     //Arm CAN ID
 //     public static final int SHOULDER = 13;
 //     public static final int EXTENSION = 14;
-//     public static final int ELBOW = 15;
+//     public static final int ELBOW = 17;
 //     public static final int SHOULDER_ENCODER = 22;
-//     public static final int ELBOW_ENCODER = 100;
+//     public static final int ELBOW_ENCODER = 25;
+
 
 //     //Arm pid motion magic gains
 //     public static final double SHOULDER_MOTOR_kF = 0;
@@ -239,15 +249,15 @@ public final class Constants {
 //     //Arm motion magic set positions
 //     public static final double SHOULDER_TARGET_POSITION_LOW = 90 * SHOULDER_DEGREES_TO_TICKS; // In degrees
 //     public static final double EXTENSION_TARGET_POSITION_LOW = 0 * FALCON500_TICKS_PER_REV; // In Revolutions
-//     public static final double ELBOW_TARGET_POSITION_LOW = 1 * ELBOW_DEGREES_TO_TICKS;
+//     public static final double ELBOW_TARGET_POSITION_LOW = 0 * ELBOW_DEGREES_TO_TICKS;
 
 //     public static final double SHOULDER_TARGET_POSITION_MIDDLE = 80 * SHOULDER_DEGREES_TO_TICKS;
 //     public static final double EXTENSION_TARGET_POSITION_MIDDLE = 0 * FALCON500_TICKS_PER_REV;
-//     public static final double ELBOW_TARGET_POSITION_MIDDLE = 2 * ELBOW_DEGREES_TO_TICKS;
+//     public static final double ELBOW_TARGET_POSITION_MIDDLE = 0 * ELBOW_DEGREES_TO_TICKS;
 
 //     public static final double SHOULDER_TARGET_POSITION_HIGH = 45 * SHOULDER_DEGREES_TO_TICKS;
 //     public static final double EXTENSION_TARGET_POSITION_HIGH = 50 * FALCON500_TICKS_PER_REV;
-//     public static final double ELBOW_TARGET_POSITION_HIGH = 2 * ELBOW_DEGREES_TO_TICKS;
+//     public static final double ELBOW_TARGET_POSITION_HIGH = 0 * ELBOW_DEGREES_TO_TICKS;
 
 //     public static final double SHOULDER_TARGET_POSITION_PACKAGE = 0;
 //     public static final double EXTENSION_TARGET_POSITION_PACKAGE = 0;
