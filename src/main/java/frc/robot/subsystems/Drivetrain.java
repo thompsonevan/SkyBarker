@@ -361,13 +361,13 @@ public class Drivetrain{
         positions[3].angle = new Rotation2d(backRightModule.getSteerAngle());
         positions[3].distanceMeters = backRightPos;
 
-        if(Camera.getLeftBotPose() != new Pose2d(0,0,new Rotation2d(0))){
-            poseEstimator.addVisionMeasurement(Camera.getLeftBotPose(), Timer.getFPGATimestamp());
-        }
+        // if(Camera.getLeftBotPose() != new Pose2d(0,0,new Rotation2d(0))){
+        //     poseEstimator.addVisionMeasurement(Camera.getLeftBotPose(), Timer.getFPGATimestamp());
+        // }
 
-        if(Camera.getRightBotPose() != new Pose2d(0,0,new Rotation2d(0))){
-            poseEstimator.addVisionMeasurement(Camera.getRightBotPose(), Timer.getFPGATimestamp());
-        }
+        // if(Camera.getRightBotPose() != new Pose2d(0,0,new Rotation2d(0))){
+        //     poseEstimator.addVisionMeasurement(Camera.getRightBotPose(), Timer.getFPGATimestamp());
+        // }
 
         poseEstimator.updateWithTime(Timer.getFPGATimestamp(), Pigeon.getRotation2d(), positions);
     }

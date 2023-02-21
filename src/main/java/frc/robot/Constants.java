@@ -52,8 +52,8 @@ public final class Constants {
     public static final double SLOW_SPEED_MULTIPLIER = .5;
 
     public static final double INTAKE_PACKAGE_POSITION = 90;
-    public static final double INTAKE_STATION_POSITION = 135;
-    public static final double INTAKE_COLLECT_POSITION = 177.75;
+    public static final double INTAKE_STATION_POSITION = 121;
+    public static final double INTAKE_COLLECT_POSITION = 177;
     public static final double INTAKE_SPEED_CUBE = .5;
     public static final double INTAKE_SPEED_CONE = 1;
     public static final int INTAKE_TIMEOUT = 200;
@@ -65,7 +65,7 @@ public final class Constants {
     public static final int TOP_SENSOR = 1;
     public static final int BOTTOM_SENSOR = 2;
     public static final int RIGHT_SENSOR = 3;
-    public static final double HOPPER_OVERRIDE_SPEED = 0.5;
+    public static final double HOPPER_OVERRIDE_SPEED = 1;
     public static final double HOPPER_SPEED = 0;
 
     //Arm CAN ID

@@ -80,6 +80,7 @@ public class Robot extends TimedRobot {
     public void disabledInit() {
         drivetrain.zero();
         arm.armZeroSensorPos();
+        intake.setCoastMode();
         SmartDashboard.putString("Robot Mode", "Disabled");
     }
 
@@ -122,6 +123,7 @@ public class Robot extends TimedRobot {
     public void teleopInit() {
         SmartDashboard.putString("Robot Mode", "Teleop");
 
+        intake.setBrakeMode();
         drivetrain.zero();
         Pigeon.zeroSensor();
         arm.armZeroSensorPos();
@@ -130,9 +132,9 @@ public class Robot extends TimedRobot {
     @Override
     public void teleopPeriodic() {
         pigeon.enabledAction(teleopCommander);
-        drivetrain.teleAction(   teleopCommander);
+        drivetrain.teleAction(teleopCommander);
         intake.IntakePeriodic(teleopCommander);
-        arm.action(teleopCommander);
+        // arm.action(teleopCommander);
         arm.brakeMode();
         hopper.HopperPeriodic(teleopCommander);
     }

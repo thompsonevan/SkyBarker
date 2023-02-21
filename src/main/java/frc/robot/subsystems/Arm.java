@@ -132,6 +132,7 @@ public class Arm {
         elbow.configSelectedFeedbackCoefficient(.081743869209);
         elbow.configSelectedFeedbackSensor(FeedbackDevice.RemoteSensor0);
 
+
         shoulderEncoder.configAbsoluteSensorRange(AbsoluteSensorRange.Signed_PlusMinus180);
         elbowEncoder.configAbsoluteSensorRange(AbsoluteSensorRange.Signed_PlusMinus180);
     }
@@ -235,11 +236,13 @@ public class Arm {
     public void brakeMode(){
         shoulder.setNeutralMode(NeutralMode.Brake);
         extension.setNeutralMode(NeutralMode.Brake);
+        elbow.setNeutralMode(NeutralMode.Brake);
     }
 
     public void coastMode(){
         shoulder.setNeutralMode(NeutralMode.Coast);
         extension.setNeutralMode(NeutralMode.Coast);
+        elbow.setNeutralMode(NeutralMode.Coast);
     }
 
 }
