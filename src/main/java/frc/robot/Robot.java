@@ -18,8 +18,6 @@ import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.Autons.AutonLeft1Balance;
-// import frc.robot.Autons.Auton1;
-// import frc.robot.Autons.Auton67;
 import frc.robot.Autons.AutonLeft2Balance;
 import frc.robot.sensors.Camera;
 import frc.robot.sensors.Pigeon;
@@ -37,14 +35,10 @@ public class Robot extends TimedRobot {
     private Pigeon pigeon;
     private Camera camera;
     private AutonCommader autonCommader;
-    // private Auton1 auton;
-    // private Auton67 auton67;
     private AutonLeft2Balance autonLeft;
     private AutonLeft1Balance autonLeft1Balance;
 
     private int autonSelection = 1;
-
-
 
     @Override
     public void robotInit() {
@@ -65,8 +59,6 @@ public class Robot extends TimedRobot {
         drivetrain = new Drivetrain();
         autonCommader = new AutonCommader();
         arm = new Arm();
-        // auton = new Auton1();
-        // auton67 = new Auton67();
         autonLeft1Balance = new AutonLeft1Balance();
         autonLeft = new AutonLeft2Balance();
         hopper = new Hopper();
@@ -121,16 +113,13 @@ public class Robot extends TimedRobot {
         autonCommader.runAuto();
         pigeon.enabledAction(teleopCommander);
         drivetrain.autonAction(autonCommader);
-        // arm.action(autonCommader);
+        arm.action(autonCommader);
         intake.IntakePeriodic(autonCommader);
         hopper.HopperPeriodic(autonCommader);
     }
-
-    private double[] rip2;
     
     @Override
     public void teleopInit() {
-        // drivetrain.setBrakeMode(true);
         SmartDashboard.putString("Robot Mode", "Teleop");
 
         drivetrain.zero();
@@ -142,10 +131,7 @@ public class Robot extends TimedRobot {
     public void teleopPeriodic() {
         pigeon.enabledAction(teleopCommander);
         drivetrain.teleAction(   teleopCommander);
-        rip2 = teleopCommander.getIntakePosition();
         intake.IntakePeriodic(teleopCommander);
-        SmartDashboard.putNumber("rip1", rip2[0]);
-        SmartDashboard.putNumber("rip2", rip2[1]);
         arm.action(teleopCommander);
         arm.brakeMode();
         hopper.HopperPeriodic(teleopCommander);

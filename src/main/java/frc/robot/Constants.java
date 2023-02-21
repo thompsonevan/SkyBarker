@@ -53,7 +53,7 @@ public final class Constants {
 
     public static final double INTAKE_PACKAGE_POSITION = 90;
     public static final double INTAKE_STATION_POSITION = 135;
-    public static final double INTAKE_COLLECT_POSITION = 172.5;
+    public static final double INTAKE_COLLECT_POSITION = 177.75;
     public static final double INTAKE_SPEED_CUBE = .5;
     public static final double INTAKE_SPEED_CONE = 1;
     public static final int INTAKE_TIMEOUT = 200;
