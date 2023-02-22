@@ -92,8 +92,9 @@ public final class Constants {
     public static final double EXTENSION_MOTOR_kD = 0;
 
     public static final double ELBOW_MOTOR_kF = 0;
-    public static final double ELBOW_MOTOR_kP = 0.2;
-    public static final double ELBOW_MOTOR_kI = 0;
+    public static final double ELBOW_MOTOR_kP = 4;
+    public static final double ELBOW_MOTOR_kI = .012;
+    public static final double ELBOW_MOTOR_kI_ZONE = 12;
     public static final double ELBOW_MOTOR_kD = 0;
 
     //Arm motion magic parameters
@@ -103,8 +104,8 @@ public final class Constants {
     public static final double EXTENSION_CRUISEVELOCITY = 16000 * 6;
     public static final double EXTENSION_ACCEL = 6000 * 6;
 
-    public static final double ELBOW_CRUIESVELOCITY = 1600 * 6;
-    public static final double ELBOW_ACCEL = 600 * 6;
+    public static final double ELBOW_CRUIESVELOCITY = 1600 * 24;
+    public static final double ELBOW_ACCEL = 600 * 24;
 
     //Arm pid slots
     public static final int SHOULDER_PID_SLOT = 0;
@@ -112,6 +113,7 @@ public final class Constants {
 
     public static final int EXTENSION_PID_SLOT = 0;
     public static final int EXTENSION_K_PID_LOOP_IDX = 0;
+
 
     public static final int ELBOW_PID_SLOT = 0;
     public static final int ELBOW_K_PID_LOOP_IDX = 0;

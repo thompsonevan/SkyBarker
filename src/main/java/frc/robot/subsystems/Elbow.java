@@ -3,10 +3,12 @@ package frc.robot.subsystems;
 import org.hotutilites.hotlogger.HotLogger;
 
 import com.ctre.phoenix.motorcontrol.ControlMode;
+import com.ctre.phoenix.motorcontrol.DemandType;
 import com.ctre.phoenix.motorcontrol.FeedbackDevice;
 import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.ctre.phoenix.motorcontrol.SensorTerm;
 import com.ctre.phoenix.motorcontrol.can.VictorSPX;
+import com.ctre.phoenix.motorcontrol.can.VictorSPXPIDSetConfiguration;
 import com.ctre.phoenix.sensors.AbsoluteSensorRange;
 import com.ctre.phoenix.sensors.CANCoder;
 
@@ -17,6 +19,7 @@ public class Elbow {
     private VictorSPX elbow;
     private CANCoder elbowEncoder;
     private double elbowAngle;
+    private double elbowOffset;
 
     public Elbow (int motorCANID, int encoderCANID) {
         
@@ -29,14 +32,14 @@ public class Elbow {
         elbowEncoder.configMagnetOffset(Constants.ELBOW_OFFSET);
 
         //Configure sensor source for primary PID
-        elbow.configRemoteFeedbackFilter(elbowEncoder, Constants.ELBOW_K_PID_LOOP_IDX);
+        elbow.configRemoteFeedbackFilter(elbowEncoder, 0);
         
         elbow.configSelectedFeedbackSensor(FeedbackDevice.RemoteSensor0, Constants.ELBOW_K_PID_LOOP_IDX,
         200);   
 
         
         elbow.setSensorPhase(true);
-        elbow.setInverted(false);
+        elbow.setInverted(true);
         
         /* Set relevant frame periods to be at least as fast as periodic rate */
         // elbow.setStatusFramePeriod(StatusFrameEnhanced.Status_13_Base_PIDF0, 10, ARM_TIMEOUT);
@@ -54,41 +57,52 @@ public class Elbow {
         elbow.config_kP(Constants.ELBOW_PID_SLOT, Constants.ELBOW_MOTOR_kP, Constants.ARM_TIMEOUT);
         elbow.config_kI(Constants.ELBOW_PID_SLOT, Constants.ELBOW_MOTOR_kI, Constants.ARM_TIMEOUT);
         elbow.config_kD(Constants.ELBOW_PID_SLOT, Constants.ELBOW_MOTOR_kD, Constants.ARM_TIMEOUT);
-        
+        elbow.config_IntegralZone(Constants.ELBOW_PID_SLOT, this.convertToTicks(Constants.ELBOW_MOTOR_kI_ZONE));
+
         /* Set acceleration and vcruise velocity - see documentation */
         elbow.configMotionCruiseVelocity(Constants.ELBOW_CRUIESVELOCITY, Constants.ARM_TIMEOUT);
         elbow.configMotionAcceleration(Constants.ELBOW_ACCEL, Constants.ARM_TIMEOUT);
 
-        // elbow.setSelectedSensorPosition(elbowEncoder.getPosition()*4096/360);
+        elbowOffset = elbow.getSelectedSensorPosition() - elbowEncoder.getAbsolutePosition()*4096/360;
 
-        elbow.configSensorTerm(SensorTerm.valueOf(314*4096/360), FeedbackDevice.RemoteSensor0);
     }
 
-    private double convertToTicks(double inches) {
-        return inches * Constants.FALCON500_TICKS_PER_REV * Constants.EXTENSION_RATIO;
+    private double convertToTicks(double degrees) {
+        return degrees / 360 * 4096;
     }
     
-    private double convertToInches(double ticks) {
-        return ticks / Constants.FALCON500_TICKS_PER_REV / Constants.EXTENSION_RATIO;
+    private double convertToDegrees(double ticks) {
+        return ticks * 360 / 4096;
     }
 
     public void updatePose() {
-        elbowAngle = elbow.getSelectedSensorPosition()*360/4096; 
+        elbowAngle = (elbow.getSelectedSensorPosition(Constants.ELBOW_K_PID_LOOP_IDX) - elbowOffset)*360/4096; 
         SmartDashboard.putNumber("Elbow Angle", elbowAngle);
+        SmartDashboard.putNumber("Elbow elbowOffset", elbowOffset);
+        SmartDashboard.putNumber("Elbow real angle", elbow.getSelectedSensorPosition(Constants.ELBOW_K_PID_LOOP_IDX));
         SmartDashboard.putNumber("Elbow Angle CANCODER", elbowEncoder.getAbsolutePosition());
         HotLogger.Log("Extension Pos",elbowAngle);
     }
 
-    public void setMotorCommand(double motorCommand) {
+    public void setMotorCommand(double motorCommand) { 
         if (Math.abs(motorCommand) > .15) {
             elbow.set(ControlMode.PercentOutput, motorCommand);
         } else {
             elbow.set(ControlMode.PercentOutput, 0.0);
         }
+        SmartDashboard.putNumber("Elbow Total Command", elbow.getMotorOutputPercent());
     }
 
     public void goToPostion(double degrees) {
-        elbow.set(ControlMode.MotionMagic, degrees);
+        elbow.set(ControlMode.MotionMagic, elbowOffset + this.convertToTicks(degrees), DemandType.ArbitraryFeedForward, .225*Math.sin(Math.toRadians(elbowAngle)));
+        SmartDashboard.putNumber("Elbow Angle Command", elbowOffset + this.convertToTicks(degrees));
+        SmartDashboard.putNumber("Elbow Command", degrees);
+        SmartDashboard.putNumber("Elbow Command Actual", (elbow.getActiveTrajectoryPosition()- elbowOffset)*360/4096);
+        SmartDashboard.putNumber("Elbow FeedForward", elbow.getActiveTrajectoryArbFeedFwd()*100);
+        SmartDashboard.putNumber("Elbow Proportional", elbow.getClosedLoopError()*Constants.ELBOW_MOTOR_kP/1023);
+        SmartDashboard.putNumber("Elbow Derviative", elbow.getErrorDerivative()*Constants.ELBOW_MOTOR_kD/1023);
+        SmartDashboard.putNumber("Elbow Integral", elbow.getIntegralAccumulator()*Constants.ELBOW_MOTOR_kI/1023);
+        SmartDashboard.putNumber("Elbow Total Command", elbow.getMotorOutputPercent());
     }
 
     public void setCoastMode() {

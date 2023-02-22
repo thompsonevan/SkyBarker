@@ -102,9 +102,9 @@ public class Arm {
 
     public void action(RobotCommander commander) {
         if (commander.operator.getAButton()) {
-            //extension.goToPostion(4.0);
+            elbow.goToPostion(90.0);
         } else {
-            elbow.setMotorCommand(commander.operator.getLeftY()*.4);
+            elbow.setMotorCommand(commander.operator.getLeftY()*.8);
         }
     }
 
