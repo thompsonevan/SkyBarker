@@ -300,12 +300,52 @@ public class Drivetrain{
         backRightModule.set(speed, Math.toRadians(angle));
     }
 
+    public boolean onRamp = false;
+
     public void teleAction(TeleopCommander commander){
-        chassisSpeeds = ChassisSpeeds.fromFieldRelativeSpeeds(
-            commander.getForwardCommand(),
-            commander.getStrafeCommand(),
-            commander.getTurnCommand(),
-            Pigeon.getRotation2d());
+        if(!commander.getAutoBalance()){
+            chassisSpeeds = ChassisSpeeds.fromFieldRelativeSpeeds(
+                commander.getForwardCommand(),
+                commander.getStrafeCommand(),
+                commander.getTurnCommand(),
+                Pigeon.getRotation2d());
+            
+            onRamp = false;
+        } else {
+            if(!onRamp){
+                chassisSpeeds = new ChassisSpeeds(
+                    1,
+                    0,
+                    0);
+
+                if(Math.abs(Pigeon.getPitch()) - 14 > 1){
+                    onRamp = true;
+                }
+            } else {
+                if(Pigeon.getPitch() > 13){
+                    chassisSpeeds = new ChassisSpeeds(
+                        1,
+                        0,
+                        0);
+                } else if (Pigeon.getPitch() < -13){
+                    chassisSpeeds = new ChassisSpeeds(
+                        -1,
+                        0,
+                        0);
+                } else if(Math.abs(Pigeon.getPitch()) < 10){
+                    chassisSpeeds = new ChassisSpeeds(
+                        Pigeon.getPitch() * .03,
+                        0,
+                        0);
+                } else {
+                    chassisSpeeds = new ChassisSpeeds(
+                        0,
+                        0,
+                        0);
+                }
+            }
+            
+        }
 
         setSwerveModuleStates(chassisSpeeds);
     }
@@ -313,13 +353,51 @@ public class Drivetrain{
     public static Pose2d getPose(){
         return poseEstimator.getEstimatedPosition();
     }
-    
+
     public void autonAction(AutonCommader autonCommader){
         if(autonCommader.isDriving()){
             driveToPos(autonCommader.getDesiredState());
-        } else {
+        } else if(autonCommader.getAutoBalance()){
+            if(!onRamp){
+                chassisSpeeds = new ChassisSpeeds(
+                    0,
+                    1.25,
+                    0);
+
+                if(Math.abs(Pigeon.getRoll()) > 22){
+                    onRamp = true;
+                }
+            } else {
+                if(Pigeon.getRoll() < -14.5){
+                    chassisSpeeds = new ChassisSpeeds(
+                        0,
+                        1.25,
+                        0);
+                } else if(Pigeon.getRoll() > 14.5){
+                    chassisSpeeds = new ChassisSpeeds(
+                        0,
+                        -1.25,
+                        0);
+                }else if(Math.abs(Pigeon.getRoll()) < 10){
+                    chassisSpeeds = new ChassisSpeeds(
+                        0,
+                        Pigeon.getRoll() * .03,
+                        0);
+                } else {
+                    chassisSpeeds = new ChassisSpeeds(
+                        0,
+                        0,
+                        0);
+                }
+            }
+            setSwerveModuleStates(chassisSpeeds);
+        }else{
             setSwerveModuleStates(new ChassisSpeeds(0,0,0));
         }
+
+        SmartDashboard.putBoolean("On Ramp", onRamp);
+        SmartDashboard.putNumber("_Time", timer.get());
+
     }
 
     public void driveToPos(State state){
@@ -367,8 +445,12 @@ public class Drivetrain{
 
         // if(Camera.getRightBotPose() != new Pose2d(0,0,new Rotation2d(0))){
         //     poseEstimator.addVisionMeasurement(Camera.getRightBotPose(), Timer.getFPGATimestamp());
-        // }
+        // }    
 
         poseEstimator.updateWithTime(Timer.getFPGATimestamp(), Pigeon.getRotation2d(), positions);
+    }
+
+    public void autoBalance(){
+        
     }
 }

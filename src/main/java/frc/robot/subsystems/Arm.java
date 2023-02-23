@@ -6,6 +6,9 @@ import com.ctre.phoenix.motorcontrol.can.TalonSRX;
 import com.ctre.phoenix.motorcontrol.can.VictorSPX;
 import com.ctre.phoenix.sensors.AbsoluteSensorRange;
 import com.ctre.phoenix.sensors.CANCoder;
+
+import edu.wpi.first.wpilibj.PowerDistribution;
+import edu.wpi.first.wpilibj.PowerDistribution.ModuleType;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.RobotCommander;
 import com.ctre.phoenix.motorcontrol.FeedbackDevice;
@@ -32,6 +35,9 @@ public class Arm {
     VictorSPX elbow = new VictorSPX(ELBOW);
     CANCoder shoulderEncoder = new CANCoder(SHOULDER_ENCODER);
     CANCoder elbowEncoder = new CANCoder(ELBOW_ENCODER);
+    VictorSPX gripper = new VictorSPX(15);
+
+    PowerDistribution pdp = new PowerDistribution(1, ModuleType.kRev);
 
     double shoulderDesPos;
     double extensionDesPos;
@@ -135,6 +141,9 @@ public class Arm {
 
         shoulderEncoder.configAbsoluteSensorRange(AbsoluteSensorRange.Signed_PlusMinus180);
         elbowEncoder.configAbsoluteSensorRange(AbsoluteSensorRange.Signed_PlusMinus180);
+
+        gripper.setNeutralMode(NeutralMode.Brake);
+        
     }
     
     public void armPercentOutZero(){
@@ -156,61 +165,81 @@ public class Arm {
     }
 
     public void action(RobotCommander commander){
-        if(commander.getArmReset()){
-            armZeroSensorPos();
+        // if(commander.getArmReset()){
+        //     armZeroSensorPos();
+        // }
+
+        // if(commander.getArmPosition() == ArmPos.packagePos){
+        //     setPosition(SHOULDER_TARGET_POSITION_PACKAGE, EXTENSION_TARGET_POSITION_PACKAGE, ELBOW_TARGET_POSITION_PACKAGE);
+        //     shoulderDesPos = SHOULDER_TARGET_POSITION_PACKAGE;
+        //     extensionDesPos = EXTENSION_TARGET_POSITION_PACKAGE;
+        //     elbowDesPos = ELBOW_TARGET_POSITION_PACKAGE;
+        // } else if (commander.getArmPosition() == ArmPos.lowerNode){
+        //     setPosition(SHOULDER_TARGET_POSITION_LOW, EXTENSION_TARGET_POSITION_LOW, ELBOW_TARGET_POSITION_LOW);
+        //     shoulderDesPos = SHOULDER_TARGET_POSITION_LOW;
+        //     extensionDesPos = EXTENSION_TARGET_POSITION_LOW;
+        //     elbowDesPos = ELBOW_TARGET_POSITION_LOW;
+        // } else if (commander.getArmPosition() == ArmPos.middleNode){
+        //     setPosition(SHOULDER_TARGET_POSITION_MIDDLE, EXTENSION_TARGET_POSITION_MIDDLE, ELBOW_TARGET_POSITION_MIDDLE);
+        //     shoulderDesPos = SHOULDER_TARGET_POSITION_MIDDLE;
+        //     extensionDesPos = EXTENSION_TARGET_POSITION_MIDDLE;
+        //     elbowDesPos = ELBOW_TARGET_POSITION_MIDDLE;
+        // } else if (commander.getArmPosition() == ArmPos.topNode){
+        //     setPosition(SHOULDER_TARGET_POSITION_HIGH, EXTENSION_TARGET_POSITION_HIGH, ELBOW_TARGET_POSITION_HIGH);
+        //     shoulderDesPos = SHOULDER_TARGET_POSITION_HIGH;
+        //     extensionDesPos = EXTENSION_TARGET_POSITION_HIGH;
+        //     elbowDesPos = ELBOW_TARGET_POSITION_HIGH;
+        // } else if (commander.getArmPosition() == ArmPos.stay){
+        //     armPercentOutZero();
+        // } else if(commander.getArmPosition() == ArmPos.manual){
+        //     if ((shoulder.getSelectedSensorPosition() / FALCON500_TICKS_PER_REV) > 170 && commander.armShoulder() > 0){
+        //         shoulder.set(ControlMode.PercentOutput, 0);
+        //     } else if((shoulder.getSelectedSensorPosition() / FALCON500_TICKS_PER_REV) < -170  && commander.armShoulder() < 0){
+        //         shoulder.set(ControlMode.PercentOutput, 0);
+        //     } else{
+        //         shoulder.set(ControlMode.PercentOutput, commander.armShoulder());
+        //     }
+
+        //     if ((extension.getSelectedSensorPosition() / FALCON500_TICKS_PER_REV)> 70  && commander.armExtension() > 0){
+        //         extension.set(ControlMode.PercentOutput, 0);
+        //     } else if ((extension.getSelectedSensorPosition() / FALCON500_TICKS_PER_REV) < 5 && commander.armExtension() < 0){
+        //         extension.set(ControlMode.PercentOutput, 0);
+        //     } else{
+        //         extension.set(ControlMode.PercentOutput, commander.armExtension());
+        //     }
+
+        //     if(Math.abs(commander.operator.getRightX()) > .2){
+        //         elbow.set(ControlMode.PercentOutput, commander.operator.getRightX());
+        //     } else {
+        //         elbow.set(ControlMode.PercentOutput, 0);
+        //     }
+
+        // }
+
+        // SmartDashboard.putString("Arm State", commander.getArmPosition().toString());
+
+        if(Math.abs(commander.operator.getLeftY()) > .2){
+            extension.set(ControlMode.PercentOutput, commander.operator.getLeftY());
+        } else {
+            extension.set(ControlMode.PercentOutput, 0);
         }
 
-        if(commander.getArmPosition() == ArmPos.packagePos){
-            setPosition(SHOULDER_TARGET_POSITION_PACKAGE, EXTENSION_TARGET_POSITION_PACKAGE, ELBOW_TARGET_POSITION_PACKAGE);
-            shoulderDesPos = SHOULDER_TARGET_POSITION_PACKAGE;
-            extensionDesPos = EXTENSION_TARGET_POSITION_PACKAGE;
-            elbowDesPos = ELBOW_TARGET_POSITION_PACKAGE;
-        } else if (commander.getArmPosition() == ArmPos.lowerNode){
-            setPosition(SHOULDER_TARGET_POSITION_LOW, EXTENSION_TARGET_POSITION_LOW, ELBOW_TARGET_POSITION_LOW);
-            shoulderDesPos = SHOULDER_TARGET_POSITION_LOW;
-            extensionDesPos = EXTENSION_TARGET_POSITION_LOW;
-            elbowDesPos = ELBOW_TARGET_POSITION_LOW;
-        } else if (commander.getArmPosition() == ArmPos.middleNode){
-            setPosition(SHOULDER_TARGET_POSITION_MIDDLE, EXTENSION_TARGET_POSITION_MIDDLE, ELBOW_TARGET_POSITION_MIDDLE);
-            shoulderDesPos = SHOULDER_TARGET_POSITION_MIDDLE;
-            extensionDesPos = EXTENSION_TARGET_POSITION_MIDDLE;
-            elbowDesPos = ELBOW_TARGET_POSITION_MIDDLE;
-        } else if (commander.getArmPosition() == ArmPos.topNode){
-            setPosition(SHOULDER_TARGET_POSITION_HIGH, EXTENSION_TARGET_POSITION_HIGH, ELBOW_TARGET_POSITION_HIGH);
-            shoulderDesPos = SHOULDER_TARGET_POSITION_HIGH;
-            extensionDesPos = EXTENSION_TARGET_POSITION_HIGH;
-            elbowDesPos = ELBOW_TARGET_POSITION_HIGH;
-        } else if (commander.getArmPosition() == ArmPos.stay){
-            armPercentOutZero();
-        } else if(commander.getArmPosition() == ArmPos.manual){
-            if ((shoulder.getSelectedSensorPosition() / FALCON500_TICKS_PER_REV) > 170 && commander.armShoulder() > 0){
-                shoulder.set(ControlMode.PercentOutput, 0);
-            } else if((shoulder.getSelectedSensorPosition() / FALCON500_TICKS_PER_REV) < -170  && commander.armShoulder() < 0){
-                shoulder.set(ControlMode.PercentOutput, 0);
-            } else{
-                shoulder.set(ControlMode.PercentOutput, commander.armShoulder());
-            }
-
-            if ((extension.getSelectedSensorPosition() / FALCON500_TICKS_PER_REV)> 70  && commander.armExtension() > 0){
-                extension.set(ControlMode.PercentOutput, 0);
-            } else if ((extension.getSelectedSensorPosition() / FALCON500_TICKS_PER_REV) < 5 && commander.armExtension() < 0){
-                extension.set(ControlMode.PercentOutput, 0);
-            } else{
-                extension.set(ControlMode.PercentOutput, commander.armExtension());
-            }
-
-            if(Math.abs(commander.operator.getRightX()) > .2){
-                elbow.set(ControlMode.PercentOutput, commander.operator.getRightX());
+        if(commander.operator.getYButton()){
+            if(pdp.getCurrent(5)> 20){
+                gripper.set(ControlMode.PercentOutput, .05);
             } else {
-                elbow.set(ControlMode.PercentOutput, 0);
+                gripper.set(ControlMode.PercentOutput, .5);
             }
-
+        } else if (commander.operator.getAButton()){
+            gripper.set(ControlMode.PercentOutput, -.6);
+        } else {
+            gripper.set(ControlMode.PercentOutput, 0);
         }
-
-        SmartDashboard.putString("Arm State", commander.getArmPosition().toString());
+        
     }
 
     public void logData(){
+        SmartDashboard.putNumber("Gripper Current", pdp.getCurrent(5));
 
         double shoulderPosition = shoulder.getSelectedSensorPosition();
         double extensionPosition = extension.getSelectedSensorPosition();

@@ -17,6 +17,7 @@ import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import frc.robot.Autons.AutoBalance;
 import frc.robot.Autons.AutonLeft1Balance;
 import frc.robot.Autons.AutonLeft2Balance;
 import frc.robot.sensors.Camera;
@@ -37,8 +38,9 @@ public class Robot extends TimedRobot {
     private AutonCommader autonCommader;
     private AutonLeft2Balance autonLeft;
     private AutonLeft1Balance autonLeft1Balance;
+    private AutoBalance autoBalance;
 
-    private int autonSelection = 1;
+    private int autonSelection = 3;
 
     @Override
     public void robotInit() {
@@ -62,6 +64,7 @@ public class Robot extends TimedRobot {
         autonLeft1Balance = new AutonLeft1Balance();
         autonLeft = new AutonLeft2Balance();
         hopper = new Hopper();
+        autoBalance = new AutoBalance();
     }
 
     @Override
@@ -100,10 +103,12 @@ public class Robot extends TimedRobot {
             autonCommader.initAuton(autonLeft1Balance);
         } else if(autonSelection == 2){
             autonCommader.initAuton(autonLeft);
-        } else {
+        } else if(autonSelection == 3){
+            autonCommader.initAuton(autoBalance);
             // autonCommader.initAuton(auton);
         }
 
+        drivetrain.onRamp = false;
         drivetrain.zero();
         autonCommader.auton.reset();
         // Drivetrain.setPose(new Pose2d(0,0, Rotation2d.fromDegrees(-180)), Rotation2d.fromDegrees(-180));
@@ -114,7 +119,7 @@ public class Robot extends TimedRobot {
         autonCommader.runAuto();
         pigeon.enabledAction(teleopCommander);
         drivetrain.autonAction(autonCommader);
-        arm.action(autonCommader);
+        // arm.action(autonCommader);
         intake.IntakePeriodic(autonCommader);
         hopper.HopperPeriodic(autonCommader);
     }
@@ -134,7 +139,7 @@ public class Robot extends TimedRobot {
         pigeon.enabledAction(teleopCommander);
         drivetrain.teleAction(teleopCommander);
         intake.IntakePeriodic(teleopCommander);
-        // arm.action(teleopCommander);
+        arm.action(teleopCommander);
         arm.brakeMode();
         hopper.HopperPeriodic(teleopCommander);
     }

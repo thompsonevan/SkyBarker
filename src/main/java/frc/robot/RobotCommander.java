@@ -23,4 +23,5 @@ public abstract class RobotCommander {
     public abstract double armElbow();
     public abstract boolean hopperOverrideLeft();
     public abstract boolean hopperOverrideRight();
+    public abstract boolean getAutoBalance();
 }

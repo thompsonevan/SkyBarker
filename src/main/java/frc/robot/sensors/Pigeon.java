@@ -31,12 +31,22 @@ public class Pigeon{
         return pigeon.getYaw();
     }
 
+    public static double getPitch(){
+        return pigeon.getPitch();
+    }
+
+    public static double getRoll(){
+        return pigeon.getRoll();
+    }
+
     public static Rotation2d getRotation2d(){
         return Rotation2d.fromDegrees(getAngle());
     }
 
     public void logData() {
         SmartDashboard.putNumber("Theta", getAngle());
+        SmartDashboard.putNumber("Pitch", getPitch());
+        SmartDashboard.putNumber("Roll", getRoll());
 
         HotLogger.Log("Theta", getAngle());
     }

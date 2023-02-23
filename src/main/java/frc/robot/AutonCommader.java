@@ -123,4 +123,10 @@ public class AutonCommader extends RobotCommander{
         // No hopper override in auton
         return false;
     }
+
+    @Override
+    public boolean getAutoBalance() {
+        // TODO Auto-generated method stub
+        return auton.autoBalance;
+    }
 }

@@ -17,7 +17,8 @@ import edu.wpi.first.math.trajectory.Trajectory.State;
 public class AutonLeft1Balance extends AutonBase{
     enum AutoState {
         firstPlace,
-        chargingStation,
+        chargingStation1,
+        chargingStation2,
         end
     }
 
@@ -29,8 +30,9 @@ public class AutonLeft1Balance extends AutonBase{
 
     Trajectory trajectory;
 
-    List<Pose2d> path = List.of(new Pose2d(new Translation2d(1.75,4.45), Rotation2d.fromDegrees(-90)),
-                                new Pose2d(new Translation2d(3.9,2.9), Rotation2d.fromDegrees(-90)));
+    List<Pose2d> path = List.of(new Pose2d(new Translation2d(0,0), Rotation2d.fromDegrees(-90)),
+                                new Pose2d(new Translation2d(0,-2), Rotation2d.fromDegrees(-90)), // x - 2.15
+                                new Pose2d(new Translation2d(2,-2), Rotation2d.fromDegrees(-90))); // y - -1.55
 
     public AutonLeft1Balance(){
         reset();
@@ -63,16 +65,34 @@ public class AutonLeft1Balance extends AutonBase{
 
                     timer.reset();
 
-                    autoState = AutoState.chargingStation;
+                    autoState = AutoState.chargingStation1;
                 }
             break;
-            case chargingStation:
+            case chargingStation1:
                 driving = true;
                 armPos = ArmPos.packagePos;
                 intakeOn = false;
 
                 desState = getState(timer.get(), trajectory, path.get(point).getRotation());
+
+                if(timer.get() > trajectory.getTotalTimeSeconds()){
+                    trajectory = createTrajectory(path.get(point), path.get(point+1));
+            
+                    Drivetrain.setPose(path.get(point), path.get(point).getRotation());
+
+                    point++;
+
+                    timer.reset();
+
+                    autoState = AutoState.chargingStation2;
+                }
             break;
+            case chargingStation2:
+                driving = true;
+                armPos = ArmPos.packagePos;
+                intakeOn = false;
+
+                desState = getState(timer.get(), trajectory, path.get(point).getRotation());
             case end:
 
             break;

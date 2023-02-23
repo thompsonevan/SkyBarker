@@ -79,7 +79,9 @@ public class AutonLeft2Balance extends AutonBase{
                 
                 desState = getState(timer.get(), trajectory, path.get(point).getRotation());
 
-                if(timer.get() > trajectory.getTotalTimeSeconds()){
+                if(Math.abs(Drivetrain.getPose().getX() - path.get(point).getX()) < .1 &&
+                   Math.abs(Drivetrain.getPose().getY() - path.get(point).getY()) < .1 &&
+                   Math.abs(Drivetrain.getPose().getRotation().getDegrees() - path.get(point).getRotation().getDegrees()) < 5){
                     timer.reset();
 
                     autoState = AutoState.pickUpObject;
@@ -90,7 +92,7 @@ public class AutonLeft2Balance extends AutonBase{
                 armPos = ArmPos.packagePos;
                 intakeOn = true;
 
-                if(timer.get() > 3){
+                if(timer.get() > 1){
                     trajectory = createTrajectory(path.get(point), path.get(point+1));
             
                     Drivetrain.setPose(path.get(point), path.get(point).getRotation());
@@ -109,7 +111,9 @@ public class AutonLeft2Balance extends AutonBase{
 
                 desState = getState(timer.get(), trajectory, path.get(point).getRotation());
 
-                if(timer.get() > trajectory.getTotalTimeSeconds()){
+                if(Math.abs(Drivetrain.getPose().getX() - path.get(point).getX()) < .1 &&
+                Math.abs(Drivetrain.getPose().getY() - path.get(point).getY()) < .1 &&
+                Math.abs(Drivetrain.getPose().getRotation().getDegrees() - path.get(point).getRotation().getDegrees()) < 5){
                     timer.reset();
 
                     autoState = AutoState.secondPlace;

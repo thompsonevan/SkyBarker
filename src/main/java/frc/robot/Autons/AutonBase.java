@@ -23,6 +23,7 @@ public abstract class AutonBase {
     public boolean intakeOn;
     public boolean pickUpObject;
     public boolean driving;
+    public boolean autoBalance;
 
     public abstract void runAuto();
     public abstract void reset();

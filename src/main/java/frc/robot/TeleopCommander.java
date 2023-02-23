@@ -219,42 +219,16 @@ public class TeleopCommander extends RobotCommander{
     }
 
     public ArmPos getArmPosition(){
-        if(operator.getYButton()){
-            yButtonPressed = true;
-            aButtonPressed = false;
-            bButtonPressed = false;
-            xButtonPressed = false;
-        } else if(operator.getAButton()){
-            yButtonPressed = false;
-            aButtonPressed = true;
-            bButtonPressed = false;
-            xButtonPressed = false;
-        } else if(operator.getBButton()){
-            yButtonPressed = false;
-            aButtonPressed = false;
-            bButtonPressed = true;
-            xButtonPressed = false;
-        } else if(operator.getXButton()){
-            yButtonPressed = false;
-            aButtonPressed = false;
-            bButtonPressed = false;
-            xButtonPressed = true;
-        }
-
         if (getManualMode()){
-            yButtonPressed = false;
-            aButtonPressed = false;
-            bButtonPressed = false;
-            xButtonPressed = false;
             return ArmPos.manual;
         } else {
-            if(yButtonPressed){
+            if(operator.getYButton()){
                 return ArmPos.topNode;
-            } else if (aButtonPressed){
+            } else if (operator.getYButton()){
                 return ArmPos.packagePos;
-            } else if (bButtonPressed){
+            } else if (operator.getBButton()){
                 return ArmPos.middleNode;
-            } else if (xButtonPressed){
+            } else if (operator.getXButton()){
                 return ArmPos.lowerNode;
             } else {
                 return ArmPos.stay;
@@ -310,5 +284,11 @@ public class TeleopCommander extends RobotCommander{
     @Override
     public boolean hopperOverrideRight() {
         return operator.getBButton();
+    }
+
+    @Override
+    public boolean getAutoBalance() {
+        // TODO Auto-generated method stub
+        return driver.getYButton();
     }
 }
