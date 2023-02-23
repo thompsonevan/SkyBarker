@@ -4,6 +4,8 @@ import java.util.List;
 
 import org.hotutilites.hotlogger.HotLogger;
 
+import com.ctre.phoenix.motorcontrol.ControlMode;
+import com.ctre.phoenix.motorcontrol.can.VictorSPX;
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 
@@ -39,11 +41,19 @@ public class Robot extends TimedRobot {
     private AutonLeft2Balance autonLeft;
     private AutonLeft1Balance autonLeft1Balance;
     private AutoBalance autoBalance;
+    // private Auton1 auton;
+    // private Auton67 auton67;
+    private AutonLeft autonLeft;
+
+    private int autonSelection = 2;
+    private VictorSPX gripper;
+
 
     private int autonSelection = 3;
 
     @Override
     public void robotInit() {
+        gripper = new VictorSPX(Constants.GRIPPER);
         HotLogger.Setup("Theta", "Left Front Absolute", "Left Front Assumed",
         "Right Front Absolute", "Right Front Assumed",
         "Left Rear Absolute", "Left Rear Assumed",
@@ -69,7 +79,7 @@ public class Robot extends TimedRobot {
 
     @Override
     public void robotPeriodic() {
-        arm.logData();
+        arm.updatePose();
         camera.logData();
         pigeon.logData();
         intake.logData();   
@@ -131,7 +141,7 @@ public class Robot extends TimedRobot {
         intake.setBrakeMode();
         drivetrain.zero();
         Pigeon.zeroSensor();
-        arm.armZeroSensorPos();
+        // arm.armZeroSensorPos();
     }
 
     @Override
@@ -141,6 +151,12 @@ public class Robot extends TimedRobot {
         intake.IntakePeriodic(teleopCommander);
         arm.action(teleopCommander);
         arm.brakeMode();
-        hopper.HopperPeriodic(teleopCommander);
+        if (Math.abs(teleopCommander.operator.getRightY()) > .15){
+            gripper.set(ControlMode.PercentOutput, teleopCommander.operator.getRightY()*.8);
+        }
+        else {
+            gripper.set(ControlMode.PercentOutput, 0.0);
+        }
+        //hopper.HopperPeriodic(teleopCommander);
     }
 }

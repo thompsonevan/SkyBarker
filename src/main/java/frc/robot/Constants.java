@@ -69,12 +69,19 @@ public final class Constants {
     public static final double HOPPER_SPEED = 0;
 
     //Arm CAN ID
+    public static final int GRIPPER = 15;
     public static final int SHOULDER = 13;
     public static final int EXTENSION = 14;
     public static final int ELBOW = 17;
     public static final int SHOULDER_ENCODER = 22;
     public static final int ELBOW_ENCODER = 25;
-    
+
+    public static final double SHOULDER_RATIO = (5.0)*(5.0)*(72.0/18.0)*(60.0/12.0) / 360.0;  // Ratio
+    public static final double EXTENSION_RATIO = (50.0/12.0)*(50.0/20.0)*(2.0)/(2.0*Math.PI);  // Revolutions to Inches
+    public static final double WRIST_RATIO = (9.0)*(7.0)*(96.0/36.0);  // Ratio
+
+    public static final double SHOULDER_OFFSET = 161.016;
+    public static final double ELBOW_OFFSET = 48.516;
 
     //Arm pid motion magic gains
     public static final double SHOULDER_MOTOR_kF = 0;
@@ -88,8 +95,9 @@ public final class Constants {
     public static final double EXTENSION_MOTOR_kD = 0;
 
     public static final double ELBOW_MOTOR_kF = 0;
-    public static final double ELBOW_MOTOR_kP = 0.2;
-    public static final double ELBOW_MOTOR_kI = 0;
+    public static final double ELBOW_MOTOR_kP = 4;
+    public static final double ELBOW_MOTOR_kI = .012;
+    public static final double ELBOW_MOTOR_kI_ZONE = 12;
     public static final double ELBOW_MOTOR_kD = 0;
 
     //Arm motion magic parameters
@@ -99,8 +107,8 @@ public final class Constants {
     public static final double EXTENSION_CRUISEVELOCITY = 16000 * 6;
     public static final double EXTENSION_ACCEL = 6000 * 6;
 
-    public static final double ELBOW_CRUIESVELOCITY = 1600 * 6;
-    public static final double ELBOW_ACCEL = 600 * 6;
+    public static final double ELBOW_CRUIESVELOCITY = 1600 * 24;
+    public static final double ELBOW_ACCEL = 600 * 24;
 
     //Arm pid slots
     public static final int SHOULDER_PID_SLOT = 0;
@@ -109,13 +117,14 @@ public final class Constants {
     public static final int EXTENSION_PID_SLOT = 0;
     public static final int EXTENSION_K_PID_LOOP_IDX = 0;
 
+
     public static final int ELBOW_PID_SLOT = 0;
     public static final int ELBOW_K_PID_LOOP_IDX = 0;
 
     public static final double FALCON500_TICKS_PER_REV = 2048;
-    public static final double BAG_TICKS_PER_REV = 2048;
-    public static final double SHOULDER_DEGREES_TO_TICKS = -FALCON500_TICKS_PER_REV * 1.3786;
-    public static final double ELBOW_DEGREES_TO_TICKS = BAG_TICKS_PER_REV * 1;
+    // public static final double BAG_TICKS_PER_REV = 2048;
+    // public static final double SHOULDER_DEGREES_TO_TICKS = -FALCON500_TICKS_PER_REV * 1.3786;
+    // public static final double ELBOW_DEGREES_TO_TICKS = BAG_TICKS_PER_REV * 1;
 
     //Arm motion magic set positions
     public static final double SHOULDER_TARGET_POSITION_LOW = 90 * SHOULDER_DEGREES_TO_TICKS; // In degrees
@@ -130,12 +139,16 @@ public final class Constants {
     public static final double EXTENSION_TARGET_POSITION_HIGH = 50 * FALCON500_TICKS_PER_REV;
     public static final double ELBOW_TARGET_POSITION_HIGH = 0 * ELBOW_DEGREES_TO_TICKS;
 
-    public static final double SHOULDER_TARGET_POSITION_PACKAGE = 0;
-    public static final double EXTENSION_TARGET_POSITION_PACKAGE = 0;
-    public static final double ELBOW_TARGET_POSITION_PACKAGE = 0;
+    // public static final double SHOULDER_TARGET_POSITION_PACKAGE = 0;
+    // public static final double EXTENSION_TARGET_POSITION_PACKAGE = 0;
+    // public static final double ELBOW_TARGET_POSITION_PACKAGE = 0;
 
     public static final int ARM_TIMEOUT = 200;
 
+
+    // Extension Constraints
+    
+    public static final double MAXIMUM_EXTENSION_INCHES = 10;
 
 }
 
