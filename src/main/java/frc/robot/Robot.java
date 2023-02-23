@@ -43,13 +43,9 @@ public class Robot extends TimedRobot {
     private AutoBalance autoBalance;
     // private Auton1 auton;
     // private Auton67 auton67;
-    private AutonLeft autonLeft;
 
     private int autonSelection = 2;
     private VictorSPX gripper;
-
-
-    private int autonSelection = 3;
 
     @Override
     public void robotInit() {
@@ -92,7 +88,6 @@ public class Robot extends TimedRobot {
     @Override
     public void disabledInit() {
         drivetrain.zero();
-        arm.armZeroSensorPos();
         intake.setCoastMode();
         SmartDashboard.putString("Robot Mode", "Disabled");
     }

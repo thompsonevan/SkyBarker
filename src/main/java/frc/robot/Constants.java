@@ -127,21 +127,21 @@ public final class Constants {
     // public static final double ELBOW_DEGREES_TO_TICKS = BAG_TICKS_PER_REV * 1;
 
     //Arm motion magic set positions
-    public static final double SHOULDER_TARGET_POSITION_LOW = 90 * SHOULDER_DEGREES_TO_TICKS; // In degrees
-    public static final double EXTENSION_TARGET_POSITION_LOW = 0 * FALCON500_TICKS_PER_REV; // In Revolutions
-    public static final double ELBOW_TARGET_POSITION_LOW = 0 * ELBOW_DEGREES_TO_TICKS;
+    public static final double SHOULDER_TARGET_POSITION_LOW = 90; // In degrees
+    public static final double EXTENSION_TARGET_POSITION_LOW = 0; // In Revolutions
+    public static final double ELBOW_TARGET_POSITION_LOW = 0;
 
-    public static final double SHOULDER_TARGET_POSITION_MIDDLE = 80 * SHOULDER_DEGREES_TO_TICKS;
-    public static final double EXTENSION_TARGET_POSITION_MIDDLE = 0 * FALCON500_TICKS_PER_REV;
-    public static final double ELBOW_TARGET_POSITION_MIDDLE = 0 * ELBOW_DEGREES_TO_TICKS;
+    public static final double SHOULDER_TARGET_POSITION_MIDDLE = 80;
+    public static final double EXTENSION_TARGET_POSITION_MIDDLE = 0;
+    public static final double ELBOW_TARGET_POSITION_MIDDLE = 0;
 
-    public static final double SHOULDER_TARGET_POSITION_HIGH = 45 * SHOULDER_DEGREES_TO_TICKS;
-    public static final double EXTENSION_TARGET_POSITION_HIGH = 50 * FALCON500_TICKS_PER_REV;
-    public static final double ELBOW_TARGET_POSITION_HIGH = 0 * ELBOW_DEGREES_TO_TICKS;
+    public static final double SHOULDER_TARGET_POSITION_HIGH = 45;
+    public static final double EXTENSION_TARGET_POSITION_HIGH = 50;
+    public static final double ELBOW_TARGET_POSITION_HIGH = 0;
 
-    // public static final double SHOULDER_TARGET_POSITION_PACKAGE = 0;
-    // public static final double EXTENSION_TARGET_POSITION_PACKAGE = 0;
-    // public static final double ELBOW_TARGET_POSITION_PACKAGE = 0;
+    public static final double SHOULDER_TARGET_POSITION_PACKAGE = 0;
+    public static final double EXTENSION_TARGET_POSITION_PACKAGE = 0;
+    public static final double ELBOW_TARGET_POSITION_PACKAGE = 0;
 
     public static final int ARM_TIMEOUT = 200;
 
