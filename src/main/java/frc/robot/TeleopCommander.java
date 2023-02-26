@@ -21,6 +21,8 @@ public class TeleopCommander extends RobotCommander{
 
     private boolean cubeMode = true; // true ball, false cone
 
+    private boolean slowSpeed = false;
+
     public TeleopCommander() {
         driver = new XboxController(0);
         operator = new XboxController(1);
@@ -28,19 +30,31 @@ public class TeleopCommander extends RobotCommander{
 
     @Override
     public double getForwardCommand() {
-        return -(modifyAxis(driver.getLeftY()) * MAX_VELOCITY_METERS_PER_SECOND);
+        if(!getDriverSlowSpeed()){
+            return (modifyAxis(driver.getLeftY()) * MAX_VELOCITY_METERS_PER_SECOND);
+        } else {
+            return (modifyAxis(driver.getLeftY()) * MAX_VELOCITY_METERS_PER_SECOND) * SLOW_SPEED_MULTIPLIER;
+        }
     }
 
     @Override
     public double getStrafeCommand() {
-        return -(modifyAxis(driver.getLeftX()) * MAX_VELOCITY_METERS_PER_SECOND);
+        if(!getDriverSlowSpeed()){
+            return (modifyAxis(driver.getLeftX()) * MAX_VELOCITY_METERS_PER_SECOND);
+        } else {
+            return (modifyAxis(driver.getLeftX()) * MAX_VELOCITY_METERS_PER_SECOND) * SLOW_SPEED_MULTIPLIER;
+        }
     }
 
     @Override
     public double getTurnCommand() {
         double value = deadband(Math.abs(driver.getRightX()) * driver.getRightX(), 0.13, 0.4) * (MAX_ANGULAR_VELOCITY_RADIANS_PER_SECOND);
-
-        return -value;
+        
+        if(!getDriverSlowSpeed()){
+            return value;
+        } else {
+            return value * SLOW_SPEED_MULTIPLIER;
+        }
     }
 
     @Override
@@ -72,6 +86,16 @@ public class TeleopCommander extends RobotCommander{
         }
     }
     
+    public boolean getDriverSlowSpeed(){
+        if(driver.getLeftBumper()){
+            slowSpeed = true;
+        } else if(driver.getRightBumper()){
+            slowSpeed = false;
+        }
+
+        return slowSpeed;
+    }
+
     public double[] getIntakePosition() {
         boolean Dpad_right = (operator.getPOV() > 70 && operator.getPOV() < 110);
         boolean Dpad_left = (operator.getPOV() > 250 && operator.getPOV() < 290);
@@ -195,42 +219,16 @@ public class TeleopCommander extends RobotCommander{
     }
 
     public ArmPos getArmPosition(){
-        if(operator.getYButton()){
-            yButtonPressed = true;
-            aButtonPressed = false;
-            bButtonPressed = false;
-            xButtonPressed = false;
-        } else if(operator.getAButton()){
-            yButtonPressed = false;
-            aButtonPressed = true;
-            bButtonPressed = false;
-            xButtonPressed = false;
-        } else if(operator.getBButton()){
-            yButtonPressed = false;
-            aButtonPressed = false;
-            bButtonPressed = true;
-            xButtonPressed = false;
-        } else if(operator.getXButton()){
-            yButtonPressed = false;
-            aButtonPressed = false;
-            bButtonPressed = false;
-            xButtonPressed = true;
-        }
-
         if (getManualMode()){
-            yButtonPressed = false;
-            aButtonPressed = false;
-            bButtonPressed = false;
-            xButtonPressed = false;
             return ArmPos.manual;
         } else {
-            if(yButtonPressed){
+            if(operator.getYButton()){
                 return ArmPos.topNode;
-            } else if (aButtonPressed){
+            } else if (operator.getYButton()){
                 return ArmPos.packagePos;
-            } else if (bButtonPressed){
+            } else if (operator.getBButton()){
                 return ArmPos.middleNode;
-            } else if (xButtonPressed){
+            } else if (operator.getXButton()){
                 return ArmPos.lowerNode;
             } else {
                 return ArmPos.stay;
@@ -286,5 +284,11 @@ public class TeleopCommander extends RobotCommander{
     @Override
     public boolean hopperOverrideRight() {
         return operator.getBButton();
+    }
+
+    @Override
+    public boolean getAutoBalance() {
+        // TODO Auto-generated method stub
+        return driver.getYButton();
     }
 }

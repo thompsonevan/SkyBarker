@@ -31,7 +31,6 @@ public class Intake {
         angleMotor = new CANSparkMax(10, MotorType.kBrushless);
         angleEncoder = new CANCoder(23);
         pidController = new PIDController(.017, 0.0015, 0.000075); //.0175, 0.001, 0.000075
-        angleMotor.setIdleMode(IdleMode.kBrake);
         startPosition = angleEncoder.getAbsolutePosition();
 
         // //Configure sensor source for primary PID
@@ -64,6 +63,14 @@ public class Intake {
         // /* Zero the sensor once on robot boot up */
         // angleMotor.setSelectedSensorPosition(0, SHOULDER_K_PID_LOOP_IDX, ARM_TIMEOUT);
 
+    }
+
+    public void setBrakeMode(){
+        angleMotor.setIdleMode(IdleMode.kBrake);
+    }
+
+    public void setCoastMode(){
+        angleMotor.setIdleMode(IdleMode.kCoast);
     }
 
     public void IntakePeriodic(RobotCommander commander){

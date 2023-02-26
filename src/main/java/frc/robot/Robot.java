@@ -4,6 +4,8 @@ import java.util.List;
 
 import org.hotutilites.hotlogger.HotLogger;
 
+import com.ctre.phoenix.motorcontrol.ControlMode;
+import com.ctre.phoenix.motorcontrol.can.VictorSPX;
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 
@@ -17,9 +19,12 @@ import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-// import frc.robot.Autons.Auton1;
-// import frc.robot.Autons.Auton67;
-import frc.robot.Autons.AutonLeft;
+import frc.robot.Autons.AutoBalance;
+import frc.robot.Autons.DriveToPoint;
+// import frc.robot.Autons.AutonLeft1Balance;
+// import frc.robot.Autons.AutonLeft2Balance;
+// import frc.robot.Autons.DriveToPoint;
+// import frc.robot.Autons.TestAuto;
 import frc.robot.sensors.Camera;
 import frc.robot.sensors.Pigeon;
 import frc.robot.subsystems.Arm;
@@ -36,16 +41,20 @@ public class Robot extends TimedRobot {
     private Pigeon pigeon;
     private Camera camera;
     private AutonCommader autonCommader;
+    // private AutonLeft2Balance autonLeft;
+    // private AutonLeft1Balance autonLeft1Balance;
+    private AutoBalance autoBalance;
+    // private TestAuto testAuto;
     // private Auton1 auton;
     // private Auton67 auton67;
-    private AutonLeft autonLeft;
+    private DriveToPoint driveToPoint;
 
     private int autonSelection = 2;
-
-
+    private VictorSPX gripper;
 
     @Override
     public void robotInit() {
+        gripper = new VictorSPX(Constants.GRIPPER);
         HotLogger.Setup("Theta", "Left Front Absolute", "Left Front Assumed",
         "Right Front Absolute", "Right Front Assumed",
         "Left Rear Absolute", "Left Rear Assumed",
@@ -63,28 +72,34 @@ public class Robot extends TimedRobot {
         drivetrain = new Drivetrain();
         autonCommader = new AutonCommader();
         arm = new Arm();
-        // auton = new Auton1();
-        // auton67 = new Auton67();
-        autonLeft = new AutonLeft();
+        // autonLeft1Balance = new AutonLeft1Balance();
+        // autonLeft = new AutonLeft2Balance();
         hopper = new Hopper();
+        autoBalance = new AutoBalance();
+        // testAuto = new TestAuto();
+        driveToPoint = new DriveToPoint();
     }
 
     @Override
     public void robotPeriodic() {
-        arm.logData();
+        arm.updatePose();
         camera.logData();
         pigeon.logData();
-        intake.logData();   
+        intake.logData();
         hopper.logData();
         SmartDashboard.putNumber("Match Time", DriverStation.getMatchTime());
         SmartDashboard.putNumber("FPGA Time", Timer.getFPGATimestamp());
         drivetrain.updatePose();
+
+        SmartDashboard.putNumber("_Pose X", Camera.getRightBotPose().getX());
+        SmartDashboard.putNumber("_Pose Y", Camera.getRightBotPose().getY());
+        SmartDashboard.putNumber("_Pose Degrees", Camera.getRightBotPose().getRotation().getDegrees());
+
     }
 
     @Override
     public void disabledInit() {
-        drivetrain.zero();
-        arm.armZeroSensorPos();
+        intake.setCoastMode();
         SmartDashboard.putString("Robot Mode", "Disabled");
     }
 
@@ -98,18 +113,22 @@ public class Robot extends TimedRobot {
     public void autonomousInit() {
         SmartDashboard.putString("Robot Mode", "Autonomous");
 
-        if(autonSelection == 0){
-            // autonCommader.initAuton(auton);
-        } else if(autonSelection == 1){
-            // autonCommader.initAuton(auton67);
-        } else if(autonSelection == 2){
-            autonCommader.initAuton(autonLeft);
-        } else {
-            // autonCommader.initAuton(auton);
-        }
+        // if(autonSelection == 0){
+        //     // autonCommader.initAuton(auton);
+        // } else if(autonSelection == 1){
+        //     autonCommader.initAuton(autonLeft1Balance);
+        // } else if(autonSelection == 2){
+        //     autonCommader.initAuton(driveToPoint);
+        // } else if(autonSelection == 3){
+        //     autonCommader.initAuton(autoBalance);
+        //     // autonCommader.initAuton(auton);
+        // }
 
-        drivetrain.zero();
+        autonCommader.initAuton(driveToPoint);
+
+        drivetrain.zero(-90);
         autonCommader.auton.reset();
+        Pigeon.zeroSensor(-90);
         // Drivetrain.setPose(new Pose2d(0,0, Rotation2d.fromDegrees(-180)), Rotation2d.fromDegrees(-180));
     }
 
@@ -122,29 +141,30 @@ public class Robot extends TimedRobot {
         intake.IntakePeriodic(autonCommader);
         hopper.HopperPeriodic(autonCommader);
     }
-
-    private double[] rip2;
     
     @Override
     public void teleopInit() {
-        // drivetrain.setBrakeMode(true);
         SmartDashboard.putString("Robot Mode", "Teleop");
 
-        drivetrain.zero();
-        Pigeon.zeroSensor();
-        arm.armZeroSensorPos();
+        intake.setBrakeMode();
+        drivetrain.zero(-90);
+        Pigeon.zeroSensor(-90);
+        // arm.armZeroSensorPos();
     }
 
     @Override
     public void teleopPeriodic() {
         pigeon.enabledAction(teleopCommander);
-        drivetrain.teleAction(   teleopCommander);
-        rip2 = teleopCommander.getIntakePosition();
+        drivetrain.teleAction(teleopCommander);
         intake.IntakePeriodic(teleopCommander);
-        SmartDashboard.putNumber("rip1", rip2[0]);
-        SmartDashboard.putNumber("rip2", rip2[1]);
         arm.action(teleopCommander);
         arm.brakeMode();
+        if (Math.abs(teleopCommander.operator.getRightY()) > .15){
+            gripper.set(ControlMode.PercentOutput, .5);
+        }
+        else {
+            gripper.set(ControlMode.PercentOutput, 0.0);
+        }
         hopper.HopperPeriodic(teleopCommander);
     }
 }

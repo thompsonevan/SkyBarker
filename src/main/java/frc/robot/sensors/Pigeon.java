@@ -2,6 +2,8 @@ package frc.robot.sensors;
 
 import com.ctre.phoenix.sensors.Pigeon2;
 import org.hotutilites.hotlogger.HotLogger;
+
+import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.RobotCommander;
@@ -31,12 +33,22 @@ public class Pigeon{
         return pigeon.getYaw();
     }
 
+    public static double getPitch(){
+        return pigeon.getPitch();
+    }
+
+    public static double getRoll(){
+        return pigeon.getRoll();
+    }
+
     public static Rotation2d getRotation2d(){
-        return Rotation2d.fromDegrees(getAngle());
+        return Rotation2d.fromDegrees(MathUtil.inputModulus(getAngle(), -180, 180));
     }
 
     public void logData() {
         SmartDashboard.putNumber("Theta", getAngle());
+        SmartDashboard.putNumber("Pitch", getPitch());
+        SmartDashboard.putNumber("Roll", getRoll());
 
         HotLogger.Log("Theta", getAngle());
     }
