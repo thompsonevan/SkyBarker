@@ -31,18 +31,18 @@ public class TeleopCommander extends RobotCommander{
     @Override
     public double getForwardCommand() {
         if(!getDriverSlowSpeed()){
-            return -(modifyAxis(driver.getLeftY()) * MAX_VELOCITY_METERS_PER_SECOND);
+            return (modifyAxis(driver.getLeftY()) * MAX_VELOCITY_METERS_PER_SECOND);
         } else {
-            return -(modifyAxis(driver.getLeftY()) * MAX_VELOCITY_METERS_PER_SECOND) * SLOW_SPEED_MULTIPLIER;
+            return (modifyAxis(driver.getLeftY()) * MAX_VELOCITY_METERS_PER_SECOND) * SLOW_SPEED_MULTIPLIER;
         }
     }
 
     @Override
     public double getStrafeCommand() {
         if(!getDriverSlowSpeed()){
-            return -(modifyAxis(driver.getLeftX()) * MAX_VELOCITY_METERS_PER_SECOND);
+            return (modifyAxis(driver.getLeftX()) * MAX_VELOCITY_METERS_PER_SECOND);
         } else {
-            return -(modifyAxis(driver.getLeftX()) * MAX_VELOCITY_METERS_PER_SECOND) * SLOW_SPEED_MULTIPLIER;
+            return (modifyAxis(driver.getLeftX()) * MAX_VELOCITY_METERS_PER_SECOND) * SLOW_SPEED_MULTIPLIER;
         }
     }
 
@@ -51,9 +51,9 @@ public class TeleopCommander extends RobotCommander{
         double value = deadband(Math.abs(driver.getRightX()) * driver.getRightX(), 0.13, 0.4) * (MAX_ANGULAR_VELOCITY_RADIANS_PER_SECOND);
         
         if(!getDriverSlowSpeed()){
-            return -value;
+            return value;
         } else {
-            return -value * SLOW_SPEED_MULTIPLIER;
+            return value * SLOW_SPEED_MULTIPLIER;
         }
     }
 

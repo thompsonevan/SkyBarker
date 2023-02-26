@@ -13,12 +13,16 @@
 // import edu.wpi.first.math.geometry.Translation2d;
 // import edu.wpi.first.math.trajectory.Trajectory;
 // import edu.wpi.first.math.trajectory.Trajectory.State;
+// import edu.wpi.first.math.util.Units;
 
-// public class AutonLeft1Balance extends AutonBase{
+// public class TestAuto extends AutonBase{
 //     enum AutoState {
 //         firstPlace,
-//         chargingStation1,
-//         chargingStation2,
+//         driveToObject1,
+//         pause,
+//         driveToObject2,
+//         score2,
+        
 //         end
 //     }
 
@@ -31,10 +35,10 @@
 //     Trajectory trajectory;
 
 //     List<Pose2d> path = List.of(new Pose2d(new Translation2d(0,0), Rotation2d.fromDegrees(-90)),
-//                                 new Pose2d(new Translation2d(0,-2), Rotation2d.fromDegrees(-90)), // x - 2.15
-//                                 new Pose2d(new Translation2d(2,-2), Rotation2d.fromDegrees(-90))); // y - -1.55
-
-//     public AutonLeft1Balance(){
+//                                 new Pose2d(new Translation2d(Units.feetToMeters(14),-Units.feetToMeters(5)), Rotation2d.fromDegrees(-45)),
+//                                 new Pose2d(new Translation2d(0,0), Rotation2d.fromDegrees(-90)));
+    
+//     public TestAuto(){
 //         reset();
 //     }
 
@@ -57,7 +61,7 @@
 //                 intakeOn = false;
 
 //                 if(timer.get() > 3){
-//                     trajectory = createTrajectory(path.get(point), path.get(point+1));
+//                     trajectory = createTrajectory(path.get(point), path.get(point+1), Rotation2d.fromDegrees(0), Rotation2d.fromDegrees(-45));
             
 //                     Drivetrain.setPose(path.get(point), path.get(point).getRotation());
 
@@ -65,36 +69,50 @@
 
 //                     timer.reset();
 
-//                     autoState = AutoState.chargingStation1;
+//                     autoState = AutoState.driveToObject1;
 //                 }
 //             break;
-//             case chargingStation1:
+//             case driveToObject1:
 //                 driving = true;
 //                 armPos = ArmPos.packagePos;
-//                 intakeOn = false;
-
+//                 intakeOn = true;
+                
 //                 desState = getState(timer.get(), trajectory, path.get(point).getRotation());
 
 //                 if(timer.get() > trajectory.getTotalTimeSeconds()){
-//                     trajectory = createTrajectory(path.get(point), path.get(point+1));
-            
-//                     Drivetrain.setPose(path.get(point), path.get(point).getRotation());
+//                     timer.reset();
+
+//                     autoState = AutoState.pause;
+//                 }
+//             break;
+//             case pause:
+//                 driving = false;
+//                 if(timer.get() > 1){
+//                     Pose2d newEnd = new Pose2d(path.get(point+1).getTranslation(), Drivetrain.getPose().getRotation());
+//                     trajectory = createTrajectory(path.get(point), newEnd);
 
 //                     point++;
 
 //                     timer.reset();
 
-//                     autoState = AutoState.chargingStation2;
+//                     autoState = AutoState.driveToObject2;
 //                 }
 //             break;
-//             case chargingStation2:
+//             case driveToObject2:
 //                 driving = true;
 //                 armPos = ArmPos.packagePos;
-//                 intakeOn = false;
-
+//                 intakeOn = true;
+                
 //                 desState = getState(timer.get(), trajectory, path.get(point).getRotation());
-//             case end:
 
+//                 if(timer.get() > trajectory.getTotalTimeSeconds()){                    
+//                     timer.reset();
+
+//                     autoState = AutoState.end;
+//                 }
+//             break;
+//             case end:
+//                 driving = false;
 //             break;
 //         }
 //     }

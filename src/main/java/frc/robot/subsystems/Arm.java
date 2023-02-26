@@ -41,7 +41,6 @@ public class Arm {
     private Elbow elbow;
 
     public Arm(){
-
         extension = new Extension(Constants.EXTENSION);
         elbow = new Elbow(Constants.ELBOW, Constants.ELBOW_ENCODER);
 
@@ -90,12 +89,6 @@ public class Arm {
         shoulder.set(ControlMode.PercentOutput, 0);
     }
 
-    // public void armZeroSensorPos(){
-    //     shoulder.setSelectedSensorPosition(shoulderEncoder.getAbsolutePosition() * SHOULDER_DEGREES_TO_TICKS);
-    //     extension.setSelectedSensorPosition(0);
-    //     elbow.setSelectedSensorPosition(0);//elbowEncoder.getAbsolutePosition() * ELBOW_DEGREES_TO_TICKS
-    // }
-
     public void setPosition(double shoudlerPos, double extensionPos, double elbowPos){
         shoulder.set(ControlMode.MotionMagic, shoudlerPos);
     }
@@ -107,60 +100,6 @@ public class Arm {
             elbow.setMotorCommand(commander.operator.getLeftY()*.8);
         }
     }
-
-
-    // public void action(RobotCommander commander){
-    //     if(commander.getArmReset()){
-    //         armZeroSensorPos();
-    //     }
-
-    //     if(commander.getArmPosition() == ArmPos.packagePos){
-    //         setPosition(SHOULDER_TARGET_POSITION_PACKAGE, EXTENSION_TARGET_POSITION_PACKAGE, ELBOW_TARGET_POSITION_PACKAGE);
-    //         shoulderDesPos = SHOULDER_TARGET_POSITION_PACKAGE;
-    //         extensionDesPos = EXTENSION_TARGET_POSITION_PACKAGE;
-    //         elbowDesPos = ELBOW_TARGET_POSITION_PACKAGE;
-    //     } else if (commander.getArmPosition() == ArmPos.lowerNode){
-    //         setPosition(SHOULDER_TARGET_POSITION_LOW, EXTENSION_TARGET_POSITION_LOW, ELBOW_TARGET_POSITION_LOW);
-    //         shoulderDesPos = SHOULDER_TARGET_POSITION_LOW;
-    //         extensionDesPos = EXTENSION_TARGET_POSITION_LOW;
-    //         elbowDesPos = ELBOW_TARGET_POSITION_LOW;
-    //     } else if (commander.getArmPosition() == ArmPos.middleNode){
-    //         setPosition(SHOULDER_TARGET_POSITION_MIDDLE, EXTENSION_TARGET_POSITION_MIDDLE, ELBOW_TARGET_POSITION_MIDDLE);
-    //         shoulderDesPos = SHOULDER_TARGET_POSITION_MIDDLE;
-    //         extensionDesPos = EXTENSION_TARGET_POSITION_MIDDLE;
-    //         elbowDesPos = ELBOW_TARGET_POSITION_MIDDLE;
-    //     } else if (commander.getArmPosition() == ArmPos.topNode){
-    //         setPosition(SHOULDER_TARGET_POSITION_HIGH, EXTENSION_TARGET_POSITION_HIGH, ELBOW_TARGET_POSITION_HIGH);
-    //         shoulderDesPos = SHOULDER_TARGET_POSITION_HIGH;
-    //         extensionDesPos = EXTENSION_TARGET_POSITION_HIGH;
-    //         elbowDesPos = ELBOW_TARGET_POSITION_HIGH;
-    //     } else if (commander.getArmPosition() == ArmPos.stay){
-    //         armPercentOutZero();
-    //     } else if(commander.getArmPosition() == ArmPos.manual){
-    //         if ((shoulder.getSelectedSensorPosition() / FALCON500_TICKS_PER_REV) > 170 && commander.armShoulder() > 0){
-    //             shoulder.set(ControlMode.PercentOutput, 0);
-    //         } else if((shoulder.getSelectedSensorPosition() / FALCON500_TICKS_PER_REV) < -170  && commander.armShoulder() < 0){
-    //             shoulder.set(ControlMode.PercentOutput, 0);
-    //         } else{
-    //             shoulder.set(ControlMode.PercentOutput, commander.armShoulder());
-    //         }
-
-    //         if ((extension.getSelectedSensorPosition() / FALCON500_TICKS_PER_REV)> 70  && commander.armExtension() > 0){
-    //             extension.set(ControlMode.PercentOutput, 0);
-    //         } else if ((extension.getSelectedSensorPosition() / FALCON500_TICKS_PER_REV) < 5 && commander.armExtension() < 0){
-    //             extension.set(ControlMode.PercentOutput, 0);
-    //         } else{
-    //             extension.set(ControlMode.PercentOutput, commander.armExtension());
-    //         }
-
-    //         if(Math.abs(commander.operator.getRightX()) > .2){
-    //             elbow.set(ControlMode.PercentOutput, commander.operator.getRightX());
-    //         } else {
-    //             elbow.set(ControlMode.PercentOutput, 0);
-    //         }
-
-    //     }
-    // }
 
     public void updatePose(){
 

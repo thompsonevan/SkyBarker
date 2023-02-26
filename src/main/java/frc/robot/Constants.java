@@ -13,9 +13,9 @@ import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 public final class Constants {
     public static final boolean realBot = true;
 
-    public static final double DRIVETRAIN_TRACKWIDTH_METERS = 0.52705;
+    public static final double DRIVETRAIN_TRACKWIDTH_METERS = 0.57785;
 
-    public static final double DRIVETRAIN_WHEELBASE_METERS = 0.57785;
+    public static final double DRIVETRAIN_WHEELBASE_METERS = 0.52705;
 
     public static final double MAX_VOLTAGE = 12.0;
 
@@ -32,29 +32,29 @@ public final class Constants {
     public static final int FRONT_LEFT_MODULE_DRIVE_MOTOR = 1;
     public static final int FRONT_LEFT_MODULE_STEER_MOTOR = 2;
     public static final int FRONT_LEFT_MODULE_STEER_ENCODER = 18;
-    public static final double FRONT_LEFT_MODULE_STEER_OFFSET = -Math.toRadians(169.1015625);
+    public static final double FRONT_LEFT_MODULE_STEER_OFFSET = -Math.toRadians(349.365234375-180); // 169.1015625
 
     public static final int FRONT_RIGHT_MODULE_DRIVE_MOTOR = 3;
     public static final int FRONT_RIGHT_MODULE_STEER_MOTOR = 4;
     public static final int FRONT_RIGHT_MODULE_STEER_ENCODER = 19;
-    public static final double FRONT_RIGHT_MODULE_STEER_OFFSET = -Math.toRadians(183.251953125);
+    public static final double FRONT_RIGHT_MODULE_STEER_OFFSET = -Math.toRadians(3.779296875+180); //183.251953125
 
     public static final int BACK_LEFT_MODULE_DRIVE_MOTOR = 5;
     public static final int BACK_LEFT_MODULE_STEER_MOTOR = 6;
     public static final int BACK_LEFT_MODULE_STEER_ENCODER = 20;
-    public static final double BACK_LEFT_MODULE_STEER_OFFSET = -Math.toRadians(129.814453125);
+    public static final double BACK_LEFT_MODULE_STEER_OFFSET = -Math.toRadians(308.935546875-180); // 129.814453125
 
     public static final int BACK_RIGHT_MODULE_DRIVE_MOTOR = 7;
     public static final int BACK_RIGHT_MODULE_STEER_MOTOR = 8;
     public static final int BACK_RIGHT_MODULE_STEER_ENCODER = 21;
-    public static final double BACK_RIGHT_MODULE_STEER_OFFSET = -Math.toRadians(237.48046875);
+    public static final double BACK_RIGHT_MODULE_STEER_OFFSET = -Math.toRadians(55.72265625+180); //237.48046875
 
     public static final double SLOW_SPEED_MULTIPLIER = .5;
 
-    public static final double INTAKE_PACKAGE_POSITION = 90;
+    public static final double INTAKE_PACKAGE_POSITION = 100;
     public static final double INTAKE_STATION_POSITION = 121;
     public static final double INTAKE_COLLECT_POSITION = 177;
-    public static final double INTAKE_SPEED_CUBE = .5;
+    public static final double INTAKE_SPEED_CUBE = .55;
     public static final double INTAKE_SPEED_CONE = 1;
     public static final int INTAKE_TIMEOUT = 200;
     

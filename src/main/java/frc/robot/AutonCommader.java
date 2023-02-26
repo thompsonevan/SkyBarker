@@ -81,7 +81,7 @@ public class AutonCommader extends RobotCommander{
         // TODO Auto-generated method stub
         if(auton.intakeOn){
             intakeArray[0] = Constants.INTAKE_COLLECT_POSITION;
-            intakeArray[1] = Constants.INTAKE_SPEED_CUBE;
+            intakeArray[1] = -Constants.INTAKE_SPEED_CUBE;
         } else {
             intakeArray[0] = Constants.INTAKE_PACKAGE_POSITION;
             intakeArray[1] = 0;

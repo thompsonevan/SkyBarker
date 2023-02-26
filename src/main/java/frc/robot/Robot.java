@@ -20,8 +20,11 @@ import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.Autons.AutoBalance;
-import frc.robot.Autons.AutonLeft1Balance;
-import frc.robot.Autons.AutonLeft2Balance;
+import frc.robot.Autons.DriveToPoint;
+// import frc.robot.Autons.AutonLeft1Balance;
+// import frc.robot.Autons.AutonLeft2Balance;
+// import frc.robot.Autons.DriveToPoint;
+// import frc.robot.Autons.TestAuto;
 import frc.robot.sensors.Camera;
 import frc.robot.sensors.Pigeon;
 import frc.robot.subsystems.Arm;
@@ -38,11 +41,13 @@ public class Robot extends TimedRobot {
     private Pigeon pigeon;
     private Camera camera;
     private AutonCommader autonCommader;
-    private AutonLeft2Balance autonLeft;
-    private AutonLeft1Balance autonLeft1Balance;
+    // private AutonLeft2Balance autonLeft;
+    // private AutonLeft1Balance autonLeft1Balance;
     private AutoBalance autoBalance;
+    // private TestAuto testAuto;
     // private Auton1 auton;
     // private Auton67 auton67;
+    private DriveToPoint driveToPoint;
 
     private int autonSelection = 2;
     private VictorSPX gripper;
@@ -67,10 +72,12 @@ public class Robot extends TimedRobot {
         drivetrain = new Drivetrain();
         autonCommader = new AutonCommader();
         arm = new Arm();
-        autonLeft1Balance = new AutonLeft1Balance();
-        autonLeft = new AutonLeft2Balance();
+        // autonLeft1Balance = new AutonLeft1Balance();
+        // autonLeft = new AutonLeft2Balance();
         hopper = new Hopper();
         autoBalance = new AutoBalance();
+        // testAuto = new TestAuto();
+        driveToPoint = new DriveToPoint();
     }
 
     @Override
@@ -78,16 +85,20 @@ public class Robot extends TimedRobot {
         arm.updatePose();
         camera.logData();
         pigeon.logData();
-        intake.logData();   
+        intake.logData();
         hopper.logData();
         SmartDashboard.putNumber("Match Time", DriverStation.getMatchTime());
         SmartDashboard.putNumber("FPGA Time", Timer.getFPGATimestamp());
         drivetrain.updatePose();
+
+        SmartDashboard.putNumber("_Pose X", Camera.getRightBotPose().getX());
+        SmartDashboard.putNumber("_Pose Y", Camera.getRightBotPose().getY());
+        SmartDashboard.putNumber("_Pose Degrees", Camera.getRightBotPose().getRotation().getDegrees());
+
     }
 
     @Override
     public void disabledInit() {
-        drivetrain.zero();
         intake.setCoastMode();
         SmartDashboard.putString("Robot Mode", "Disabled");
     }
@@ -102,20 +113,22 @@ public class Robot extends TimedRobot {
     public void autonomousInit() {
         SmartDashboard.putString("Robot Mode", "Autonomous");
 
-        if(autonSelection == 0){
-            // autonCommader.initAuton(auton);
-        } else if(autonSelection == 1){
-            autonCommader.initAuton(autonLeft1Balance);
-        } else if(autonSelection == 2){
-            autonCommader.initAuton(autonLeft);
-        } else if(autonSelection == 3){
-            autonCommader.initAuton(autoBalance);
-            // autonCommader.initAuton(auton);
-        }
+        // if(autonSelection == 0){
+        //     // autonCommader.initAuton(auton);
+        // } else if(autonSelection == 1){
+        //     autonCommader.initAuton(autonLeft1Balance);
+        // } else if(autonSelection == 2){
+        //     autonCommader.initAuton(driveToPoint);
+        // } else if(autonSelection == 3){
+        //     autonCommader.initAuton(autoBalance);
+        //     // autonCommader.initAuton(auton);
+        // }
 
-        drivetrain.onRamp = false;
-        drivetrain.zero();
+        autonCommader.initAuton(driveToPoint);
+
+        drivetrain.zero(-90);
         autonCommader.auton.reset();
+        Pigeon.zeroSensor(-90);
         // Drivetrain.setPose(new Pose2d(0,0, Rotation2d.fromDegrees(-180)), Rotation2d.fromDegrees(-180));
     }
 
@@ -134,8 +147,8 @@ public class Robot extends TimedRobot {
         SmartDashboard.putString("Robot Mode", "Teleop");
 
         intake.setBrakeMode();
-        drivetrain.zero();
-        Pigeon.zeroSensor();
+        drivetrain.zero(-90);
+        Pigeon.zeroSensor(-90);
         // arm.armZeroSensorPos();
     }
 
@@ -147,11 +160,11 @@ public class Robot extends TimedRobot {
         arm.action(teleopCommander);
         arm.brakeMode();
         if (Math.abs(teleopCommander.operator.getRightY()) > .15){
-            gripper.set(ControlMode.PercentOutput, teleopCommander.operator.getRightY()*.8);
+            gripper.set(ControlMode.PercentOutput, .5);
         }
         else {
             gripper.set(ControlMode.PercentOutput, 0.0);
         }
-        //hopper.HopperPeriodic(teleopCommander);
+        hopper.HopperPeriodic(teleopCommander);
     }
 }
