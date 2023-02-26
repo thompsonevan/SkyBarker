@@ -21,6 +21,7 @@ import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.Autons.AutoBalance;
 import frc.robot.Autons.DriveToPoint;
+import frc.robot.Autons.TestAuto;
 // import frc.robot.Autons.AutonLeft1Balance;
 // import frc.robot.Autons.AutonLeft2Balance;
 // import frc.robot.Autons.DriveToPoint;
@@ -44,7 +45,7 @@ public class Robot extends TimedRobot {
     // private AutonLeft2Balance autonLeft;
     // private AutonLeft1Balance autonLeft1Balance;
     private AutoBalance autoBalance;
-    // private TestAuto testAuto;
+    private TestAuto testAuto;
     // private Auton1 auton;
     // private Auton67 auton67;
     private DriveToPoint driveToPoint;
@@ -76,7 +77,7 @@ public class Robot extends TimedRobot {
         // autonLeft = new AutonLeft2Balance();
         hopper = new Hopper();
         autoBalance = new AutoBalance();
-        // testAuto = new TestAuto();
+        testAuto = new TestAuto();
         driveToPoint = new DriveToPoint();
     }
 
@@ -124,7 +125,7 @@ public class Robot extends TimedRobot {
         //     // autonCommader.initAuton(auton);
         // }
 
-        autonCommader.initAuton(driveToPoint);
+        autonCommader.initAuton(testAuto);
 
         drivetrain.zero(-90);
         autonCommader.auton.reset();

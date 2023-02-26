@@ -40,8 +40,9 @@ public class DriveToPoint extends AutonBase{
 
     public void reset(){
         // Drivetrain.setPose(start);
+        
 
-        trajectory = createTrajectory(start, end);
+        // trajectory = createTrajectory(start, end);
 
         desState = new State();
 

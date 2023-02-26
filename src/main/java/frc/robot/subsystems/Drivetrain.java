@@ -162,7 +162,7 @@ public class Drivetrain{
 
         states = kinematics.toSwerveModuleStates(new ChassisSpeeds());
 
-        ProfiledPIDController thetaController = new ProfiledPIDController(1, .3, 0.06,
+        ProfiledPIDController thetaController = new ProfiledPIDController(5, .3, 0.06,
                                                 new TrapezoidProfile.Constraints(6.28, 3.14));
 
         thetaController.enableContinuousInput(-Math.PI, Math.PI);
@@ -249,11 +249,11 @@ public class Drivetrain{
     }
     
     public void autonAction(AutonCommader autonCommader){
-        // if(autonCommader.isDriving()){
-        driveToPos(autonCommader.getDesiredState(), autonCommader.getTargetTheta());
-        // } else {
-        //     setSwerveModuleStates(new ChassisSpeeds(0,0,0));
-        // }
+        if(autonCommader.isDriving()){
+            driveToPos(autonCommader.getDesiredState(), autonCommader.getTargetTheta());
+        } else {
+            setSwerveModuleStates(new ChassisSpeeds(0,0,0));
+        }
 
         SmartDashboard.putNumber("_Time", timer.get());
     }
