@@ -129,4 +129,15 @@ public class AutonCommader extends RobotCommander{
         // TODO Auto-generated method stub
         return auton.autoBalance;
     }
+    
+    public double getGripperCommand() {
+        // TODO Auto-generated method stub
+        return 0;
+    }
+
+    @Override
+    public boolean useNegativeSide() {
+        // TODO Auto-generated method stub
+        return false;
+    }
 }

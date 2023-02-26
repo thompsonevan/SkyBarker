@@ -9,27 +9,49 @@ import com.ctre.phoenix.sensors.CANCoder;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.Constants;
 import frc.robot.RobotCommander;
-import com.ctre.phoenix.motorcontrol.FeedbackDevice;
-import com.ctre.phoenix.motorcontrol.NeutralMode;
-import com.ctre.phoenix.motorcontrol.StatusFrameEnhanced;
-import com.ctre.phoenix.motorcontrol.TalonFXFeedbackDevice;
-
-import static frc.robot.Constants.*;
 
 import org.hotutilites.hotlogger.HotLogger;
 
 public class Arm {
     public static enum ArmPos {
-        topNode,
-        middleNode,
-        lowerNode,
-        packagePos,
-        manual,
-        stay
-    }
+        packagePos(0,.1,0),
+        readyPosition(-23,.1,100),
+        topNode(52,20,181),
+        middleNode(51,.2,181),
+        lowerNode(27,.2,69),
+        manual(0,0,0), // manual motor commands
+        Zero(0,0,0), // No motor command
+        humanPlayer(22,11,92),
+        intake(0,10,0), 
+        outOfHopperToDirection(-20,.5,5), 
+        outOfDirectionToHopper1(-0,.5,80),
+        outOfPostiveToHopper2(-20,.5,10),
+        outOfHopperToMid(-20,.5,80) ;
 
-    TalonFX shoulder;
-    CANCoder shoulderEncoder;
+        private final double shoulder;
+        public double getShoulder() {
+            return shoulder;
+        }
+
+        private final double extension;
+        public double getExtension() {
+            return extension;
+        }
+
+        private final double elbow;
+
+        public double getElbow() {
+            return elbow;
+        }
+
+        ArmPos(double shoulder, double extension, double elbow) {
+            this.shoulder = shoulder;
+            this.extension = extension;
+            this.elbow = elbow;
+        }
+
+        
+    }
 
     double shoulderDesPos;
     double extensionDesPos;
@@ -39,96 +61,144 @@ public class Arm {
 
     private Extension extension;
     private Elbow elbow;
+    private Shoulder shoulder;
+    private ArmPos armTargetPrevious;
+    private ArmZone currentZone;
+    private ArmZone currentCommandedZone = ArmZone.none;
+    private ArmPos actualCommand;
+    private boolean achivedPostion;
+    private boolean transitionStateInProgress;
 
     public Arm(){
+        shoulder = new Shoulder(Constants.SHOULDER, Constants.SHOULDER_ENCODER);
         extension = new Extension(Constants.EXTENSION);
         elbow = new Elbow(Constants.ELBOW, Constants.ELBOW_ENCODER);
+    }
 
-        shoulder = new TalonFX(SHOULDER);
-        shoulder.configFactoryDefault();
-        shoulderEncoder = new CANCoder(SHOULDER_ENCODER);
-        shoulderEncoder.configFactoryDefault();
-        shoulderEncoder.setPositionToAbsolute();
-        shoulderEncoder.configAbsoluteSensorRange(AbsoluteSensorRange.Signed_PlusMinus180);
-        shoulderEncoder.configMagnetOffset(Constants.SHOULDER_OFFSET);
-
-
-        //Configure sensor source for primary PID
-        shoulder.configSelectedFeedbackSensor(TalonFXFeedbackDevice.IntegratedSensor, SHOULDER_K_PID_LOOP_IDX,
-        ARM_TIMEOUT);   
-
-        shoulder.setSensorPhase(false);
-        shoulder.setInverted(false);
-
-        /* Set relevant frame periods to be at least as fast as periodic rate */
-        shoulder.setStatusFramePeriod(StatusFrameEnhanced.Status_13_Base_PIDF0, 10, ARM_TIMEOUT);
-        shoulder.setStatusFramePeriod(StatusFrameEnhanced.Status_10_MotionMagic,10);
-
-        /* Set the peak and nominal outputs */
-        shoulder.configNominalOutputForward(0, ARM_TIMEOUT);
-        shoulder.configNominalOutputReverse(0, ARM_TIMEOUT);
-        shoulder.configPeakOutputForward(1, ARM_TIMEOUT);
-        shoulder.configPeakOutputReverse(-1, ARM_TIMEOUT);
-
-        /* Set Motion Magic gains in slot0 - see documentation */
-        shoulder.selectProfileSlot(SHOULDER_PID_SLOT, SHOULDER_K_PID_LOOP_IDX);
-        shoulder.config_kF(SHOULDER_PID_SLOT, SHOULDER_MOTOR_kF, ARM_TIMEOUT);
-        shoulder.config_kP(SHOULDER_PID_SLOT, SHOULDER_MOTOR_kP, ARM_TIMEOUT);
-        shoulder.config_kI(SHOULDER_PID_SLOT, SHOULDER_MOTOR_kI, ARM_TIMEOUT);
-        shoulder.config_kD(SHOULDER_PID_SLOT, SHOULDER_MOTOR_kD, ARM_TIMEOUT);
-
-        /* Set acceleration and vcruise velocity - see documentation */
-        shoulder.configMotionCruiseVelocity(SHOULDER_CRUISEVELOCITY, ARM_TIMEOUT);
-        shoulder.configMotionAcceleration(SHOULDER_ACCEL, ARM_TIMEOUT);
-
-        /* Zero the sensor once on robot boot up */
-        shoulder.setSelectedSensorPosition(0, SHOULDER_K_PID_LOOP_IDX, ARM_TIMEOUT);
+    public void initilizeOffsets() {
+        shoulder.intilizeOffset();
+        elbow.intilizeOffset();
     }
     
     public void armPercentOutZero(){
-        shoulder.set(ControlMode.PercentOutput, 0);
+        shoulder.setMotorCommand(0.0);
+        elbow.setMotorCommand(0.0);
+        extension.setMotorCommand(0.0);
     }
 
-    public void setPosition(double shoudlerPos, double extensionPos, double elbowPos){
-        shoulder.set(ControlMode.MotionMagic, shoudlerPos);
+    public enum ArmZone {
+        hopper,
+        negative,
+        postive, anyZone, none
+    }
+
+    public ArmZone determineArmZone(double shoulder, double extension, double elbow) {
+
+        if (elbow < -40 || (shoulder > 17 && shoulder < 22 && elbow < 10)) {
+            return ArmZone.negative;
+        } else if (elbow > 40 || (shoulder < -17 && shoulder > -22  && elbow > -10)) {
+            return ArmZone.postive;
+        } else {
+            return ArmZone.hopper;
+        }
     }
 
     public void action(RobotCommander commander) {
-        if (commander.operator.getAButton()) {
-            elbow.goToPostion(90.0);
+        if (commander.getArmPosition() == ArmPos.manual) {
+            actualCommand = ArmPos.manual;
+            transitionStateInProgress = false;
+        } else if (commander.getArmPosition() == ArmPos.Zero) {
+            elbow.setMotorCommand(0.0);
+            extension.setMotorCommand(0.0);
+            shoulder.setMotorCommand(0.0);
+            actualCommand = ArmPos.Zero;
+            transitionStateInProgress = false;
+        } else if (commander.getArmPosition() != armTargetPrevious) {
+            currentCommandedZone = this.determineArmZone(commander.getArmPosition().getShoulder(), 
+                                                         commander.getArmPosition().getExtension(), 
+                                                         commander.getArmPosition().getElbow());
+            if (currentCommandedZone == currentZone) {
+                actualCommand = commander.getArmPosition();
+                transitionStateInProgress = false;
+            } else if (currentCommandedZone == ArmZone.postive && currentZone == ArmZone.hopper) {
+                actualCommand = ArmPos.outOfHopperToDirection;
+                transitionStateInProgress = true;
+            } else if (currentCommandedZone == ArmZone.hopper && currentZone == ArmZone.postive) {
+                actualCommand = ArmPos.outOfDirectionToHopper1;
+                transitionStateInProgress = true;
+            } else if (currentCommandedZone == ArmZone.negative && currentZone == ArmZone.hopper) {
+                actualCommand = ArmPos.outOfHopperToDirection;
+                transitionStateInProgress = true;
+            } else if (currentCommandedZone == ArmZone.hopper && currentZone == ArmZone.negative) {
+                actualCommand = ArmPos.outOfDirectionToHopper1;
+                transitionStateInProgress = true;
+            }
+        } else if (commander.getArmPosition() == armTargetPrevious ) {
+            if (transitionStateInProgress) {
+                if (achivedPostion) {
+                    if (actualCommand == ArmPos.outOfDirectionToHopper1) {
+                        actualCommand = ArmPos.outOfPostiveToHopper2;
+                        transitionStateInProgress = true;
+                    } else if (actualCommand == ArmPos.outOfHopperToDirection && 
+                               commander.getArmPosition() == ArmPos.middleNode) {
+                                actualCommand = ArmPos.outOfHopperToMid;
+                                transitionStateInProgress = true;
+                    } else {
+                        actualCommand = commander.getArmPosition();
+                        transitionStateInProgress = true;
+                    }
+                }
+            }
+        }
+        SmartDashboard.putString("Commanded Position", commander.getArmPosition().name());
+        SmartDashboard.putString("Commanded Position Actual", actualCommand.name());
+        SmartDashboard.putString("Commanded Zone", currentCommandedZone.name());
+        SmartDashboard.putString("Commanded Position Previuos", commander.getArmPosition().name());
+        armTargetPrevious = commander.getArmPosition();
+        
+        if (actualCommand != ArmPos.Zero && actualCommand != ArmPos.manual) {
+            if (commander.useNegativeSide()) {
+                shoulder.goToPostion(-actualCommand.getShoulder());
+                extension.goToPostion(actualCommand.getExtension());
+                elbow.goToPostion(-actualCommand.getElbow());
+            } else {
+                shoulder.goToPostion(actualCommand.getShoulder());
+                extension.goToPostion(actualCommand.getExtension());
+                elbow.goToPostion(actualCommand.getElbow());
+            }
+        } else if (actualCommand == ArmPos.manual) {
+            elbow.setMotorCommand(commander.armElbow());
+            extension.setMotorCommand(commander.armExtension());
+            shoulder.setMotorCommand(commander.armShoulder());
         } else {
-            elbow.setMotorCommand(commander.operator.getLeftY()*.8);
+            shoulder.setMotorCommand(0);
+            elbow.setMotorCommand(0);
+            extension.setMotorCommand(0);
         }
     }
 
     public void updatePose(){
-
         extension.updatePose();
         elbow.updatePose();
+        shoulder.updatePose();
+        achivedPostion = this.determineAchivePosition();
+        currentZone = this.determineArmZone(shoulder.getShoulderAngle(), extension.getExtensionPosition(), elbow.getElbowAngle());
+        SmartDashboard.putString("ArmActualZone",currentZone.name());
+        SmartDashboard.putBoolean("Achived Position",achivedPostion);
+    }
 
-        shoulderAngleMotor = shoulder.getSelectedSensorPosition() / Constants.FALCON500_TICKS_PER_REV / Constants.SHOULDER_RATIO;
-        shoulderAngleCANCODER = shoulderEncoder.getAbsolutePosition();
-
-        SmartDashboard.putNumber("Shoulder Angle Motor", shoulderAngleMotor);
-        SmartDashboard.putNumber("Shoulder Angle Motor With ratio", Constants.SHOULDER_RATIO);
-        SmartDashboard.putNumber("Shoulder Angle Motor", shoulderAngleMotor);
-        SmartDashboard.putNumber("Shoulder Angle CANCODER", shoulderAngleCANCODER);
-
-        HotLogger.Log("Shoulder Absolute Pos", shoulderEncoder.getAbsolutePosition());
-        HotLogger.Log("Shoulder Motor Pos", shoulderAngleMotor);
-        HotLogger.Log("Shoulder Desired Pos", shoulderDesPos);
-        HotLogger.Log("Extension Desired Pos", extensionDesPos);
-        HotLogger.Log("Elbow Desired Pos", elbowDesPos);
+    private boolean determineAchivePosition() {
+        return shoulder.getAchivedTarget() && extension.getAchivedTarget() && elbow.getAchivedTarget();
     }
 
     public void brakeMode(){
-        shoulder.setNeutralMode(NeutralMode.Brake);
+        shoulder.setBreakMode();
         extension.setBreakMode();
         elbow.setBreakMode();
     }
 
     public void coastMode(){
-        shoulder.setNeutralMode(NeutralMode.Coast);
+        shoulder.setCoastMode();;
         extension.setCoastMode();
         elbow.setCoastMode();
     }

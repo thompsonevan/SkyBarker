@@ -24,4 +24,6 @@ public abstract class RobotCommander {
     public abstract boolean hopperOverrideLeft();
     public abstract boolean hopperOverrideRight();
     public abstract boolean getAutoBalance();
+    public abstract double getGripperCommand();
+    public abstract boolean useNegativeSide();
 }

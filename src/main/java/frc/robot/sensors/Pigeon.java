@@ -5,6 +5,8 @@ import org.hotutilites.hotlogger.HotLogger;
 
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.wpilibj.ADXL345_I2C.AllAxes;
+import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.RobotCommander;
 
@@ -12,6 +14,7 @@ import static frc.robot.Constants.*;
 
 public class Pigeon{
     private static Pigeon2 pigeon;
+    private static Alliance alliance;
 
     public Pigeon() {
         if(realBot){
@@ -56,6 +59,14 @@ public class Pigeon{
     public void enabledAction(RobotCommander commander) {
         if (commander.getResetIMU()) {
             pigeon.setYaw(0);
+        }
+    }
+
+    public static int getScoringDirection()  {
+        if (getAngle() > -170 && getAngle() > 0 ) {
+            return 1;
+        } else {
+            return -1;
         }
     }
 }

@@ -74,14 +74,14 @@ public final class Constants {
     public static final int EXTENSION = 14;
     public static final int ELBOW = 17;
     public static final int SHOULDER_ENCODER = 22;
-    public static final int ELBOW_ENCODER = 25;
+    public static final int ELBOW_ENCODER = 26;
 
     public static final double SHOULDER_RATIO = (5.0)*(5.0)*(72.0/18.0)*(60.0/12.0) / 360.0;  // Ratio
     public static final double EXTENSION_RATIO = (50.0/12.0)*(50.0/20.0)*(2.0)/(2.0*Math.PI);  // Revolutions to Inches
     public static final double WRIST_RATIO = (9.0)*(7.0)*(96.0/36.0);  // Ratio
 
-    public static final double SHOULDER_OFFSET = 161.016;
-    public static final double ELBOW_OFFSET = 48.516;
+    public static final double SHOULDER_OFFSET = 160.049;
+    public static final double ELBOW_OFFSET = 167.783;
 
     //Arm pid motion magic gains
     public static final double SHOULDER_MOTOR_kF = 0;
@@ -95,20 +95,20 @@ public final class Constants {
     public static final double EXTENSION_MOTOR_kD = 0;
 
     public static final double ELBOW_MOTOR_kF = 0;
-    public static final double ELBOW_MOTOR_kP = 4;
+    public static final double ELBOW_MOTOR_kP = 3.5;
     public static final double ELBOW_MOTOR_kI = .012;
-    public static final double ELBOW_MOTOR_kI_ZONE = 12;
-    public static final double ELBOW_MOTOR_kD = 0;
+    public static final double ELBOW_MOTOR_kI_ZONE = 10;
+    public static final double ELBOW_MOTOR_kD = .02;
 
     //Arm motion magic parameters
-    public static final double SHOULDER_CRUISEVELOCITY = 16000 * 6;
-    public static final double SHOULDER_ACCEL = 6000 * 6;
+    public static final double SHOULDER_CRUISEVELOCITY = 16000 * 16;
+    public static final double SHOULDER_ACCEL = 6000 * 16;
 
-    public static final double EXTENSION_CRUISEVELOCITY = 16000 * 6;
-    public static final double EXTENSION_ACCEL = 6000 * 6;
+    public static final double EXTENSION_CRUISEVELOCITY = 16000 * 10;
+    public static final double EXTENSION_ACCEL = 6000 * 10;
 
-    public static final double ELBOW_CRUIESVELOCITY = 1600 * 24;
-    public static final double ELBOW_ACCEL = 600 * 24;
+    public static final double ELBOW_CRUIESVELOCITY = 1600 * 7;
+    public static final double ELBOW_ACCEL = 600 * 1;
 
     //Arm pid slots
     public static final int SHOULDER_PID_SLOT = 0;
@@ -148,7 +148,10 @@ public final class Constants {
 
     // Extension Constraints
     
-    public static final double MAXIMUM_EXTENSION_INCHES = 10;
+    public static final double MAXIMUM_EXTENSION_INCHES = 22;
+
+
+    public static final double GRIPPER_HOLD_POWER = -0.4;
 
 }
 

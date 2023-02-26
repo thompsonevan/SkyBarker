@@ -18,6 +18,7 @@ import edu.wpi.first.math.trajectory.TrajectoryGenerator;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.Timer;
+import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.Autons.AutoBalance;
 import frc.robot.Autons.DriveToPoint;
@@ -29,6 +30,7 @@ import frc.robot.sensors.Camera;
 import frc.robot.sensors.Pigeon;
 import frc.robot.subsystems.Arm;
 import frc.robot.subsystems.Drivetrain;
+import frc.robot.subsystems.Gripper;
 import frc.robot.subsystems.Hopper;
 import frc.robot.subsystems.Intake;
 
@@ -50,11 +52,10 @@ public class Robot extends TimedRobot {
     private DriveToPoint driveToPoint;
 
     private int autonSelection = 2;
-    private VictorSPX gripper;
+    private Gripper gripper;
 
     @Override
     public void robotInit() {
-        gripper = new VictorSPX(Constants.GRIPPER);
         HotLogger.Setup("Theta", "Left Front Absolute", "Left Front Assumed",
         "Right Front Absolute", "Right Front Assumed",
         "Left Rear Absolute", "Left Rear Assumed",
@@ -74,6 +75,7 @@ public class Robot extends TimedRobot {
         arm = new Arm();
         // autonLeft1Balance = new AutonLeft1Balance();
         // autonLeft = new AutonLeft2Balance();
+        gripper = new Gripper(Constants.GRIPPER);
         hopper = new Hopper();
         autoBalance = new AutoBalance();
         // testAuto = new TestAuto();
@@ -140,16 +142,19 @@ public class Robot extends TimedRobot {
         // arm.action(autonCommader);
         intake.IntakePeriodic(autonCommader);
         hopper.HopperPeriodic(autonCommader);
+        gripper.action(autonCommader);
     }
-    
+    private Alliance alliance;
+        
     @Override
     public void teleopInit() {
         SmartDashboard.putString("Robot Mode", "Teleop");
 
+        alliance = Alliance.Blue;
         intake.setBrakeMode();
         drivetrain.zero(-90);
         Pigeon.zeroSensor(-90);
-        // arm.armZeroSensorPos();
+        arm.initilizeOffsets();
     }
 
     @Override
@@ -159,12 +164,7 @@ public class Robot extends TimedRobot {
         intake.IntakePeriodic(teleopCommander);
         arm.action(teleopCommander);
         arm.brakeMode();
-        if (Math.abs(teleopCommander.operator.getRightY()) > .15){
-            gripper.set(ControlMode.PercentOutput, .5);
-        }
-        else {
-            gripper.set(ControlMode.PercentOutput, 0.0);
-        }
-        hopper.HopperPeriodic(teleopCommander);
+        gripper.action(teleopCommander);
+        //hopper.HopperPeriodic(teleopCommander);
     }
 }

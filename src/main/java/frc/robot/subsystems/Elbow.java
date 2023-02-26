@@ -19,7 +19,13 @@ public class Elbow {
     private VictorSPX elbow;
     private CANCoder elbowEncoder;
     private double elbowAngle;
+
+    public double getElbowAngle() {
+        return elbowAngle;
+    }
+
     private double elbowOffset;
+    private boolean achivedTarget = false;
 
     public Elbow (int motorCANID, int encoderCANID) {
         
@@ -63,8 +69,11 @@ public class Elbow {
         elbow.configMotionCruiseVelocity(Constants.ELBOW_CRUIESVELOCITY, Constants.ARM_TIMEOUT);
         elbow.configMotionAcceleration(Constants.ELBOW_ACCEL, Constants.ARM_TIMEOUT);
 
-        elbowOffset = elbow.getSelectedSensorPosition() - elbowEncoder.getAbsolutePosition()*4096/360;
+        this.intilizeOffset();
+    }
 
+    public void intilizeOffset() {
+        elbowOffset = elbow.getSelectedSensorPosition() - elbowEncoder.getAbsolutePosition()*4096/360;
     }
 
     private double convertToTicks(double degrees) {
@@ -77,8 +86,10 @@ public class Elbow {
 
     public void updatePose() {
         elbowAngle = (elbow.getSelectedSensorPosition(Constants.ELBOW_K_PID_LOOP_IDX) - elbowOffset)*360/4096; 
+        achivedTarget = Math.abs(this.convertToDegrees(elbow.getClosedLoopTarget() - elbowOffset) - elbowAngle) < 10;
         SmartDashboard.putNumber("Elbow Angle", elbowAngle);
         SmartDashboard.putNumber("Elbow elbowOffset", elbowOffset);
+        SmartDashboard.putNumber("Elbow Closed loop target", this.convertToDegrees(elbow.getClosedLoopTarget() - elbowOffset));
         SmartDashboard.putNumber("Elbow real angle", elbow.getSelectedSensorPosition(Constants.ELBOW_K_PID_LOOP_IDX));
         SmartDashboard.putNumber("Elbow Angle CANCODER", elbowEncoder.getAbsolutePosition());
         HotLogger.Log("Extension Pos",elbowAngle);
@@ -94,7 +105,11 @@ public class Elbow {
     }
 
     public void goToPostion(double degrees) {
-        elbow.set(ControlMode.MotionMagic, elbowOffset + this.convertToTicks(degrees), DemandType.ArbitraryFeedForward, .225*Math.sin(Math.toRadians(elbowAngle)));
+        if (degrees > -190 && degrees < 190) {
+            elbow.set(ControlMode.MotionMagic, elbowOffset + this.convertToTicks(degrees), DemandType.ArbitraryFeedForward, .225*Math.sin(Math.toRadians(elbowAngle)));
+        } else {
+            elbow.set(ControlMode.PercentOutput, 0.0);
+        }
         SmartDashboard.putNumber("Elbow Angle Command", elbowOffset + this.convertToTicks(degrees));
         SmartDashboard.putNumber("Elbow Command", degrees);
         SmartDashboard.putNumber("Elbow Command Actual", (elbow.getActiveTrajectoryPosition()- elbowOffset)*360/4096);
@@ -111,5 +126,13 @@ public class Elbow {
 
     public void setBreakMode() {
         elbow.setNeutralMode(NeutralMode.Brake);
+    }
+
+    public boolean getAchivedTarget() {
+        if (elbow.getControlMode() == ControlMode.MotionMagic) {
+            return achivedTarget;
+        } else {
+            return false;
+        }
     }
 }
