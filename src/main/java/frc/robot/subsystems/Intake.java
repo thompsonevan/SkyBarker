@@ -3,6 +3,7 @@ package frc.robot.subsystems;
 import com.ctre.phoenix.motorcontrol.TalonFXControlMode;
 import com.ctre.phoenix.motorcontrol.can.TalonFX;
 import com.ctre.phoenix.sensors.CANCoder;
+import com.ctre.phoenix.sensors.CANCoderConfiguration;
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.CANSparkMax.IdleMode;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
@@ -105,5 +106,6 @@ public class Intake {
 
     public void logData(){
         SmartDashboard.putNumber("Intake Absolute Encoder", angleEncoder.getAbsolutePosition());
+        // SmartDashboard.putNumber("magnet offset", angleEncoder.getAllConfigs(CANCoderConfiguration));
     }
 }

@@ -3,10 +3,12 @@ package frc.robot;
 import com.pathplanner.lib.PathPlanner;
 import com.pathplanner.lib.PathPlannerTrajectory.PathPlannerState;
 
+import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.trajectory.Trajectory.State;
 import frc.robot.Autons.AutonBase;
+import frc.robot.sensors.Pigeon;
 import frc.robot.subsystems.Arm.ArmPos;
 
 public class AutonCommader extends RobotCommander{
@@ -132,12 +134,22 @@ public class AutonCommader extends RobotCommander{
     
     public double getGripperCommand() {
         // TODO Auto-generated method stub
-        return 0;
+        return auton.gripperSpeed;
     }
+
+    // @Override
+    // public boolean useNegativeSide() {
+    //     // TODO Auto-generated method stub
+    //     return false;
+    // }
 
     @Override
     public boolean useNegativeSide() {
-        // TODO Auto-generated method stub
-        return false;
+        double angle =MathUtil.inputModulus(Pigeon.getAngle(),-180,180);
+        if (angle > -180 && angle < 0) {
+            return true;
+        } else  {
+            return false;
+        }
     }
 }

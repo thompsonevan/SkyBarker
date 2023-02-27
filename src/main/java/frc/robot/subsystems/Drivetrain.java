@@ -50,6 +50,7 @@ import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.AutonCommader;
 import frc.robot.TeleopCommander;
+import frc.robot.sensors.Camera;
 import frc.robot.sensors.Pigeon;
 
 public class Drivetrain{
@@ -193,6 +194,7 @@ public class Drivetrain{
         poseEstimator.resetPosition(Rotation2d.fromDegrees(angle), positions, new Pose2d(0,0, Rotation2d.fromDegrees(angle)));
     }
 
+
     public static void zeroPositions(){
         frontLeftDrive.setSelectedSensorPosition(0);
         frontRightDrive.setSelectedSensorPosition(0);
@@ -216,6 +218,13 @@ public class Drivetrain{
         positions[3].angle = new Rotation2d(backRightModule.getSteerAngle());
         positions[3].distanceMeters = backRightPos;
     }
+
+    public static void setPose(Pose2d pose){
+        zeroPositions();
+        
+        poseEstimator.resetPosition(pose.getRotation(), positions, pose);
+    }
+
 
     public void setSwerveModuleStates(ChassisSpeeds chassisSpeeds) {
         states = kinematics.toSwerveModuleStates(chassisSpeeds);
@@ -291,6 +300,10 @@ public class Drivetrain{
 
         positions[3].angle = new Rotation2d(backRightModule.getSteerAngle());
         positions[3].distanceMeters = backRightPos;
+
+        if(Camera.rightAprilDetected()){
+            poseEstimator.addVisionMeasurement(Camera.getRightBotPose(), Timer.getFPGATimestamp());
+        }
 
         poseEstimator.updateWithTime(Timer.getFPGATimestamp(), Pigeon.getRotation2d(), positions);
 

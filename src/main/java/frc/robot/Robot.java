@@ -21,6 +21,7 @@ import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.Autons.AutoBalance;
+import frc.robot.Autons.AutoLeft;
 import frc.robot.Autons.DriveToPoint;
 // import frc.robot.Autons.AutonLeft1Balance;
 // import frc.robot.Autons.AutonLeft2Balance;
@@ -54,6 +55,8 @@ public class Robot extends TimedRobot {
     private int autonSelection = 2;
     private Gripper gripper;
 
+    private AutoLeft autoLeft;
+
     @Override
     public void robotInit() {
         HotLogger.Setup("Theta", "Left Front Absolute", "Left Front Assumed",
@@ -80,6 +83,7 @@ public class Robot extends TimedRobot {
         autoBalance = new AutoBalance();
         // testAuto = new TestAuto();
         driveToPoint = new DriveToPoint();
+        autoLeft = new AutoLeft();
     }
 
     @Override
@@ -111,6 +115,8 @@ public class Robot extends TimedRobot {
         arm.coastMode();
     }
 
+    private Alliance alliance;
+
     @Override
     public void autonomousInit() {
         SmartDashboard.putString("Robot Mode", "Autonomous");
@@ -126,11 +132,13 @@ public class Robot extends TimedRobot {
         //     // autonCommader.initAuton(auton);
         // }
 
-        autonCommader.initAuton(driveToPoint);
+        autonCommader.initAuton(autoLeft);
 
+        alliance = Alliance.Blue;
         drivetrain.zero(-90);
         autonCommader.auton.reset();
         Pigeon.zeroSensor(-90);
+        arm.initilizeOffsets();
         // Drivetrain.setPose(new Pose2d(0,0, Rotation2d.fromDegrees(-180)), Rotation2d.fromDegrees(-180));
     }
 
@@ -139,21 +147,29 @@ public class Robot extends TimedRobot {
         autonCommader.runAuto();
         pigeon.enabledAction(teleopCommander);
         drivetrain.autonAction(autonCommader);
-        // arm.action(autonCommader);
+        arm.action(autonCommader);
         intake.IntakePeriodic(autonCommader);
         hopper.HopperPeriodic(autonCommader);
         gripper.action(autonCommader);
     }
-    private Alliance alliance;
         
     @Override
     public void teleopInit() {
         SmartDashboard.putString("Robot Mode", "Teleop");
 
+        if(Camera.rightAprilDetected()){
+            drivetrain.zero(Camera.getRightBotPose().getRotation().getDegrees());
+            Drivetrain.setPose(Camera.getRightBotPose());
+            Pigeon.zeroSensor(Camera.getRightBotPose().getRotation().getDegrees());
+        } else {
+            drivetrain.zero(-90);
+            Pigeon.zeroSensor(-90);
+        }
+
+        // X - 1.785, Y - 1.621
+
         alliance = Alliance.Blue;
         intake.setBrakeMode();
-        drivetrain.zero(-90);
-        Pigeon.zeroSensor(-90);
         arm.initilizeOffsets();
     }
 

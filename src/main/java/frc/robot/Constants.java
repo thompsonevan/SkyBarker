@@ -107,7 +107,7 @@ public final class Constants {
     public static final double EXTENSION_CRUISEVELOCITY = 16000 * 10;
     public static final double EXTENSION_ACCEL = 6000 * 10;
 
-    public static final double ELBOW_CRUIESVELOCITY = 1600 * 7;
+    public static final double ELBOW_CRUIESVELOCITY = 1600 * 6;
     public static final double ELBOW_ACCEL = 600 * 1;
 
     //Arm pid slots

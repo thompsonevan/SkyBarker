@@ -25,6 +25,7 @@ public abstract class AutonBase {
     public boolean pickUpObject;
     public boolean driving;
     public boolean autoBalance;
+    public double gripperSpeed;
 
     public abstract void runAuto();
     public abstract void reset();
