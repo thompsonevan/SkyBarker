@@ -311,9 +311,9 @@ public class TeleopCommander extends RobotCommander{
     public boolean useNegativeSide() {
         double angle =MathUtil.inputModulus(Pigeon.getAngle(),-180,180);
         if (angle > -180 && angle < 0) {
-            return false;
-        } else  {
             return true;
+        } else  {
+            return false;
         }
     }
 }
