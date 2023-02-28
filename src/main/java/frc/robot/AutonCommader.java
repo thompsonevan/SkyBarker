@@ -7,6 +7,7 @@ import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.trajectory.Trajectory.State;
+import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import frc.robot.Autons.AutonBase;
 import frc.robot.sensors.Pigeon;
 import frc.robot.subsystems.Arm.ArmPos;
@@ -146,10 +147,48 @@ public class AutonCommader extends RobotCommander{
     @Override
     public boolean useNegativeSide() {
         double angle =MathUtil.inputModulus(Pigeon.getAngle(),-180,180);
-        if (angle > -180 && angle < 0) {
-            return true;
-        } else  {
-            return false;
+        // if(overrideNegSide()){
+        if(overrideNegSide()){
+            if(allaince == Alliance.Red){
+                if (angle > -180 && angle < 0) {
+                    return false;
+                } else  {
+                    return true;
+                }
+            } else {
+                if (angle > -180 && angle < 0) {
+                    return true;
+                } else  {
+                    return false;
+                }
+            }
+        } else {
+            if(allaince == Alliance.Red){
+                if (angle > -180 && angle < 0) {
+                    return true;
+                } else  {
+                    return false;
+                }
+            } else {
+                if (angle > -180 && angle < 0) {
+                    return false;
+                } else  {
+                    return true;
+                }
+            }
         }
+
+
+        // } else {
+        //     if (angle > -180 && angle < 0) {
+        //         return false;
+        //     } else  {
+        //         return true;
+        //     }
+        // }
+    }
+
+    public boolean overrideNegSide(){
+        return auton.overrideNegSide;
     }
 }

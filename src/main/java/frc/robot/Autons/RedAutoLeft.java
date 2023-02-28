@@ -15,13 +15,18 @@ import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.trajectory.Trajectory;
 import edu.wpi.first.math.trajectory.Trajectory.State;
 
-public class AutoLeft extends AutonBase{
+// Big edit
+
+
+public class RedAutoLeft extends AutonBase{
     enum AutoState {
         firstPlace,
         driveToObject1,
         pause,
         driveToObject2,
         score2,
+        driveToBalance,
+        balance,
         end
     }
 
@@ -31,19 +36,20 @@ public class AutoLeft extends AutonBase{
 
     int point = 0;
 
-    List<Pose2d> path = List.of(new Pose2d(new Translation2d(0,0), Rotation2d.fromDegrees(-90)),
-                                new Pose2d(new Translation2d(5.15,.3), Rotation2d.fromDegrees(0)), //4.82, .5
-                                new Pose2d(new Translation2d(0,.5), Rotation2d.fromDegrees(-90)));
+    List<Pose2d> path = List.of(new Pose2d(new Translation2d(0,0), Rotation2d.fromDegrees(90)),
+                                new Pose2d(new Translation2d(5.15,.6), Rotation2d.fromDegrees(0)), //4.82, .5
+                                new Pose2d(new Translation2d(0,.5), Rotation2d.fromDegrees(90)),
+                                new Pose2d(new Translation2d(.68,-1.26), Rotation2d.fromDegrees(90)));
 
     Trajectory trajectory;
 
-    public AutoLeft(){
+    public RedAutoLeft(){
         reset();
     }
 
     public void reset(){
         desState = new State();
-        targetTheta = Rotation2d.fromDegrees(-90);
+        targetTheta = Rotation2d.fromDegrees(90);
 
         point = 0;
         
@@ -57,8 +63,8 @@ public class AutoLeft extends AutonBase{
         switch(autoState){
             case firstPlace:
                 driving = false;
-                if(timer.get() < 3){
-                    if(timer.get() < 2.5){
+                if(timer.get() < 2.5){
+                    if(timer.get() < 2.25){
                         gripperSpeed = -.4;
                     }else{
                         gripperSpeed = .4;
@@ -66,10 +72,8 @@ public class AutoLeft extends AutonBase{
                     armPos = ArmPos.topNode;
                 } else {
                     gripperSpeed = 0;
-                    armPos = ArmPos.packagePos;
-                }
+                    armPos = ArmPos.intake;
 
-                if(timer.get() > 5){
                     trajectory = createTrajectory(path.get(point), path.get(point+1),
                     Rotation2d.fromDegrees(40), Rotation2d.fromDegrees(-10));
             
@@ -100,9 +104,11 @@ public class AutoLeft extends AutonBase{
                 driving = false;
                 intakeOn = false;
                 armPos = ArmPos.intake;
-                if(timer.get() > 1){
+                if(timer.get() > .1){
                     trajectory = createTrajectory(path.get(point), path.get(point+1), 
-                    Rotation2d.fromDegrees(-8 + 180), Rotation2d.fromDegrees(8 + 180));
+                    Rotation2d.fromDegrees(-10+180), Rotation2d.fromDegrees(10+180));
+
+                    overrideNegSide = true;
 
                     point++;
 
@@ -115,7 +121,12 @@ public class AutoLeft extends AutonBase{
                 driving = true;
                 intakeOn = false;
 
-                armPos = ArmPos.packagePos;
+                if(timer.get() < .5){
+                    armPos = ArmPos.packagePos;
+                } else {
+                    armPos = ArmPos.topNode;
+                }
+
                 gripperSpeed = -.4;
                 
                 desState = trajectory.sample(timer.get());
@@ -131,20 +142,16 @@ public class AutoLeft extends AutonBase{
             break;
             case score2:
                 driving = false;
-                if(timer.get() < 3.5){
-                    if(timer.get() < 2.5){
-                        gripperSpeed = -.4;
-                    }else{
-                        gripperSpeed = .2;
-                    }
-                    armPos = ArmPos.topNode;
+                if(timer.get() < 1){
+                    gripperSpeed = .2;
                 } else {
-                    gripperSpeed = 0;
                     armPos = ArmPos.packagePos;
                 }
             case end:
                 driving = false;
+                autoBalance = false;
             break;
         }
+        SmartDashboard.putString("Auton State", autoState.toString());
     }
 }

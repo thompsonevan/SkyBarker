@@ -15,7 +15,7 @@ import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.trajectory.Trajectory;
 import edu.wpi.first.math.trajectory.Trajectory.State;
 
-public class DriveToPoint extends AutonBase{
+public class RedAutoRight extends AutonBase{
     enum AutoState {
         firstPlace,
         driveToObject1,
@@ -31,19 +31,19 @@ public class DriveToPoint extends AutonBase{
 
     int point = 0;
 
-    List<Pose2d> path = List.of(new Pose2d(new Translation2d(0,0), Rotation2d.fromDegrees(-90)),
-                                new Pose2d(new Translation2d(5.15,-.6), Rotation2d.fromDegrees(0)), //4.82, .5
-                                new Pose2d(new Translation2d(0,-.5), Rotation2d.fromDegrees(-90)));
+    List<Pose2d> path = List.of(new Pose2d(new Translation2d(0,0), Rotation2d.fromDegrees(90)),
+                                new Pose2d(new Translation2d(5.15,.3), Rotation2d.fromDegrees(0)), //4.82, .5
+                                new Pose2d(new Translation2d(0,.5), Rotation2d.fromDegrees(90)));
 
     Trajectory trajectory;
 
-    public DriveToPoint(){
+    public RedAutoRight(){
         reset();
     }
 
     public void reset(){
         desState = new State();
-        targetTheta = Rotation2d.fromDegrees(-90);
+        targetTheta = Rotation2d.fromDegrees(90);
 
         point = 0;
         
@@ -54,10 +54,6 @@ public class DriveToPoint extends AutonBase{
     }
 
     public void runAuto(){
-        // desState = getState(timer.get(), trajectory, end.getRotation());
-        // desState = trajectory.sample(timer.get());
-        // targetTheta = Rotation2d.fromDegrees(-90);
-
         switch(autoState){
             case firstPlace:
                 driving = false;
@@ -75,7 +71,7 @@ public class DriveToPoint extends AutonBase{
 
                 if(timer.get() > 5){
                     trajectory = createTrajectory(path.get(point), path.get(point+1),
-                    Rotation2d.fromDegrees(-40), Rotation2d.fromDegrees(10));
+                    Rotation2d.fromDegrees(40), Rotation2d.fromDegrees(-10));
             
                     point++;
 
@@ -85,9 +81,9 @@ public class DriveToPoint extends AutonBase{
                 }
             break;
             case driveToObject1:
-                driving = true;
+                driving = true; 
                 armPos = ArmPos.intake;
-                if(timer.get() > 1){
+                if(timer.get() > 1.5){
                     intakeOn = true;
                 }
                 
@@ -106,7 +102,7 @@ public class DriveToPoint extends AutonBase{
                 armPos = ArmPos.intake;
                 if(timer.get() > 1){
                     trajectory = createTrajectory(path.get(point), path.get(point+1), 
-                    Rotation2d.fromDegrees(10 + 180), Rotation2d.fromDegrees(-10 + 180));
+                    Rotation2d.fromDegrees(-8 + 180), Rotation2d.fromDegrees(8 + 180));
 
                     point++;
 

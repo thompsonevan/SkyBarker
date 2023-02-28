@@ -51,6 +51,9 @@ public final class Constants {
 
     public static final double SLOW_SPEED_MULTIPLIER = .5;
 
+    public static final int INTAKE_SPEED1_MOTOR_ID = 9;
+    public static final int INTAKE_SPEED2_MOTOR_ID = 30;
+    public static final int INTAKE_ANGLE_MOTOR_ID = 10;
     public static final double INTAKE_PACKAGE_POSITION = 100;
     public static final double INTAKE_STATION_POSITION = 121;
     public static final double INTAKE_COLLECT_POSITION = 177;

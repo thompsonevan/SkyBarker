@@ -1,6 +1,7 @@
 package frc.robot.subsystems;
 
 import com.ctre.phoenix.motorcontrol.TalonFXControlMode;
+import com.ctre.phoenix.motorcontrol.TalonFXInvertType;
 import com.ctre.phoenix.motorcontrol.can.TalonFX;
 import com.ctre.phoenix.sensors.CANCoder;
 import com.ctre.phoenix.sensors.CANCoderConfiguration;
@@ -18,7 +19,8 @@ import static frc.robot.Constants.*;
 public class Intake {
     double speed;
     double angle;
-    TalonFX speedMotor;
+    TalonFX speedMotor1;
+    // TalonFX speedMotor2;
     CANSparkMax angleMotor;
     CANCoder angleEncoder;
     PIDController pidController;
@@ -28,11 +30,15 @@ public class Intake {
     public Intake(){
         angle = 45;
         speed = 0;
-        speedMotor = new TalonFX(9);
-        angleMotor = new CANSparkMax(10, MotorType.kBrushless);
+        speedMotor1 = new TalonFX(INTAKE_SPEED1_MOTOR_ID);
+        // speedMotor2 = new TalonFX(INTAKE_SPEED2_MOTOR_ID);
+        angleMotor = new CANSparkMax(INTAKE_ANGLE_MOTOR_ID, MotorType.kBrushless);
         angleEncoder = new CANCoder(23);
         pidController = new PIDController(.017, 0.0015, 0.000075); //.0175, 0.001, 0.000075
         startPosition = angleEncoder.getAbsolutePosition();
+
+        // speedMotor2.setInverted(TalonFXInvertType.OpposeMaster);
+        // speedMotor2.follow(speedMotor1);
 
         // //Configure sensor source for primary PID
         // angleMotor.configSelectedFeedbackSensor(TalonFXFeedbackDevice.IntegratedSensor, SHOULDER_K_PID_LOOP_IDX,
@@ -84,7 +90,7 @@ public class Intake {
     public void speedPeriodic(RobotCommander commander){
         speed = commander.getIntakePosition()[1];
         SmartDashboard.putNumber("Speed", speed);
-        speedMotor.set(TalonFXControlMode.PercentOutput, -speed);
+        speedMotor1.set(TalonFXControlMode.PercentOutput, -speed);
     }
 
     public void anglePeriodic(RobotCommander commander){

@@ -44,6 +44,7 @@ import edu.wpi.first.math.trajectory.Trajectory.State;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.Timer;
+import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.shuffleboard.BuiltInLayouts;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
@@ -182,7 +183,7 @@ public class Drivetrain{
             VecBuilder.fill(0.5, 0.5, Units.degreesToRadians(30))
         );
 
-        poseEstimator.resetPosition(Rotation2d.fromDegrees(-90), positions, new Pose2d(0,0, Rotation2d.fromDegrees(-90)));
+        poseEstimator.resetPosition(Rotation2d.fromDegrees(0), positions, new Pose2d(0,0, Rotation2d.fromDegrees(0)));
     }
 
     public void zero(double angle){
@@ -247,25 +248,108 @@ public class Drivetrain{
         backRightModule.set(speed, Math.toRadians(angle));
     }
 
+    public boolean rampPassed = false;
+
     public void teleAction(TeleopCommander commander){
-        chassisSpeeds = ChassisSpeeds.fromFieldRelativeSpeeds(
-            commander.getForwardCommand(),
-            commander.getStrafeCommand(),
-            commander.getTurnCommand(),
-            Pigeon.getRotation2d());
-    
+        if(commander.getAutoBalance()){
+            if(Pigeon.getRoll() < 15 && !rampPassed){
+                chassisSpeeds = new ChassisSpeeds(
+                    0,
+                    -1,
+                    0
+                );
+                rampPassed = false;
+            } else {
+                rampPassed = true;
+            }
+
+            if(rampPassed){
+                if(Pigeon.getRoll() > 12){
+                    chassisSpeeds = new ChassisSpeeds(
+                        0,
+                        -Pigeon.getRoll() * .05,
+                        0
+                    );
+                } else {
+                    chassisSpeeds = new ChassisSpeeds(
+                        0,
+                        0,
+                        0
+                    );
+                }
+
+            }
+        } else {
+            chassisSpeeds = ChassisSpeeds.fromFieldRelativeSpeeds(
+                commander.getForwardCommand(),
+                commander.getStrafeCommand(),
+                commander.getTurnCommand(),
+                Pigeon.getRotation2d());
+
+            rampPassed = false;
+        }
+
         setSwerveModuleStates(chassisSpeeds);
     }
     
     public void autonAction(AutonCommader autonCommader){
-        // if(autonCommader.isDriving()){
-        driveToPos(autonCommader.getDesiredState(), autonCommader.getTargetTheta());
-        // } else {
-        //     setSwerveModuleStates(new ChassisSpeeds(0,0,0));
-        // }
+        if(autonCommader.isDriving()){
+            driveToPos(autonCommader.getDesiredState(), autonCommader.getTargetTheta());
+            rampPassed = false;
+        } else if(autonCommader.getAutoBalance()){
+            if(autonCommader.allaince == Alliance.Red){
+                if(Pigeon.getRoll() < 15 && !rampPassed){
+                    chassisSpeeds = new ChassisSpeeds(
+                        0,
+                        -.75,
+                        0
+                    );
+                    rampPassed = false;
+                } else {
+                    rampPassed = true;
+                }
+    
+                if(rampPassed){
+                    if(Pigeon.getRoll() > 12){
+                        chassisSpeeds = new ChassisSpeeds(
+                            0,
+                            -Pigeon.getRoll() * .05,
+                            0
+                        );
+                    } else {
+                        chassisSpeeds = new ChassisSpeeds(
+                            0,
+                            0,
+                            0
+                        );
+                    }
+    
+                }
+            } else {
+                if(Pigeon.getRoll() > -12){
+                    chassisSpeeds = new ChassisSpeeds(
+                        0,
+                        -1,
+                        0
+                    );
+                } else {
+                    chassisSpeeds = new ChassisSpeeds(
+                        0,
+                        Pigeon.getRoll() * .03,
+                        0
+                    );
+                }
+            }
+            setSwerveModuleStates(chassisSpeeds);
+        } else {
+            setSwerveModuleStates(new ChassisSpeeds(0,0,0));
+        }
 
         SmartDashboard.putNumber("_Time", timer.get());
     }
+
+
+
 
     public void driveToPos(State state, Rotation2d theta){
         ChassisSpeeds speeds = holonomicController.calculate(poseEstimator.getEstimatedPosition(), 
@@ -301,9 +385,9 @@ public class Drivetrain{
         positions[3].angle = new Rotation2d(backRightModule.getSteerAngle());
         positions[3].distanceMeters = backRightPos;
 
-        if(Camera.rightAprilDetected()){
-            poseEstimator.addVisionMeasurement(Camera.getRightBotPose(), Timer.getFPGATimestamp());
-        }
+        // if(Camera.rightAprilDetected()){
+        //     poseEstimator.addVisionMeasurement(Camera.getRightBotPose(), Timer.getFPGATimestamp());
+        // }
 
         poseEstimator.updateWithTime(Timer.getFPGATimestamp(), Pigeon.getRotation2d(), positions);
 
@@ -312,3 +396,32 @@ public class Drivetrain{
         SmartDashboard.putNumber("Estimated Y", poseEstimator.getEstimatedPosition().getY());
     }
 }
+
+
+// if(Pigeon.getRoll() < 15 && !rampPassed){
+//     chassisSpeeds = new ChassisSpeeds(
+//         0,
+//         -1,
+//         0
+//     );
+//     rampPassed = false;
+// } else {
+//     rampPassed = true;
+// }
+
+// if(rampPassed){
+//     if(Pigeon.getRoll() > 12){
+//         chassisSpeeds = new ChassisSpeeds(
+//             0,
+//             -Pigeon.getRoll() * .05,
+//             0
+//         );
+//     } else {
+//         chassisSpeeds = new ChassisSpeeds(
+//             0,
+//             0,
+//             0
+//         );
+//     }
+
+// }
