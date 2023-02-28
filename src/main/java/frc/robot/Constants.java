@@ -151,7 +151,7 @@ public final class Constants {
 
     // Extension Constraints
     
-    public static final double MAXIMUM_EXTENSION_INCHES = 22;
+    public static final double MAXIMUM_EXTENSION_INCHES = 22.5; // actual maximum is 23
 
 
     public static final double GRIPPER_HOLD_POWER = -0.4;
