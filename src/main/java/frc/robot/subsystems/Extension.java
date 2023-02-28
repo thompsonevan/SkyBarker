@@ -14,6 +14,11 @@ import frc.robot.Constants;
 public class Extension {
     TalonFX extension;
     private double extensionPosition;
+    private boolean achivedTarget = false;
+
+    public double getExtensionPosition() {
+        return extensionPosition;
+    }
 
     public Extension(int canID) {
         extension = new TalonFX(Constants.EXTENSION);
@@ -61,6 +66,8 @@ public class Extension {
 
     public void updatePose() {
         extensionPosition = this.convertToInches(extension.getSelectedSensorPosition()); 
+        achivedTarget = Math.abs(this.convertToInches(extension.getClosedLoopTarget()) - extensionPosition) < 1;
+        SmartDashboard.putNumber("Extension Closed loop target", this.convertToInches(extension.getClosedLoopTarget()));
         SmartDashboard.putNumber("Extension", extensionPosition);
         HotLogger.Log("Extension Pos", extensionPosition);
     }
@@ -80,6 +87,14 @@ public class Extension {
         } else {
             extension.set(ControlMode.PercentOutput, 0.0);
         }
+        SmartDashboard.putNumber("Elbow Angle Command", this.convertToTicks(inches));
+        SmartDashboard.putNumber("Elbow Command", inches);
+        SmartDashboard.putNumber("Elbow Command Actual", extension.getActiveTrajectoryPosition());
+        SmartDashboard.putNumber("Elbow FeedForward", extension.getActiveTrajectoryArbFeedFwd()*100);
+        SmartDashboard.putNumber("Elbow Proportional", extension.getClosedLoopError()*Constants.ELBOW_MOTOR_kP/1023);
+        SmartDashboard.putNumber("Elbow Derviative", extension.getErrorDerivative()*Constants.ELBOW_MOTOR_kD/1023);
+        SmartDashboard.putNumber("Elbow Integral", extension.getIntegralAccumulator()*Constants.ELBOW_MOTOR_kI/1023);
+        SmartDashboard.putNumber("Elbow Total Command", extension.getMotorOutputPercent());
     }
 
     public void setCoastMode() {
@@ -88,5 +103,13 @@ public class Extension {
 
     public void setBreakMode() {
         extension.setNeutralMode(NeutralMode.Brake);
+    }
+
+    public boolean getAchivedTarget() {
+        if (extension.getControlMode() == ControlMode.MotionMagic) {
+            return achivedTarget;
+        } else {
+            return false;
+        }
     }
 }

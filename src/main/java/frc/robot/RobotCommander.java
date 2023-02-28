@@ -1,11 +1,14 @@
 package frc.robot;
 
 import edu.wpi.first.wpilibj.XboxController;
+import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import frc.robot.subsystems.Arm;
 import frc.robot.subsystems.Intake;
 
 public abstract class RobotCommander {
     double[] intakeArray = {10000, 0};
+
+    public Alliance allaince;
 
     public XboxController driver;
     public XboxController operator;
@@ -24,4 +27,6 @@ public abstract class RobotCommander {
     public abstract boolean hopperOverrideLeft();
     public abstract boolean hopperOverrideRight();
     public abstract boolean getAutoBalance();
+    public abstract double getGripperCommand();
+    public abstract boolean useNegativeSide();
 }
