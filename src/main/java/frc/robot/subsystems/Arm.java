@@ -26,10 +26,10 @@ public class Arm {
         outOfDirectionToHopper1(-0,.5,80),
         outOfPostiveToHopper2(-20,.5,10),
         outOfHopperToMid(-20,.5,80),
-        outOfHumanPlayerInitialExtension(-6.8,7.5,12),
-        humanPlayerReady(-6.8,22,63),
-        humanPlayerPickup(11.2,22,52.2),
-        outOfReturnFromHumanPlayer(-20,22,25);
+        outOfHumanPlayerInitialExtension(6.8,7.5,-12),
+        humanPlayerReady(6.8,22,-63),
+        humanPlayerPickup(-7,21.5,-52.2),
+        outOfReturnFromHumanPlayer(20,22,-25);
 
         private final double shoulder;
         public double getShoulder() {

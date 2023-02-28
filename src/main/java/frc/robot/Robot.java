@@ -21,6 +21,7 @@ import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.Autons.BlueAutoLeft;
+import frc.robot.Autons.BlueAutoLeft1Bal;
 import frc.robot.Autons.BlueAutoRight;
 import frc.robot.Autons.OhCrap;
 import frc.robot.Autons.RedAutoLeft;
@@ -50,8 +51,9 @@ public class Robot extends TimedRobot {
     private RedAutoRight redAutoRight;
     private RedAutoLeft redAutoLeft;
     private RedAutoLeft1Bal redAutoLeft1Bal;
+    private BlueAutoLeft1Bal blueAutoLeft1Bal;
 
-    private String autonSelection = "Red Left 1";
+    private String autonSelection = "Blue Left 1";
 
     private Alliance alliance;
 
@@ -82,6 +84,7 @@ public class Robot extends TimedRobot {
         redAutoRight = new RedAutoRight();
         redAutoLeft = new RedAutoLeft();
         redAutoLeft1Bal = new RedAutoLeft1Bal();
+        blueAutoLeft1Bal = new BlueAutoLeft1Bal();
     }
 
     @Override
@@ -115,7 +118,6 @@ public class Robot extends TimedRobot {
 
         SmartDashboard.getString("Auton Selection", autonSelection);
         
-
         if(autonSelection == "Blue Left"){
             alliance = Alliance.Blue;
             autonCommader.allaince = alliance;
@@ -134,6 +136,18 @@ public class Robot extends TimedRobot {
             autonCommader.initAuton(redAutoRight);
         }else if(autonSelection == "Red Left 1"){
             alliance = Alliance.Red;
+            autonCommader.allaince = alliance;
+            autonCommader.initAuton(redAutoLeft1Bal);
+        }else if(autonSelection == "Red Right 1"){
+            alliance = Alliance.Red;
+            autonCommader.allaince = alliance;
+            autonCommader.initAuton(redAutoLeft1Bal);
+        }else if(autonSelection == "Blue Left 1"){
+            alliance = Alliance.Blue;
+            autonCommader.allaince = alliance;
+            autonCommader.initAuton(blueAutoLeft1Bal);
+        }else if(autonSelection == "Blue Right 1"){
+            alliance = Alliance.Blue;
             autonCommader.allaince = alliance;
             autonCommader.initAuton(redAutoLeft1Bal);
         } else {
@@ -161,7 +175,7 @@ public class Robot extends TimedRobot {
         drivetrain.autonAction(autonCommader);
         arm.action(autonCommader);
         intake.IntakePeriodic(autonCommader);
-        hopper.HopperPeriodic(autonCommader);
+        // hopper.HopperPeriodic(autonCommader);
         gripper.action(autonCommader);
     }
         
@@ -170,6 +184,9 @@ public class Robot extends TimedRobot {
         SmartDashboard.putString("Robot Mode", "Teleop");
 
         alliance = DriverStation.getAlliance();
+        // alliance = Alliance.Blue;
+
+        teleopCommander.allaince = alliance;
 
         if(Camera.rightAprilDetected()){
             drivetrain.zero(Camera.getRightBotPose().getRotation().getDegrees());

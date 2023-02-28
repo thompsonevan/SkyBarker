@@ -34,7 +34,7 @@ public class Intake {
         // speedMotor2 = new TalonFX(INTAKE_SPEED2_MOTOR_ID);
         angleMotor = new CANSparkMax(INTAKE_ANGLE_MOTOR_ID, MotorType.kBrushless);
         angleEncoder = new CANCoder(23);
-        pidController = new PIDController(.017, 0.0015, 0.000075); //.0175, 0.001, 0.000075
+        pidController = new PIDController(.008, 0.0015, 0.000075); //.0175, 0.001, 0.000075
         startPosition = angleEncoder.getAbsolutePosition();
         angleEncoder.configSensorDirection(true);
         angleEncoder.configMagnetOffset(INTAKE_OFFSET);

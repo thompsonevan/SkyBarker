@@ -20,10 +20,8 @@ import static frc.robot.Constants.FRONT_RIGHT_MODULE_STEER_MOTOR;
 import static frc.robot.Constants.FRONT_RIGHT_MODULE_STEER_OFFSET;
 import static frc.robot.Constants.MAX_VELOCITY_METERS_PER_SECOND;
 import static frc.robot.Constants.MAX_VOLTAGE;
-import static frc.robot.Constants.realBot;
 
 import com.ctre.phoenix.motorcontrol.can.TalonFX;
-import com.swervedrivespecialties.swervelib.Mk4SwerveModuleHelper;
 import com.swervedrivespecialties.swervelib.Mk4iSwerveModuleHelper;
 import com.swervedrivespecialties.swervelib.SdsModuleConfigurations;
 import com.swervedrivespecialties.swervelib.SwerveModule;
@@ -43,15 +41,14 @@ import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.math.trajectory.Trajectory.State;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.math.util.Units;
-import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
+import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.shuffleboard.BuiltInLayouts;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.AutonCommader;
 import frc.robot.TeleopCommander;
-import frc.robot.sensors.Camera;
 import frc.robot.sensors.Pigeon;
 
 public class Drivetrain{
@@ -241,45 +238,82 @@ public class Drivetrain{
                         states[3].angle.getRadians());
     }
 
-    public void setModulePositions(double speed, double angle){
-        frontLeftModule.set(speed, Math.toRadians(angle));
-        frontRightModule.set(speed, Math.toRadians(angle));
-        backLeftModule.set(speed, Math.toRadians(angle));
-        backRightModule.set(speed, Math.toRadians(angle));
+    public void setModulePositions(){
+        frontLeftModule.set(0, 45);
+        frontRightModule.set(0, -45);
+        backLeftModule.set(0, -45);
+        backRightModule.set(0, 45);
     }
 
     public boolean rampPassed = false;
 
     public void teleAction(TeleopCommander commander){
         if(commander.getAutoBalance()){
-            if(Pigeon.getRoll() < 15 && !rampPassed){
-                chassisSpeeds = new ChassisSpeeds(
-                    0,
-                    -1,
-                    0
-                );
-                rampPassed = false;
-            } else {
-                rampPassed = true;
-            }
-
-            if(rampPassed){
-                if(Pigeon.getRoll() > 12){
+            if(commander.allaince == Alliance.Red){
+                if(Pigeon.getRoll() < 15 && !rampPassed){
                     chassisSpeeds = new ChassisSpeeds(
                         0,
-                        -Pigeon.getRoll() * .05,
+                        -1,
                         0
                     );
+                    rampPassed = false;
                 } else {
-                    chassisSpeeds = new ChassisSpeeds(
-                        0,
-                        0,
-                        0
-                    );
+                    rampPassed = true;
                 }
 
+                if(rampPassed){
+                    if(Pigeon.getRoll() > 12){
+                        chassisSpeeds = new ChassisSpeeds(
+                            0,
+                            -Pigeon.getRoll() * .05,
+                            0
+                        );
+                    } else if(Pigeon.getRoll() < 6){
+                        setModulePositions();
+                    } else {
+                        chassisSpeeds = new ChassisSpeeds(
+                            0,
+                            0,
+                            0
+                        );
+                    }
+
+                }
+            } else {
+                if(Pigeon.getRoll() > -22 && !rampPassed){
+                    chassisSpeeds = new ChassisSpeeds(
+                        0,
+                        1,
+                        0
+                    );
+                    rampPassed = false;
+                } else {
+                    rampPassed = true;
+                }
+    
+                if(rampPassed){
+                    if(Pigeon.getRoll() < -14){
+                        chassisSpeeds = new ChassisSpeeds(
+                            0,
+                            Pigeon.getRoll() * .05,
+                            0
+                        );
+                    } else if(Pigeon.getRoll() < -6){
+                        setModulePositions();
+                    } else {
+                        chassisSpeeds = new ChassisSpeeds(
+                            0,
+                            0,
+                            0
+                        );
+                    }
+    
+                }
             }
-        } else {
+            setSwerveModuleStates(chassisSpeeds);
+        } else if (commander.driver.getBButton()){
+            setModulePositions(); 
+        }else {
             chassisSpeeds = ChassisSpeeds.fromFieldRelativeSpeeds(
                 commander.getForwardCommand(),
                 commander.getStrafeCommand(),
@@ -287,9 +321,9 @@ public class Drivetrain{
                 Pigeon.getRotation2d());
 
             rampPassed = false;
+            setSwerveModuleStates(chassisSpeeds);
         }
-
-        setSwerveModuleStates(chassisSpeeds);
+        SmartDashboard.putBoolean("Ramp Pased", rampPassed);
     }
     
     public void autonAction(AutonCommader autonCommader){
@@ -301,7 +335,37 @@ public class Drivetrain{
                 if(Pigeon.getRoll() < 15 && !rampPassed){
                     chassisSpeeds = new ChassisSpeeds(
                         0,
-                        -.75,
+                        -1,
+                        0
+                    );
+                    rampPassed = false;
+                } else {
+                    rampPassed = true;
+                }
+
+                if(rampPassed){
+                    if(Pigeon.getRoll() > 12){
+                        chassisSpeeds = new ChassisSpeeds(
+                            0,
+                            -Pigeon.getRoll() * .05,
+                            0
+                        );
+                    } else if(Pigeon.getRoll() < 6){
+                        setModulePositions();
+                    } else {
+                        chassisSpeeds = new ChassisSpeeds(
+                            0,
+                            0,
+                            0
+                        );
+                    }
+
+                }
+            } else {
+                if(Pigeon.getRoll() > -21 && !rampPassed){
+                    chassisSpeeds = new ChassisSpeeds(
+                        0,
+                        1,
                         0
                     );
                     rampPassed = false;
@@ -310,12 +374,14 @@ public class Drivetrain{
                 }
     
                 if(rampPassed){
-                    if(Pigeon.getRoll() > 12){
+                    if(Pigeon.getRoll() < -14){
                         chassisSpeeds = new ChassisSpeeds(
                             0,
-                            -Pigeon.getRoll() * .05,
+                            Pigeon.getRoll() * .05,
                             0
                         );
+                    } else if(Pigeon.getRoll() < -6){
+                        setModulePositions();
                     } else {
                         chassisSpeeds = new ChassisSpeeds(
                             0,
@@ -324,20 +390,6 @@ public class Drivetrain{
                         );
                     }
     
-                }
-            } else {
-                if(Pigeon.getRoll() > -12){
-                    chassisSpeeds = new ChassisSpeeds(
-                        0,
-                        -1,
-                        0
-                    );
-                } else {
-                    chassisSpeeds = new ChassisSpeeds(
-                        0,
-                        Pigeon.getRoll() * .03,
-                        0
-                    );
                 }
             }
             setSwerveModuleStates(chassisSpeeds);

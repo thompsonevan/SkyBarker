@@ -147,45 +147,11 @@ public class AutonCommader extends RobotCommander{
     @Override
     public boolean useNegativeSide() {
         double angle =MathUtil.inputModulus(Pigeon.getAngle(),-180,180);
-        // if(overrideNegSide()){
-        if(overrideNegSide()){
-            if(allaince == Alliance.Red){
-                if (angle > -180 && angle < 0) {
-                    return false;
-                } else  {
-                    return true;
-                }
-            } else {
-                if (angle > -180 && angle < 0) {
-                    return true;
-                } else  {
-                    return false;
-                }
-            }
-        } else {
-            if(allaince == Alliance.Red){
-                if (angle > -180 && angle < 0) {
-                    return true;
-                } else  {
-                    return false;
-                }
-            } else {
-                if (angle > -180 && angle < 0) {
-                    return false;
-                } else  {
-                    return true;
-                }
-            }
+        if (angle > -180 && angle < 0) {
+            return true;
+        } else  {
+            return false;
         }
-
-
-        // } else {
-        //     if (angle > -180 && angle < 0) {
-        //         return false;
-        //     } else  {
-        //         return true;
-        //     }
-        // }
     }
 
     public boolean overrideNegSide(){
