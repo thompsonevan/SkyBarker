@@ -104,7 +104,7 @@ public class RedAutoLeft extends AutonBase{
                 driving = false;
                 intakeOn = false;
                 armPos = ArmPos.intake;
-                if(timer.get() > .1){
+                if(timer.get() > .5){
                     trajectory = createTrajectory(path.get(point), path.get(point+1), 
                     Rotation2d.fromDegrees(-10+180), Rotation2d.fromDegrees(10+180));
 

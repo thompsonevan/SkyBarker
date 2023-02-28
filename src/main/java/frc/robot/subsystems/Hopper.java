@@ -28,52 +28,7 @@ public class Hopper {
     }
 
     public void HopperPeriodic(RobotCommander commander){
-        sensorTop.get();
-        sensorLeft.get();
-        sensorRight.get();
-        sensorBottom.get();
-
-        if (commander.hopperOverrideLeft()) {
-            hopperOverrideActive = true;
-            hopperMotor.set(HOPPER_OVERRIDE_SPEED);
-
-        } else if (commander.hopperOverrideRight()) {
-            hopperOverrideActive = true;
-            hopperMotor.set(-1 * HOPPER_OVERRIDE_SPEED);
-
-        } else {
-            hopperOverrideActive = false;
-            if (hopperCam == HopperCam.CUBE) {
-                if (sensorLeft.get() && sensorBottom.get()) {
-                    hopperMotor.set(HOPPER_SPEED);
-                    fingerServo.setAngle(0);
-                } else if (sensorRight.get() && sensorBottom.get() ) {
-                    hopperMotor.set(-1 * HOPPER_SPEED);
-                    fingerServo.setAngle(0);
-                } else {
-                    hopperMotor.setIdleMode(IdleMode.kBrake);
-                    hopperMotor.set(0);
-                    fingerServo.setAngle(0);
-                }
-            }
-            else if (hopperCam == HopperCam.CONE) {
-                if (sensorLeft.get() && sensorBottom.get() && !sensorTop.get()) {
-                    hopperMotor.set(HOPPER_SPEED);
-                    fingerServo.setAngle(90);
-                } else if (sensorRight.get() && sensorBottom.get() && !sensorTop.get()) {
-                    hopperMotor.set(-1 * HOPPER_SPEED);
-                    fingerServo.setAngle(90);
-                } else {
-                    hopperMotor.setIdleMode(IdleMode.kBrake);
-                    hopperMotor.set(0);
-                    fingerServo.setAngle(0);
-                }
-            } else {
-                hopperMotor.setIdleMode(IdleMode.kBrake);
-                hopperMotor.set(0);
-                fingerServo.setAngle(0); 
-            }
-        }
+        hopperMotor.set(commander.operator.getRightX() * .8);
     }
 
   public void logData(){
