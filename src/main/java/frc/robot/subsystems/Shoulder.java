@@ -111,7 +111,7 @@ public class Shoulder {
         SmartDashboard.putNumber("Should command ticks", this.convertToTicks(degrees));
         SmartDashboard.putNumber("Should ticks", shoulder.getSelectedSensorPosition());
         SmartDashboard.putNumber("Shoulder Command", degrees);
-        SmartDashboard.putNumber("Shoulder Command Actual", shoulder.getActiveTrajectoryPosition());
+        SmartDashboard.putNumber("Shoulder Command Actual", this.convertToDegrees(shoulder.getActiveTrajectoryPosition()));
         SmartDashboard.putNumber("Shoulder FeedForward", shoulder.getActiveTrajectoryArbFeedFwd()*100);
         SmartDashboard.putNumber("Shoulder Proportional", shoulder.getClosedLoopError()*Constants.SHOULDER_MOTOR_kP/1023);
         SmartDashboard.putNumber("Shoulder Derviative", shoulder.getErrorDerivative()*Constants.SHOULDER_MOTOR_kD/1023);

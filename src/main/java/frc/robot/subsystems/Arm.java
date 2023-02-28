@@ -16,7 +16,7 @@ public class Arm {
     public static enum ArmPos {
         packagePos(0,.1,0),
         readyPosition(-23,.1,100),
-        topNode(52,20,181),
+        topNode(50,20,181),
         middleNode(51,.2,181),
         lowerNode(27,.2,69),
         manual(0,0,0), // manual motor commands
@@ -72,6 +72,8 @@ public class Arm {
     private boolean achivedPostion;
     private boolean transitionStateInProgress;
 
+    private boolean useNegativeSide;
+
     public Arm(){
         shoulder = new Shoulder(Constants.SHOULDER, Constants.SHOULDER_ENCODER);
         extension = new Extension(Constants.EXTENSION);
@@ -81,6 +83,8 @@ public class Arm {
     public void initilizeOffsets() {
         shoulder.intilizeOffset();
         elbow.intilizeOffset();
+
+        currentCommandedZone = ArmZone.hopper;
     }
     
     public void armPercentOutZero(){
@@ -107,6 +111,10 @@ public class Arm {
     }
 
     public void action(RobotCommander commander) {
+        if(Math.abs(elbow.getElbowAngle()) < 10){
+            useNegativeSide = commander.useNegativeSide();
+        }
+
         if (commander.getArmPosition() == ArmPos.manual) {
             actualCommand = ArmPos.manual;
             transitionStateInProgress = false;
@@ -117,9 +125,16 @@ public class Arm {
             actualCommand = ArmPos.Zero;
             transitionStateInProgress = false;
         } else if (commander.getArmPosition() != armTargetPrevious) {
-            currentCommandedZone = this.determineArmZone(commander.getArmPosition().getShoulder(), 
-                                                         commander.getArmPosition().getExtension(), 
-                                                         commander.getArmPosition().getElbow());
+            if (useNegativeSide) {
+                currentCommandedZone = this.determineArmZone(-commander.getArmPosition().getShoulder(), 
+                                                             commander.getArmPosition().getExtension(), 
+                                                             -commander.getArmPosition().getElbow());
+            } else {
+                currentCommandedZone = this.determineArmZone(commander.getArmPosition().getShoulder(), 
+                                                             commander.getArmPosition().getExtension(), 
+                                                             commander.getArmPosition().getElbow());
+            }
+
             if (currentCommandedZone == currentZone) {
                 actualCommand = commander.getArmPosition();
                 transitionStateInProgress = false;
@@ -160,7 +175,7 @@ public class Arm {
                         actualCommand = ArmPos.outOfPostiveToHopper2;
                         transitionStateInProgress = true;
                     } else if (actualCommand == ArmPos.outOfHopperToDirection && 
-                               commander.getArmPosition() == ArmPos.middleNode) {
+                               (commander.getArmPosition() == ArmPos.middleNode || commander.getArmPosition() == ArmPos.topNode)) {
                                 actualCommand = ArmPos.outOfHopperToMid;
                                 transitionStateInProgress = true;
                     } else {
@@ -177,7 +192,7 @@ public class Arm {
         armTargetPrevious = commander.getArmPosition();
         
         if (actualCommand != ArmPos.Zero && actualCommand != ArmPos.manual) {
-            if (commander.useNegativeSide()) {
+            if (useNegativeSide) {
                 shoulder.goToPostion(-actualCommand.getShoulder());
                 extension.goToPostion(actualCommand.getExtension());
                 elbow.goToPostion(-actualCommand.getElbow());

@@ -112,7 +112,7 @@ public class Elbow {
         }
         SmartDashboard.putNumber("Elbow Angle Command", elbowOffset + this.convertToTicks(degrees));
         SmartDashboard.putNumber("Elbow Command", degrees);
-        SmartDashboard.putNumber("Elbow Command Actual", (elbow.getActiveTrajectoryPosition()- elbowOffset)*360/4096);
+        SmartDashboard.putNumber("Elbow Command Actual", this.convertToDegrees(elbow.getActiveTrajectoryPosition()- elbowOffset)*360/4096);
         SmartDashboard.putNumber("Elbow FeedForward", elbow.getActiveTrajectoryArbFeedFwd()*100);
         SmartDashboard.putNumber("Elbow Proportional", elbow.getClosedLoopError()*Constants.ELBOW_MOTOR_kP/1023);
         SmartDashboard.putNumber("Elbow Derviative", elbow.getErrorDerivative()*Constants.ELBOW_MOTOR_kD/1023);
