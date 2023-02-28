@@ -100,8 +100,8 @@ public class TeleopCommander extends RobotCommander{
         boolean Dpad_updown = ((operator.getPOV() > 160 && operator.getPOV() < 200) || (!(operator.getPOV() < 0) && operator.getPOV() < 20));
         boolean Trigger_right = (operator.getRightTriggerAxis() > .3);
         boolean Trigger_left = (operator.getLeftTriggerAxis() > .3);
-        boolean Bumper_push = operator.getRightBumperPressed();
-        boolean Bumper_release = operator.getRightBumperReleased();
+        // boolean Bumper_push = operator.getRightBumperPressed();
+        // boolean Bumper_release = operator.getRightBumperReleased();
         if (!this.getManualMode()) {
             if(getCubeMode()){
                 if (Trigger_left && !Trigger_right) {
@@ -114,7 +114,11 @@ public class TeleopCommander extends RobotCommander{
                     } else if (Dpad_updown && !(Dpad_left || Dpad_right)) {
                         intakeArray[0] = Constants.INTAKE_STATION_POSITION;
                         intakeArray[1] = Constants.INTAKE_SPEED_CUBE;
-                    } else {
+                    }
+                    // else if (operator.getXButton()){
+                    //     intakeArray[0] = Constants.INTAKE_STATION_POSITION;
+                    // } 
+                    else {
                         intakeArray[1] = Constants.INTAKE_SPEED_CUBE;
                     }
                 } else if (Trigger_right && !Trigger_left) {
@@ -130,14 +134,14 @@ public class TeleopCommander extends RobotCommander{
                     } else {
                         intakeArray[1] = -Constants.INTAKE_SPEED_CUBE;
                     }
-                } else if (Bumper_push && !(Dpad_left || Dpad_right || Dpad_updown)) {
-                    Bumpercheck = true;
-                    intakeArray[0] = Constants.INTAKE_COLLECT_POSITION;
-                    intakeArray[1] = 0;
-                } else if (Bumper_release && !(Dpad_left || Dpad_right || Dpad_updown) && Bumpercheck) {
-                    Bumpercheck = false;
-                    intakeArray[0] = Constants.INTAKE_PACKAGE_POSITION;
-                    intakeArray[1] = 0;
+                // } else if (Bumper_push && !(Dpad_left || Dpad_right || Dpad_updown)) {
+                //     Bumpercheck = true;
+                //     intakeArray[0] = Constants.INTAKE_COLLECT_POSITION;
+                //     intakeArray[1] = 0;
+                // } else if (Bumper_release && !(Dpad_left || Dpad_right || Dpad_updown) && Bumpercheck) {
+                //     Bumpercheck = false;
+                //     intakeArray[0] = Constants.INTAKE_PACKAGE_POSITION;
+                //     intakeArray[1] = 0;
                 } else if (Dpad_left && !(Trigger_right || Trigger_left || Dpad_right || Dpad_updown)) {
                     intakeArray[0] = Constants.INTAKE_PACKAGE_POSITION;
                     intakeArray[1] = .0;
@@ -177,14 +181,14 @@ public class TeleopCommander extends RobotCommander{
                     } else {
                         intakeArray[1] = -Constants.INTAKE_SPEED_CONE;
                     }
-                } else if (Bumper_push && !(Dpad_left || Dpad_right || Dpad_updown)) {
-                    Bumpercheck = true;
-                    intakeArray[0] = Constants.INTAKE_COLLECT_POSITION;
-                    intakeArray[1] = 0;
-                } else if (Bumper_release && !(Dpad_left || Dpad_right || Dpad_updown) && Bumpercheck) {
-                    Bumpercheck = false;
-                    intakeArray[0] = Constants.INTAKE_PACKAGE_POSITION;
-                    intakeArray[1] = 0;
+                // } else if (Bumper_push && !(Dpad_left || Dpad_right || Dpad_updown)) {
+                //     Bumpercheck = true;
+                //     intakeArray[0] = Constants.INTAKE_COLLECT_POSITION;
+                //     intakeArray[1] = 0;
+                // } else if (Bumper_release && !(Dpad_left || Dpad_right || Dpad_updown) && Bumpercheck) {
+                //     Bumpercheck = false;
+                //     intakeArray[0] = Constants.INTAKE_PACKAGE_POSITION;
+                //     intakeArray[1] = 0;
                 } else if (Dpad_left && !(Trigger_right || Trigger_left || Dpad_right || Dpad_updown)) {
                     intakeArray[0] = Constants.INTAKE_PACKAGE_POSITION;
                     intakeArray[1] = .0;
@@ -232,7 +236,11 @@ public class TeleopCommander extends RobotCommander{
         } else if(operator.getBButton()){
             return ArmPos.middleNode;
         } else if(operator.getXButton()){
-            return ArmPos.humanPlayer;
+            if (operator.getRightBumper()){
+                return ArmPos.humanPlayerPickup;
+            } else {
+                return ArmPos.humanPlayerReady;
+            }
         } else {
             return ArmPos.Zero;
         }
@@ -298,7 +306,7 @@ public class TeleopCommander extends RobotCommander{
 
     public double getGripperCommand() {
         double gripperMotorCommand = 0.0;
-        if (this.getArmPosition() == ArmPos.lowerNode || this.getArmPosition() == ArmPos.topNode || this.getArmPosition() == ArmPos.middleNode) {
+        if (this.getArmPosition() == ArmPos.lowerNode || this.getArmPosition() == ArmPos.topNode || this.getArmPosition() == ArmPos.middleNode || this.getArmPosition() == ArmPos.humanPlayerPickup) {
             gripperMotorCommand = GRIPPER_HOLD_POWER + operator.getLeftY();
         } else {
             gripperMotorCommand  = operator.getLeftY();
@@ -313,6 +321,15 @@ public class TeleopCommander extends RobotCommander{
         if (angle > -180 && angle < 0) {
             return true;
         } else  {
+            return false;
+        }
+    }
+    
+    public boolean xReleased(){
+        if((operator.getXButtonReleased() == true) && (operator.getRightBumperReleased() == true)){
+            return true;
+        }
+        else{
             return false;
         }
     }

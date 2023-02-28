@@ -36,6 +36,8 @@ public class Intake {
         angleEncoder = new CANCoder(23);
         pidController = new PIDController(.017, 0.0015, 0.000075); //.0175, 0.001, 0.000075
         startPosition = angleEncoder.getAbsolutePosition();
+        angleEncoder.configSensorDirection(true);
+        angleEncoder.configMagnetOffset(INTAKE_OFFSET);
 
         // speedMotor2.setInverted(TalonFXInvertType.OpposeMaster);
         // speedMotor2.follow(speedMotor1);

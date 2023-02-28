@@ -12,6 +12,7 @@ import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 // Swerve Bot Constants
 public final class Constants {
     public static final boolean realBot = true;
+    public static final boolean compBot = true;
 
     public static final double DRIVETRAIN_TRACKWIDTH_METERS = 0.57785;
 
@@ -32,22 +33,22 @@ public final class Constants {
     public static final int FRONT_LEFT_MODULE_DRIVE_MOTOR = 1;
     public static final int FRONT_LEFT_MODULE_STEER_MOTOR = 2;
     public static final int FRONT_LEFT_MODULE_STEER_ENCODER = 18;
-    public static final double FRONT_LEFT_MODULE_STEER_OFFSET = -Math.toRadians(349.365234375-180); // 169.1015625
+    public static final double FRONT_LEFT_MODULE_STEER_OFFSET = compBot ? -Math.toRadians(236.37) : -Math.toRadians(349.365234375-180); // 169.1015625
 
     public static final int FRONT_RIGHT_MODULE_DRIVE_MOTOR = 3;
     public static final int FRONT_RIGHT_MODULE_STEER_MOTOR = 4;
     public static final int FRONT_RIGHT_MODULE_STEER_ENCODER = 19;
-    public static final double FRONT_RIGHT_MODULE_STEER_OFFSET = -Math.toRadians(3.779296875+180); //183.251953125
+    public static final double FRONT_RIGHT_MODULE_STEER_OFFSET = compBot ? -Math.toRadians(35.27) : -Math.toRadians(3.779296875+180); //183.251953125
 
     public static final int BACK_LEFT_MODULE_DRIVE_MOTOR = 5;
     public static final int BACK_LEFT_MODULE_STEER_MOTOR = 6;
     public static final int BACK_LEFT_MODULE_STEER_ENCODER = 20;
-    public static final double BACK_LEFT_MODULE_STEER_OFFSET = -Math.toRadians(308.935546875-180); // 129.814453125
+    public static final double BACK_LEFT_MODULE_STEER_OFFSET = compBot ? -Math.toRadians(243.57) : -Math.toRadians(308.935546875-180); // 129.814453125
 
     public static final int BACK_RIGHT_MODULE_DRIVE_MOTOR = 7;
     public static final int BACK_RIGHT_MODULE_STEER_MOTOR = 8;
     public static final int BACK_RIGHT_MODULE_STEER_ENCODER = 21;
-    public static final double BACK_RIGHT_MODULE_STEER_OFFSET = -Math.toRadians(55.72265625+180); //237.48046875
+    public static final double BACK_RIGHT_MODULE_STEER_OFFSET = compBot ? -Math.toRadians(340.87) : -Math.toRadians(55.72265625+180); //237.48046875
 
     public static final double SLOW_SPEED_MULTIPLIER = .5;
 
@@ -60,6 +61,8 @@ public final class Constants {
     public static final double INTAKE_SPEED_CUBE = .55;
     public static final double INTAKE_SPEED_CONE = 1;
     public static final int INTAKE_TIMEOUT = 200;
+
+    public static final double INTAKE_OFFSET = compBot ? 184.47 : 127.265625;
     
     // Hopper CAN ID
     public static final int HOPPER_MOTOR = 11;
@@ -83,8 +86,8 @@ public final class Constants {
     public static final double EXTENSION_RATIO = (50.0/12.0)*(50.0/20.0)*(2.0)/(2.0*Math.PI);  // Revolutions to Inches
     public static final double WRIST_RATIO = (9.0)*(7.0)*(96.0/36.0);  // Ratio
 
-    public static final double SHOULDER_OFFSET = 160.049;
-    public static final double ELBOW_OFFSET = 167.783;
+    public static final double SHOULDER_OFFSET = compBot ? 108.545 : 160.049;
+    public static final double ELBOW_OFFSET = compBot ? 53.29 : 167.783;
 
     //Arm pid motion magic gains
     public static final double SHOULDER_MOTOR_kF = 0;
@@ -151,7 +154,7 @@ public final class Constants {
 
     // Extension Constraints
     
-    public static final double MAXIMUM_EXTENSION_INCHES = 22;
+    public static final double MAXIMUM_EXTENSION_INCHES = 22.5; // actual maximum is 23
 
 
     public static final double GRIPPER_HOLD_POWER = -0.4;
