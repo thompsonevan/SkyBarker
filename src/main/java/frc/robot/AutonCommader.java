@@ -11,6 +11,7 @@ import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import frc.robot.Autons.AutonBase;
 import frc.robot.sensors.Pigeon;
 import frc.robot.subsystems.Arm.ArmPos;
+import frc.robot.subsystems.Arm.ArmPos.ArmBumpDirection;
 
 public class AutonCommader extends RobotCommander{
 
@@ -143,6 +144,10 @@ public class AutonCommader extends RobotCommander{
     //     // TODO Auto-generated method stub
     //     return false;
     // }
+
+    public ArmBumpDirection getArmBumpDirection() {
+        return ArmBumpDirection.bumpZero;
+    }
 
     @Override
     public boolean useNegativeSide() {

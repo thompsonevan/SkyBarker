@@ -6,9 +6,13 @@ import com.ctre.phoenix.motorcontrol.can.TalonSRX;
 import com.ctre.phoenix.motorcontrol.can.VictorSPX;
 import com.ctre.phoenix.sensors.AbsoluteSensorRange;
 import com.ctre.phoenix.sensors.CANCoder;
+
+import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.Constants;
+import frc.robot.Robot;
 import frc.robot.RobotCommander;
+import frc.robot.subsystems.Arm.ArmPos.ArmBumpDirection;
 
 import org.hotutilites.hotlogger.HotLogger;
 
@@ -27,8 +31,8 @@ public class Arm {
         outOfPostiveToHopper2(-20,.5,10),
         outOfHopperToMid(-20,.5,80),
         outOfHumanPlayerInitialExtension(6.8,7.5,-12),
-        humanPlayerReady(6.8,22,-63),
-        humanPlayerPickup(-7,21.5,-52.2),
+        humanPlayerReady(6.8,22,-67),
+        humanPlayerPickup(-7,21.5,-56.2),
         outOfReturnFromHumanPlayer(20,22,-25);
 
         private final double shoulder;
@@ -53,6 +57,22 @@ public class Arm {
             this.elbow = elbow;
         }
 
+
+        public enum ArmBumpDirection {
+            bumpUp(-1),
+            bumpDown(1),
+            bumpZero(0);
+
+        private final double shoulder;
+        public double getShoulder() {
+            return shoulder;
+        }
+
+        ArmBumpDirection(double shoulder) {
+            this.shoulder = shoulder;
+        }
+    }
+
         
     }
 
@@ -73,11 +93,16 @@ public class Arm {
     private boolean transitionStateInProgress;
 
     private boolean useNegativeSide;
+    private double shoulderBumpOffSet;
+    private int bumpLatchTimer;
+    private ArmPos bumpLatchCommand;
 
     public Arm(){
         shoulder = new Shoulder(Constants.SHOULDER, Constants.SHOULDER_ENCODER);
         extension = new Extension(Constants.EXTENSION);
         elbow = new Elbow(Constants.ELBOW, Constants.ELBOW_ENCODER);
+        shoulderBumpOffSet = 0;
+        bumpLatchTimer = 10000;
     }
 
     public void initilizeOffsets() {
@@ -191,13 +216,15 @@ public class Arm {
         SmartDashboard.putString("Commanded Position Previuos", commander.getArmPosition().name());
         armTargetPrevious = commander.getArmPosition();
         
+        double shoulderBump = this.determineShoulderBump(commander);
+
         if (actualCommand != ArmPos.Zero && actualCommand != ArmPos.manual) {
             if (useNegativeSide) {
-                shoulder.goToPostion(-actualCommand.getShoulder());
+                shoulder.goToPostion(-actualCommand.getShoulder() + shoulderBump);
                 extension.goToPostion(actualCommand.getExtension());
                 elbow.goToPostion(-actualCommand.getElbow());
             } else {
-                shoulder.goToPostion(actualCommand.getShoulder());
+                shoulder.goToPostion(actualCommand.getShoulder() + shoulderBump);
                 extension.goToPostion(actualCommand.getExtension());
                 elbow.goToPostion(actualCommand.getElbow());
             }
@@ -210,6 +237,45 @@ public class Arm {
             elbow.setMotorCommand(0);
             extension.setMotorCommand(0);
         }
+    }
+
+    private double determineShoulderBump(RobotCommander commander) {
+        double negativeModifier;
+        if (commander.useNegativeSide()) {
+            negativeModifier = -1;
+        } else {
+            negativeModifier = 1;
+        }
+
+        double humanPlayerModifier = 1;
+        if (commander.getArmPosition() == ArmPos.humanPlayerReady || commander.getArmPosition() == ArmPos.humanPlayerPickup) {
+            humanPlayerModifier = -1;
+        }
+        
+        if (commander.getArmPosition() == ArmPos.Zero && 
+            (armTargetPrevious != ArmPos.intake && armTargetPrevious != ArmPos.packagePos && armTargetPrevious != ArmPos.manual)) {
+            bumpLatchCommand = armTargetPrevious;
+            if (bumpLatchTimer >= Constants.ARM_BUMP_LATCH_TIME) {
+                shoulderBumpOffSet = 0.0;
+                bumpLatchTimer = Constants.ARM_BUMP_LATCH_TIME + 1;
+            } else {
+                bumpLatchTimer++;
+            }
+        } else if (commander.getArmPosition() != ArmPos.Zero && 
+                   commander.getArmPosition() != ArmPos.intake && 
+                   commander.getArmPosition() != ArmPos.packagePos && 
+                   commander.getArmPosition() != ArmPos.manual) {
+            shoulderBumpOffSet+=commander.getArmBumpDirection().getShoulder();
+            bumpLatchTimer = 0;
+        } else {
+            shoulderBumpOffSet = 0.0;
+            bumpLatchTimer = Constants.ARM_BUMP_LATCH_TIME + 1;
+        }
+
+        SmartDashboard.putNumber("shoulderBumpOffSet", shoulderBumpOffSet);
+        SmartDashboard.putNumber("bumpLatchTimer", bumpLatchTimer);
+
+        return shoulderBumpOffSet * humanPlayerModifier * negativeModifier;
     }
 
     public void updatePose(){

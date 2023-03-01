@@ -21,6 +21,10 @@ public class Hopper {
     public static HopperCam hopperCam = HopperCam.CUBE;
     public static boolean hopperOverrideActive = false;
 
+    public Hopper(){
+      hopperMotor.setIdleMode(IdleMode.kCoast);
+    }
+
     enum HopperCam {
       NONE,
       CUBE,

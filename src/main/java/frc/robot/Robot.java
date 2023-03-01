@@ -175,8 +175,8 @@ public class Robot extends TimedRobot {
         drivetrain.autonAction(autonCommader);
         arm.action(autonCommader);
         intake.IntakePeriodic(autonCommader);
-        // hopper.HopperPeriodic(autonCommader);
-        gripper.action(autonCommader);
+        hopper.HopperPeriodic(autonCommader);
+        // gripper.action(autonCommader);
     }
         
     @Override
@@ -216,6 +216,6 @@ public class Robot extends TimedRobot {
         arm.action(teleopCommander);
         arm.brakeMode();
         gripper.action(teleopCommander);
-        //hopper.HopperPeriodic(teleopCommander);
+        // hopper.HopperPeriodic(teleopCommander);
     }
 }

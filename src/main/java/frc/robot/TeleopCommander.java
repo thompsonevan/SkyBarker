@@ -5,7 +5,9 @@ import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.XboxController;
 import frc.robot.sensors.Pigeon;
 import frc.robot.subsystems.Arm;
+import frc.robot.subsystems.Intake;
 import frc.robot.subsystems.Arm.ArmPos;
+import frc.robot.subsystems.Arm.ArmPos.ArmBumpDirection;
 
 import static frc.robot.Constants.*;
 
@@ -60,10 +62,10 @@ public class TeleopCommander extends RobotCommander{
 
     @Override
     public double getTurnCommand() {
-        double value = deadband(Math.abs(driver.getRightX()) * driver.getRightX(), 0.01, 0.4) * (MAX_ANGULAR_VELOCITY_RADIANS_PER_SECOND);
+        double value = deadband(Math.abs(driver.getRightX()) * driver.getRightX(), 0.01, 0.75) * (MAX_ANGULAR_VELOCITY_RADIANS_PER_SECOND);
         
         if(!getDriverSlowSpeed()){
-            return -value * .5;
+            return -value;
         } else {
             return -value * .5 * SLOW_SPEED_MULTIPLIER;
         }
@@ -118,7 +120,12 @@ public class TeleopCommander extends RobotCommander{
         // boolean Bumper_release = operator.getRightBumperReleased();
         // if(getArmPosition() != ArmPos.Zero && getArmPosition() != ArmPos.manual && getArmPosition() != ArmPos.intake){
             if (!this.getManualMode()) {
-                if(getCubeMode()){
+                if (getArmPosition() != ArmPos.Zero && 
+                    getArmPosition() != ArmPos.manual && 
+                    getArmPosition() != ArmPos.intake && 
+                    Intake.angleEncoderAngle < 115) { 
+                        intakeArray[0] = 102;
+                } else if(getCubeMode()) {
                     if (Trigger_left && !Trigger_right) {
                         if (Dpad_left && !(Dpad_right || Dpad_updown)) {
                             intakeArray[0] = Constants.INTAKE_PACKAGE_POSITION;
@@ -252,11 +259,11 @@ public class TeleopCommander extends RobotCommander{
             return ArmPos.readyPosition;
         } else if(operator.getYButton()){
             return ArmPos.topNode;
-        } else if(operator.getAButton()){
-            return ArmPos.packagePos;
         } else if(operator.getBButton()){
             return ArmPos.middleNode;
-        } else if(operator.getXButton()){
+        } else if(operator.getAButton() || driver.getXButton()) {
+            return ArmPos.packagePos;
+        }else if(operator.getXButton()){
             if (operator.getRightBumper()){
                 return ArmPos.humanPlayerPickup;
             } else {
@@ -264,6 +271,16 @@ public class TeleopCommander extends RobotCommander{
             }
         } else {
             return ArmPos.Zero;
+        }
+    }
+
+    public ArmBumpDirection getArmBumpDirection() {
+        if (driver.getBButtonPressed()) {
+            return ArmBumpDirection.bumpUp;
+        } else if (driver.getAButtonPressed()) {
+            return ArmBumpDirection.bumpDown;
+        } else {
+            return ArmBumpDirection.bumpZero;
         }
     }
 
@@ -330,7 +347,13 @@ public class TeleopCommander extends RobotCommander{
         if (this.getArmPosition() == ArmPos.lowerNode || this.getArmPosition() == ArmPos.topNode || this.getArmPosition() == ArmPos.middleNode || this.getArmPosition() == ArmPos.humanPlayerPickup) {
             gripperMotorCommand = GRIPPER_HOLD_POWER + operator.getLeftY();
         } else {
-            gripperMotorCommand  = operator.getLeftY();
+            if (driver.getRightTriggerAxis() > .15) {
+                gripperMotorCommand  = -driver.getRightTriggerAxis();
+            } else if (driver.getLeftTriggerAxis() > .15) {
+                gripperMotorCommand  = driver.getLeftTriggerAxis();
+            } else {
+                gripperMotorCommand  = operator.getLeftY();
+            }
         }
 
         return gripperMotorCommand;

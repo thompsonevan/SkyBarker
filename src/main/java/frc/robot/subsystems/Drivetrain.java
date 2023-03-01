@@ -311,7 +311,7 @@ public class Drivetrain{
                 }
             }
             setSwerveModuleStates(chassisSpeeds);
-        } else if (commander.driver.getBButton()){
+        } else if (commander.driver.getPOV() == 180){
             setModulePositions(); 
         }else {
             chassisSpeeds = ChassisSpeeds.fromFieldRelativeSpeeds(

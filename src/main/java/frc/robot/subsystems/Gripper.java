@@ -38,7 +38,7 @@ public class Gripper {
 
         if ((commander.getArmPosition() != ArmPos.Zero || commander.getArmPosition() != ArmPos.manual) && 
             (timer < 150) && (timer > 0)){
-            gripper.set(ControlMode.PercentOutput, -0.5);
+            gripper.set(ControlMode.PercentOutput, -.6);
         }
         else{
         gripper.set(ControlMode.PercentOutput, commander.getGripperCommand());
