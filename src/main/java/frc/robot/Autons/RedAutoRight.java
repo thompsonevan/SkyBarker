@@ -56,20 +56,15 @@ public class RedAutoRight extends AutonBase{
     public void runAuto(){
         switch(autoState){
             case firstPlace:
-                driving = false;
-                if(timer.get() < 3){
-                    if(timer.get() < 2.5){
+            driving = false;
+                if(timer.get() < 2.5){
+                    if(timer.get() < 2.25){
                         gripperSpeed = -.4;
                     }else{
                         gripperSpeed = .4;
                     }
                     armPos = ArmPos.topNode;
                 } else {
-                    gripperSpeed = 0;
-                    armPos = ArmPos.packagePos;
-                }
-
-                if(timer.get() > 5){
                     trajectory = createTrajectory(path.get(point), path.get(point+1),
                     Rotation2d.fromDegrees(40), Rotation2d.fromDegrees(-10));
             

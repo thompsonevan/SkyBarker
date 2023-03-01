@@ -157,4 +157,8 @@ public class AutonCommader extends RobotCommander{
     public boolean overrideNegSide(){
         return auton.overrideNegSide;
     }
+
+    public boolean getXMode(){
+        return auton.xMode;
+    }
 }

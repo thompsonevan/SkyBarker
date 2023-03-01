@@ -15,7 +15,7 @@ import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.trajectory.Trajectory;
 import edu.wpi.first.math.trajectory.Trajectory.State;
 
-public class RedAutoLeft1Bal extends AutonBase{
+public class RedAutoMid1Bal extends AutonBase{
     enum AutoState {
         firstPlace,
         driveToStation,
@@ -36,7 +36,7 @@ public class RedAutoLeft1Bal extends AutonBase{
 
     Trajectory trajectory;
 
-    public RedAutoLeft1Bal(){
+    public RedAutoMid1Bal(){
         reset();
     }
 
@@ -72,24 +72,6 @@ public class RedAutoLeft1Bal extends AutonBase{
                 }
 
                 if(timer.get() > 5){
-                    trajectory = createTrajectory(path.get(point), path.get(point+1));
-            
-                    point++;
-
-                    timer.reset();
-
-                    autoState = AutoState.driveToStation;
-                }
-            break;
-            case driveToStation:
-                driving = true;
-                armPos = ArmPos.packagePos;
-                intakeOn = false;
-                
-                desState = trajectory.sample(timer.get());
-                targetTheta = path.get(point).getRotation();
-
-                if(timer.get() > trajectory.getTotalTimeSeconds()){
                     timer.reset();
 
                     autoState = AutoState.balance;

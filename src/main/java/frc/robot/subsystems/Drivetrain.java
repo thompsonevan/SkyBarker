@@ -253,7 +253,7 @@ public class Drivetrain{
                 if(Pigeon.getRoll() < 15 && !rampPassed){
                     chassisSpeeds = new ChassisSpeeds(
                         0,
-                        -1,
+                        -.75,
                         0
                     );
                     rampPassed = false;
@@ -262,28 +262,17 @@ public class Drivetrain{
                 }
 
                 if(rampPassed){
-                    if(Pigeon.getRoll() > 12){
-                        chassisSpeeds = new ChassisSpeeds(
-                            0,
-                            -Pigeon.getRoll() * .05,
-                            0
-                        );
-                    } else if(Pigeon.getRoll() < 6){
-                        setModulePositions();
-                    } else {
-                        chassisSpeeds = new ChassisSpeeds(
-                            0,
-                            0,
-                            0
-                        );
-                    }
-
-                }
-            } else {
-                if(Pigeon.getRoll() > -22 && !rampPassed){
                     chassisSpeeds = new ChassisSpeeds(
                         0,
-                        1,
+                        -Pigeon.getRoll() * .05,
+                        0
+                    );
+                }
+            } else {
+                if(Pigeon.getRoll() > -16.5 && !rampPassed){
+                    chassisSpeeds = new ChassisSpeeds(
+                        0,
+                        .5,
                         0
                     );
                     rampPassed = false;
@@ -292,26 +281,15 @@ public class Drivetrain{
                 }
     
                 if(rampPassed){
-                    if(Pigeon.getRoll() < -14){
-                        chassisSpeeds = new ChassisSpeeds(
-                            0,
-                            Pigeon.getRoll() * .05,
-                            0
-                        );
-                    } else if(Pigeon.getRoll() < -6){
-                        setModulePositions();
-                    } else {
-                        chassisSpeeds = new ChassisSpeeds(
-                            0,
-                            0,
-                            0
-                        );
-                    }
-    
+                    chassisSpeeds = new ChassisSpeeds(
+                        0,
+                        Pigeon.getRoll() * .05,
+                        0
+                    );
                 }
             }
             setSwerveModuleStates(chassisSpeeds);
-        } else if (commander.driver.getBButton()){
+        } else if (commander.driver.getPOV() > 160 && commander.driver.getPOV() < 200){
             setModulePositions(); 
         }else {
             chassisSpeeds = ChassisSpeeds.fromFieldRelativeSpeeds(
@@ -350,8 +328,6 @@ public class Drivetrain{
                             -Pigeon.getRoll() * .05,
                             0
                         );
-                    } else if(Pigeon.getRoll() < 6){
-                        setModulePositions();
                     } else {
                         chassisSpeeds = new ChassisSpeeds(
                             0,
@@ -359,7 +335,6 @@ public class Drivetrain{
                             0
                         );
                     }
-
                 }
             } else {
                 if(Pigeon.getRoll() > -21 && !rampPassed){
@@ -393,7 +368,9 @@ public class Drivetrain{
                 }
             }
             setSwerveModuleStates(chassisSpeeds);
-        } else {
+        } else if (autonCommader.getXMode()){
+            setModulePositions();
+        }else {
             setSwerveModuleStates(new ChassisSpeeds(0,0,0));
         }
 

@@ -15,7 +15,7 @@ import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.trajectory.Trajectory;
 import edu.wpi.first.math.trajectory.Trajectory.State;
 
-public class RedAutoLeft1Bal extends AutonBase{
+public class BlueAutoMid1Bal extends AutonBase{
     enum AutoState {
         firstPlace,
         driveToStation,
@@ -26,23 +26,22 @@ public class RedAutoLeft1Bal extends AutonBase{
     public AutoState autoState;
 
     public Timer timer = new Timer();
-
     public Timer totalTime = new Timer();
 
     int point = 0;
 
-    List<Pose2d> path = List.of(new Pose2d(new Translation2d(0,0), Rotation2d.fromDegrees(90)), //4.82, .5
-                                new Pose2d(new Translation2d(.3,-.75), Rotation2d.fromDegrees(90)));
+    List<Pose2d> path = List.of(new Pose2d(new Translation2d(0,0), Rotation2d.fromDegrees(-90)), //4.82, .5
+                                new Pose2d(new Translation2d(.3,.75), Rotation2d.fromDegrees(-90)));
 
     Trajectory trajectory;
 
-    public RedAutoLeft1Bal(){
+    public BlueAutoMid1Bal(){
         reset();
     }
 
     public void reset(){
         desState = new State();
-        targetTheta = Rotation2d.fromDegrees(90);
+        targetTheta = Rotation2d.fromDegrees(-90);
 
         point = 0;
         
@@ -72,24 +71,6 @@ public class RedAutoLeft1Bal extends AutonBase{
                 }
 
                 if(timer.get() > 5){
-                    trajectory = createTrajectory(path.get(point), path.get(point+1));
-            
-                    point++;
-
-                    timer.reset();
-
-                    autoState = AutoState.driveToStation;
-                }
-            break;
-            case driveToStation:
-                driving = true;
-                armPos = ArmPos.packagePos;
-                intakeOn = false;
-                
-                desState = trajectory.sample(timer.get());
-                targetTheta = path.get(point).getRotation();
-
-                if(timer.get() > trajectory.getTotalTimeSeconds()){
                     timer.reset();
 
                     autoState = AutoState.balance;

@@ -21,7 +21,7 @@ public class Arm {
         lowerNode(27,.2,69),
         manual(0,0,0), // manual motor commands
         Zero(0,0,0), // No motor command
-        intake(0,10,0), 
+        intake(0,10,0),
         outOfHopperToDirection(-20,.5,5), 
         outOfDirectionToHopper1(-0,.5,80),
         outOfPostiveToHopper2(-20,.5,10),

@@ -12,7 +12,7 @@ import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 // Swerve Bot Constants
 public final class Constants {
     public static final boolean realBot = true;
-    public static final boolean compBot = false;
+    public static final boolean compBot = true;
 
     public static final double DRIVETRAIN_TRACKWIDTH_METERS = 0.57785;
 
@@ -122,7 +122,6 @@ public final class Constants {
 
     public static final int EXTENSION_PID_SLOT = 0;
     public static final int EXTENSION_K_PID_LOOP_IDX = 0;
-
 
     public static final int ELBOW_PID_SLOT = 0;
     public static final int ELBOW_K_PID_LOOP_IDX = 0;
