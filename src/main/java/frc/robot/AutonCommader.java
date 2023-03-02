@@ -10,7 +10,9 @@ import edu.wpi.first.math.trajectory.Trajectory.State;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import frc.robot.Autons.AutonBase;
 import frc.robot.sensors.Pigeon;
+import frc.robot.subsystems.Intake;
 import frc.robot.subsystems.Arm.ArmPos;
+import frc.robot.subsystems.Arm.ArmPos.ArmBumpDirection;
 
 public class AutonCommader extends RobotCommander{
 
@@ -86,8 +88,16 @@ public class AutonCommader extends RobotCommander{
             intakeArray[0] = Constants.INTAKE_COLLECT_POSITION;
             intakeArray[1] = -Constants.INTAKE_SPEED_CUBE;
         } else {
-            intakeArray[0] = Constants.INTAKE_PACKAGE_POSITION;
-            intakeArray[1] = 0;
+            if (getArmPosition() != ArmPos.Zero && 
+            getArmPosition() != ArmPos.manual && 
+            getArmPosition() != ArmPos.intake && 
+            Intake.angleEncoderAngle < 115) { 
+                intakeArray[0] = 102;
+                intakeArray[1] = 0;
+            } else {
+                intakeArray[0] = Constants.INTAKE_PACKAGE_POSITION;
+                intakeArray[1] = 0;
+            }
         }
 
         return intakeArray;
@@ -160,5 +170,18 @@ public class AutonCommader extends RobotCommander{
 
     public boolean getXMode(){
         return auton.xMode;
+    }
+
+    public ArmBumpDirection getArmBumpDirection() {
+        return ArmBumpDirection.bumpZero;
+    }
+
+    public boolean xReleased(){
+        if((operator.getXButtonReleased() == true) && (operator.getRightBumperReleased() == true)){
+            return true;
+        }
+        else{
+            return false;
+        }
     }
 }

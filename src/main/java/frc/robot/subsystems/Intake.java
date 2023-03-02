@@ -20,10 +20,11 @@ public class Intake {
     double speed;
     double angle;
     TalonFX speedMotor1;
-    // TalonFX speedMotor2;
+    TalonFX speedMotor2;
     CANSparkMax angleMotor;
     CANCoder angleEncoder;
     PIDController pidController;
+    public static double angleEncoderAngle;
 
     public static double startPosition;
 
@@ -31,16 +32,16 @@ public class Intake {
         angle = 45;
         speed = 0;
         speedMotor1 = new TalonFX(INTAKE_SPEED1_MOTOR_ID);
-        // speedMotor2 = new TalonFX(INTAKE_SPEED2_MOTOR_ID);
+        speedMotor2 = new TalonFX(INTAKE_SPEED2_MOTOR_ID);
         angleMotor = new CANSparkMax(INTAKE_ANGLE_MOTOR_ID, MotorType.kBrushless);
         angleEncoder = new CANCoder(23);
-        pidController = new PIDController(.008, 0.0015, 0.000075); //.0175, 0.001, 0.000075
+        pidController = new PIDController(.0175, 0.0015, 0.000075); //.0175, 0.001, 0.000075
         startPosition = angleEncoder.getAbsolutePosition();
         angleEncoder.configSensorDirection(true);
         angleEncoder.configMagnetOffset(INTAKE_OFFSET);
 
-        // speedMotor2.setInverted(TalonFXInvertType.OpposeMaster);
-        // speedMotor2.follow(speedMotor1);
+        speedMotor2.setInverted(TalonFXInvertType.OpposeMaster);
+        speedMotor2.follow(speedMotor1);
 
         // //Configure sensor source for primary PID
         // angleMotor.configSelectedFeedbackSensor(TalonFXFeedbackDevice.IntegratedSensor, SHOULDER_K_PID_LOOP_IDX,
@@ -112,8 +113,9 @@ public class Intake {
 
     }
 
-    public void logData(){
-        SmartDashboard.putNumber("Intake Absolute Encoder", angleEncoder.getAbsolutePosition());
+    public void logData() {
+        angleEncoderAngle = angleEncoder.getAbsolutePosition();
+        SmartDashboard.putNumber("Intake Absolute Encoder", angleEncoderAngle);
         // SmartDashboard.putNumber("magnet offset", angleEncoder.getAllConfigs(CANCoderConfiguration));
     }
 }

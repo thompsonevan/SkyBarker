@@ -19,6 +19,9 @@ import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
+import edu.wpi.first.wpilibj.shuffleboard.BuiltInWidgets;
+import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
+import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.Autons.BlueAutoLeft;
 import frc.robot.Autons.BlueAutoLeft1Bal;
@@ -54,12 +57,15 @@ public class Robot extends TimedRobot {
     private RedAutoLeft redAutoLeft;
     private RedAutoLeft1Bal redAutoLeft1Bal;
     private BlueAutoLeft1Bal blueAutoLeft1Bal;
-    private RedAutoMid1Bal redAutoMid1Bal;
+    // private RedAutoMid1Bal redAutoMid1Bal;
     private BlueAutoMid1Bal blueAutoMid1Bal;
 
     private String autonSelection = "Red Mid 1";
 
     private Alliance alliance;
+
+    private String autoSelected = "Blue Left";
+    private final SendableChooser<String> m_chooser = new SendableChooser<>();
 
     @Override
     public void robotInit() {
@@ -72,6 +78,15 @@ public class Robot extends TimedRobot {
         "Shoulder Desired Pos", "Extension Desired Pos", "Elbow Desired Pos",
         "HopSensor Bottom", "HopSensor Left", "HopSensor Right", "HopSensor Top", "Hopper Override");
 
+        m_chooser.setDefaultOption("Blue Left", "Blue Left");
+        m_chooser.addOption("Red Right", "Red Right");
+        m_chooser.addOption("Blue Mid 1", "Blue Mid 1");
+        m_chooser.addOption("Red Mid 1 (Intake Towards Right)", "Red Mid 1");
+
+        Shuffleboard.getTab("Competition")
+        .add("Auto Selector", m_chooser)
+        .withWidget(BuiltInWidgets.kComboBoxChooser)
+        .withSize(2, 2);
 
         intake = new Intake();
         teleopCommander = new TeleopCommander();
@@ -90,7 +105,7 @@ public class Robot extends TimedRobot {
         redAutoLeft1Bal = new RedAutoLeft1Bal();
         blueAutoLeft1Bal = new BlueAutoLeft1Bal();
         blueAutoMid1Bal = new BlueAutoMid1Bal();
-        redAutoMid1Bal = new RedAutoMid1Bal();
+        // redAutoMid1Bal = new RedAutoMid1Bal();
     }
 
     @Override
@@ -103,6 +118,7 @@ public class Robot extends TimedRobot {
         SmartDashboard.putNumber("Match Time", DriverStation.getMatchTime());
         SmartDashboard.putNumber("FPGA Time", Timer.getFPGATimestamp());
         drivetrain.updatePose();
+        SmartDashboard.putString("Auton Selected", autoSelected);
     }
 
     @Override
@@ -114,39 +130,57 @@ public class Robot extends TimedRobot {
     @Override
     public void disabledPeriodic() {
         arm.armPercentOutZero();
-        arm.coastMode();
+        arm.brakeMode();
     }
 
 
     @Override
     public void autonomousInit() {
+        autonSelection = m_chooser.getSelected();
+
+        // Shuffleboard.getTab("Competition")
+        // .add("Selected Auto", autonSelection);
+
         SmartDashboard.putString("Robot Mode", "Autonomous");
 
         SmartDashboard.getString("Auton Selection", autonSelection);
-        
-        alliance = DriverStation.getAlliance();
-        autonCommader.allaince = alliance;
 
         if(autonSelection == "Blue Left"){
+            alliance = DriverStation.getAlliance();
+            autonCommader.allaince = alliance;
             autonCommader.initAuton(blueAutoLeft);
         } else if(autonSelection == "Blue Right"){
+            alliance = DriverStation.getAlliance();
+            autonCommader.allaince = alliance;
             autonCommader.initAuton(blueAutoRight);
         } else if(autonSelection == "Red Left"){
+            alliance = DriverStation.getAlliance();
+            autonCommader.allaince = alliance;
             autonCommader.initAuton(redAutoLeft);
         } else if(autonSelection == "Red Right"){
+            alliance = DriverStation.getAlliance();
+            autonCommader.allaince = alliance;
             autonCommader.initAuton(redAutoRight);
         }else if(autonSelection == "Red Left 1"){
+            alliance = DriverStation.getAlliance();
+            autonCommader.allaince = alliance;
             autonCommader.initAuton(redAutoLeft1Bal);
         }else if(autonSelection == "Red Right 1"){
             // autonCommader.initAuton(redAutoRight1Bal);
         }else if(autonSelection == "Blue Left 1"){
+            alliance = DriverStation.getAlliance();
+            autonCommader.allaince = alliance;
             autonCommader.initAuton(blueAutoLeft1Bal);
         }else if(autonSelection == "Blue Right 1"){
             // autonCommader.initAuton(redAutoLeft1Bal);
         }else if(autonSelection == "Blue Mid 1"){
+            alliance = DriverStation.getAlliance();
+            autonCommader.allaince = alliance;
             autonCommader.initAuton(blueAutoMid1Bal);
         }else if(autonSelection == "Red Mid 1"){
-            autonCommader.initAuton(redAutoMid1Bal);
+            alliance = Alliance.Blue;
+            autonCommader.allaince = alliance;
+            autonCommader.initAuton(blueAutoMid1Bal);
         } else {
             autonCommader.initAuton(ohCrap);
         }
@@ -161,12 +195,13 @@ public class Robot extends TimedRobot {
             Pigeon.zeroSensor(90);
         }
 
-
         arm.initilizeOffsets();
     }
 
     @Override
     public void autonomousPeriodic() {
+        // System.out.println(autonSelection);
+
         autonCommader.runAuto();
         pigeon.enabledAction(teleopCommander);
         drivetrain.autonAction(autonCommader);
@@ -180,26 +215,29 @@ public class Robot extends TimedRobot {
     public void teleopInit() {
         SmartDashboard.putString("Robot Mode", "Teleop");
 
-        alliance = DriverStation.getAlliance();
+        // alliance = DriverStation.getAlliance();
         // alliance = Alliance.Blue;
 
         teleopCommander.allaince = alliance;
 
-        if(Camera.rightAprilDetected()){
-            drivetrain.zero(Camera.getRightBotPose().getRotation().getDegrees());
-            Drivetrain.setPose(Camera.getRightBotPose());
-            Pigeon.zeroSensor(Camera.getRightBotPose().getRotation().getDegrees());
-        } else {
-            if(alliance == Alliance.Blue){
-                drivetrain.zero(-90);
-                Pigeon.zeroSensor(-90);
-            } else {
-                drivetrain.zero(90);
-                Pigeon.zeroSensor(90);
-            }
-        }
+        // if(Camera.rightAprilDetected()){
+        //     drivetrain.zero(Camera.getRightBotPose().getRotation().getDegrees());
+        //     Drivetrain.setPose(Camera.getRightBotPose());
+        //     Pigeon.zeroSensor(Camera.getRightBotPose().getRotation().getDegrees());
+        // } else {
+        //     if(alliance == Alliance.Blue){
+        //         drivetrain.zero(-90);
+        //         Pigeon.zeroSensor(-90);
+        //     } else {
+        //         drivetrain.zero(90);
+        //         Pigeon.zeroSensor(90);
+        //     }
+        // }
 
         // X - 1.785, Y - 1.621
+
+        drivetrain.zero();
+
 
         intake.setBrakeMode();
         arm.initilizeOffsets();

@@ -65,7 +65,7 @@ public class RedAutoLeft1Bal extends AutonBase{
                     }else{
                         gripperSpeed = .4;
                     }
-                    armPos = ArmPos.topNode;
+                    armPos = ArmPos.topNodeCone;
                 } else {
                     gripperSpeed = 0;
                     armPos = ArmPos.packagePos;

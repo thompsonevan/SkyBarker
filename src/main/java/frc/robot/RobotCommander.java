@@ -4,6 +4,7 @@ import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import frc.robot.subsystems.Arm;
 import frc.robot.subsystems.Intake;
+import frc.robot.subsystems.Arm.ArmPos.ArmBumpDirection;
 
 public abstract class RobotCommander {
     double[] intakeArray = {10000, 0};
@@ -29,4 +30,5 @@ public abstract class RobotCommander {
     public abstract boolean getAutoBalance();
     public abstract double getGripperCommand();
     public abstract boolean useNegativeSide();
+    public abstract ArmBumpDirection getArmBumpDirection();
 }

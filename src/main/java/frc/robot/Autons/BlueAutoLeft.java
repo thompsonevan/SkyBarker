@@ -32,7 +32,7 @@ public class BlueAutoLeft extends AutonBase{
     int point = 0;
 
     List<Pose2d> path = List.of(new Pose2d(new Translation2d(0,0), Rotation2d.fromDegrees(-90)),
-                                new Pose2d(new Translation2d(5.15,.4), Rotation2d.fromDegrees(0)), //4.82, .5
+                                new Pose2d(new Translation2d(5.15,.45), Rotation2d.fromDegrees(0)), //4.82, .5
                                 new Pose2d(new Translation2d(0,.5), Rotation2d.fromDegrees(-90)));
 
     Trajectory trajectory;
@@ -63,7 +63,7 @@ public class BlueAutoLeft extends AutonBase{
                     }else{
                         gripperSpeed = .4;
                     }
-                    armPos = ArmPos.topNode;
+                    armPos = ArmPos.topNodeCone;
                 } else {
                     gripperSpeed = -.4;
                     armPos = ArmPos.packagePos;
@@ -117,7 +117,7 @@ public class BlueAutoLeft extends AutonBase{
                 driving = true;
                 intakeOn = false;
 
-                if(timer.get()>.5){
+                if(timer.get()>.75){
                     armPos = ArmPos.packagePos;
                 }
                 gripperSpeed = -.4;
@@ -141,7 +141,7 @@ public class BlueAutoLeft extends AutonBase{
                     }else{
                         gripperSpeed = .2;
                     }
-                    armPos = ArmPos.topNode;
+                    armPos = ArmPos.topNodeCone;
                 } else {
                     gripperSpeed = 0;
                     armPos = ArmPos.packagePos;
