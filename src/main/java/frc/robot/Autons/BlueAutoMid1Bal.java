@@ -34,7 +34,7 @@ public class BlueAutoMid1Bal extends AutonBase{
     int point = 0;
 
     Pose2d startingPose = new Pose2d(0,0, Rotation2d.fromDegrees(-90));
-    Pose2d endPose = new Pose2d(4,0, Rotation2d.fromDegrees(-90));
+    Pose2d endPose = new Pose2d(4.25,0, Rotation2d.fromDegrees(-90));
 
     Trajectory trajectory;
 

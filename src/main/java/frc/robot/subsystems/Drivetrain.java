@@ -352,7 +352,7 @@ public class Drivetrain{
                 }
 
                 if(rampPassed){
-                    if(Pigeon.getRoll() > 11){
+                    if(Pigeon.getRoll() > 11.5){
                         chassisSpeeds = new ChassisSpeeds(
                             0,
                             -Pigeon.getRoll() * .05,

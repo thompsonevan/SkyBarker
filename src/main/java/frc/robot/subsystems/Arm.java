@@ -61,8 +61,8 @@ public class Arm {
 
 
         public enum ArmBumpDirection {
-            bumpUp(-1/17.5),
-            bumpDown(1/17.5),
+            bumpUp(-1/15),
+            bumpDown(1/15),
             bumpZero(0);
 
         private final double shoulder;
