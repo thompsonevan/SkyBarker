@@ -48,7 +48,7 @@ public final class Constants {
     public static final int BACK_RIGHT_MODULE_DRIVE_MOTOR = 7;
     public static final int BACK_RIGHT_MODULE_STEER_MOTOR = 8;
     public static final int BACK_RIGHT_MODULE_STEER_ENCODER = 21;
-    public static final double BACK_RIGHT_MODULE_STEER_OFFSET = compBot ? -Math.toRadians(340.87 - 180) : -Math.toRadians(55.72265625+180); //237.48046875
+    public static final double BACK_RIGHT_MODULE_STEER_OFFSET = compBot ? -Math.toRadians(88.41796875+90) : -Math.toRadians(55.72265625+180); //237.48046875 //340.87 - 180
 
     public static final double SLOW_SPEED_MULTIPLIER = .5;
 
@@ -57,7 +57,7 @@ public final class Constants {
     public static final int INTAKE_ANGLE_MOTOR_ID = 10;
     public static final double INTAKE_PACKAGE_POSITION = 90.5;
     public static final double INTAKE_STATION_POSITION = 121;
-    public static final double INTAKE_COLLECT_POSITION = 169;
+    public static final double INTAKE_COLLECT_POSITION = 168; //169
     public static final double INTAKE_SPEED_CUBE = .5;
     public static final double INTAKE_SPEED_CONE = 1;
     public static final int INTAKE_TIMEOUT = 200;

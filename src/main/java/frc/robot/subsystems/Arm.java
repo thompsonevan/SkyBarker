@@ -61,8 +61,8 @@ public class Arm {
 
 
         public enum ArmBumpDirection {
-            bumpUp(-1/15),
-            bumpDown(1/15),
+            bumpUp(-1.0/15.0),
+            bumpDown(1.0/15.0),
             bumpZero(0);
 
         private final double shoulder;
@@ -203,7 +203,8 @@ public class Arm {
                         transitionStateInProgress = true;
                     } else if (actualCommand == ArmPos.outOfHopperToDirection && 
                                (commander.getArmPosition() == ArmPos.middleNodeCone || commander.getArmPosition() == ArmPos.topNodeCone
-                               || commander.getArmPosition() == ArmPos.middleNodeCube || commander.getArmPosition() == ArmPos.topNodeCube)) {
+                               || commander.getArmPosition() == ArmPos.middleNodeCube || commander.getArmPosition() == ArmPos.topNodeCube
+                                || commander.getArmPosition() == ArmPos.lowerNode)) {
                                 actualCommand = ArmPos.outOfHopperToMid;
                                 transitionStateInProgress = true;
                     } else {
