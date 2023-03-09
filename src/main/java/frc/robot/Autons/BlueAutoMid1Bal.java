@@ -20,7 +20,6 @@ import edu.wpi.first.math.trajectory.Trajectory.State;
 public class BlueAutoMid1Bal extends AutonBase{
     enum AutoState {
         firstPlace,
-        driveToStation,
         mobility,
         balance,
         end
