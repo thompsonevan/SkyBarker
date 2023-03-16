@@ -304,14 +304,14 @@ public class TeleopCommander extends RobotCommander{
     @Override
     public boolean getAutoBalance() {
         // TODO Auto-generated method stub
-        return driver.getYButton();
+        return false;
     }
 
     private double overrideGripper(){
         if (driver.getRightTriggerAxis() > .15) {
             return .8;
-        } else if (driver.getLeftTriggerAxis() > .15) {
-            return -driver.getLeftTriggerAxis();
+        } else if (driver.getYButton()) {
+            return -.8;
         } else {
             return operator.getLeftY();
         }
@@ -347,5 +347,8 @@ public class TeleopCommander extends RobotCommander{
             return false;
         }
     }
-    
+
+    public boolean getAutoLine(){
+        return driver.getLeftTriggerAxis() > .2;
+    }
 }

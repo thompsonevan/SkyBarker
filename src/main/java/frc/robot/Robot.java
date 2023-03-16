@@ -25,6 +25,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.Autons.BlueAutoLeft;
 import frc.robot.Autons.BlueAutoLeft1Bal;
+import frc.robot.Autons.BlueAutoLeft3;
 import frc.robot.Autons.BlueAutoMid1Bal;
 import frc.robot.Autons.BlueAutoRight;
 import frc.robot.Autons.OhCrap;
@@ -59,6 +60,7 @@ public class Robot extends TimedRobot {
     private BlueAutoLeft1Bal blueAutoLeft1Bal;
     // private RedAutoMid1Bal redAutoMid1Bal;
     private BlueAutoMid1Bal blueAutoMid1Bal;
+    private BlueAutoLeft3 blueAutoLeft3;
 
     private String autonSelection = "Red Mid 1";
 
@@ -82,6 +84,9 @@ public class Robot extends TimedRobot {
         m_chooser.addOption("Red Right", "Red Right");
         m_chooser.addOption("Blue Mid 1", "Blue Mid 1");
         m_chooser.addOption("Red Mid 1 (Intake Towards Right)", "Red Mid 1");
+        m_chooser.addOption("Blue Left 3", "Blue Left 3");
+        // m_chooser.addOption("Red Mid 1 (Intake Towards Right)", "Red Mid 1");
+
 
         Shuffleboard.getTab("Competition")
         .add("Auto Selector", m_chooser)
@@ -106,6 +111,10 @@ public class Robot extends TimedRobot {
         blueAutoLeft1Bal = new BlueAutoLeft1Bal();
         blueAutoMid1Bal = new BlueAutoMid1Bal();
         // redAutoMid1Bal = new RedAutoMid1Bal();
+        blueAutoLeft3 = new BlueAutoLeft3();
+
+        camera.disabled();
+
     }
 
     @Override
@@ -125,6 +134,7 @@ public class Robot extends TimedRobot {
     public void disabledInit() {
         intake.setCoastMode();
         SmartDashboard.putString("Robot Mode", "Disabled");
+        camera.disabled();
     }
 
     @Override
@@ -181,7 +191,11 @@ public class Robot extends TimedRobot {
             alliance = Alliance.Blue;
             autonCommader.allaince = alliance;
             autonCommader.initAuton(blueAutoMid1Bal);
-        } else {
+        } else if(autonSelection == "Blue Left 3"){
+            alliance = DriverStation.getAlliance();
+            autonCommader.allaince = alliance;
+            autonCommader.initAuton(blueAutoLeft3);
+        }else {
             autonCommader.initAuton(ohCrap);
         }
 
@@ -194,6 +208,8 @@ public class Robot extends TimedRobot {
             autonCommader.auton.reset();
             Pigeon.zeroSensor(90);
         }
+
+        camera.enabled();
 
         arm.initilizeOffsets();
     }
@@ -239,11 +255,14 @@ public class Robot extends TimedRobot {
         drivetrain.zero();
 
 
+        camera.enabled();
+
         intake.setBrakeMode();
         arm.initilizeOffsets();
     }
 
     @Override
+    
     public void teleopPeriodic() {
         pigeon.enabledAction(teleopCommander);
         drivetrain.teleAction(teleopCommander);
