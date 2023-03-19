@@ -248,6 +248,6 @@ public class Robot extends TimedRobot {
         arm.action(teleopCommander);
         arm.brakeMode();
         gripper.action(teleopCommander);
-        //hopper.HopperPeriodic(teleopCommander);
+        // hopper.HopperPeriodic(teleopCommander);
     }
 }

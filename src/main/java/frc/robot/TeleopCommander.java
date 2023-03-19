@@ -8,6 +8,7 @@ import frc.robot.subsystems.Arm;
 import frc.robot.subsystems.Intake;
 import frc.robot.subsystems.Arm.ArmPos;
 import frc.robot.subsystems.Arm.IntakePos;
+
 import frc.robot.subsystems.Arm.ArmPos.ArmBumpDirection;
 
 import static frc.robot.Constants.*;
@@ -127,7 +128,7 @@ public class TeleopCommander extends RobotCommander{
                     Intake.angleEncoderAngle < 115) { 
                         intakeArray[0] = 102;
                         return IntakePos.noneManualMode;
-                } else {
+                } else if(getCubeMode()) {
                     if (Trigger_left && !Trigger_right) {
                         if (Dpad_left && !(Dpad_right || Dpad_updown)) {
                             intakeArray[0] = Constants.INTAKE_PACKAGE_POSITION;

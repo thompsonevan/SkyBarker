@@ -12,7 +12,7 @@ import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 // Swerve Bot Constants
 public final class Constants {
     public static final boolean realBot = true;
-    public static final boolean compBot = false;
+    public static final boolean compBot = true;
 
     public static final double DRIVETRAIN_TRACKWIDTH_METERS = 0.57785;
 
@@ -62,7 +62,7 @@ public final class Constants {
     public static final double INTAKE_SPEED_CONE = 1;
     public static final int INTAKE_TIMEOUT = 200;
 
-    public static final double INTAKE_OFFSET = compBot ? 248.818 : 52.5;
+    public static final double INTAKE_OFFSET = compBot ? -8.3 : 52.5;
     
     // Hopper CAN ID
     public static final int HOPPER_MOTOR = 11;

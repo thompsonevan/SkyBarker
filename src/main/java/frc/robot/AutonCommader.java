@@ -155,6 +155,10 @@ public class AutonCommader extends RobotCommander{
     //     return false;
     // }
 
+    public ArmBumpDirection getArmBumpDirection() {
+        return ArmBumpDirection.bumpZero;
+    }
+
     @Override
     public boolean useNegativeSide() {
         double angle =MathUtil.inputModulus(Pigeon.getAngle(),-180,180);
