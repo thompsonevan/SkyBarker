@@ -18,7 +18,7 @@ public final class Constants {
 
     public static final double DRIVETRAIN_WHEELBASE_METERS = 0.52705;
 
-    public static final double MAX_VOLTAGE = 12.0;
+    public static final double MAX_VOLTAGE = 12.0; 
 
     public static final double MAX_VELOCITY_METERS_PER_SECOND =
         6380.0 / 60.0 *
@@ -62,7 +62,8 @@ public final class Constants {
     public static final double INTAKE_SPEED_CONE = 1;
     public static final int INTAKE_TIMEOUT = 200;
 
-    public static final double INTAKE_OFFSET = compBot ? -8.3 : 127.265625;
+
+    public static final double INTAKE_OFFSET = compBot ? -8.3 : 52.5;
     
     // Hopper CAN ID
     public static final int HOPPER_MOTOR = 11;

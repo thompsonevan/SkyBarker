@@ -40,14 +40,14 @@ import frc.robot.subsystems.Arm;
 import frc.robot.subsystems.Drivetrain;
 import frc.robot.subsystems.Gripper;
 import frc.robot.subsystems.Hopper;
-import frc.robot.subsystems.Intake;
+// import frc.robot.subsystems.Intake;
 
 public class Robot extends TimedRobot {
     private TeleopCommander teleopCommander;
     private Drivetrain drivetrain;
     private Hopper hopper;
     private Arm arm;
-    private Intake intake;
+    // private Intake intake;
     private Pigeon pigeon;
     private Camera camera;
     private AutonCommader autonCommader;
@@ -80,7 +80,7 @@ public class Robot extends TimedRobot {
         "TargetX", "TargetY", "TargetTheta", "Robot State Theta", "poseX", "poseY",
         "Shoulder Absolute Pos", "Shoulder Motor Pos", "Extension Pos", "Elbow Absolute Pos", "Elbow Motor Pos",
         "Shoulder Desired Pos", "Extension Desired Pos", "Elbow Desired Pos",
-        "HopSensor Bottom", "HopSensor Left", "HopSensor Right", "HopSensor Top", "Hopper Override");
+        "HopSensor Bottom", "HopSensor Left", "HopSensor Right", "HopSensor Top", "Hopper Override","determineArmZoneHandOff","DesiredIntakeAngle");
 
         m_chooser.setDefaultOption("Blue Left", "Blue Left");
         m_chooser.addOption("Red Right", "Red Right");
@@ -95,7 +95,7 @@ public class Robot extends TimedRobot {
         .withWidget(BuiltInWidgets.kComboBoxChooser)
         .withSize(2, 2);
 
-        intake = new Intake();
+        //intake = new Intake();
         teleopCommander = new TeleopCommander();
         pigeon = new Pigeon();
         camera = new Camera();
@@ -125,8 +125,8 @@ public class Robot extends TimedRobot {
         arm.updatePose();
         camera.logData();
         pigeon.logData();
-        intake.logData();
         hopper.logData();
+        arm.logdata();
         SmartDashboard.putNumber("Match Time", DriverStation.getMatchTime());
         SmartDashboard.putNumber("FPGA Time", Timer.getFPGATimestamp());
         drivetrain.updatePose();
@@ -135,15 +135,16 @@ public class Robot extends TimedRobot {
 
     @Override
     public void disabledInit() {
-        intake.setCoastMode();
         SmartDashboard.putString("Robot Mode", "Disabled");
+
         camera.disabled();
+        arm.coastMode();
     }
 
     @Override
     public void disabledPeriodic() {
         arm.armPercentOutZero();
-        arm.brakeMode();
+        arm.coastMode();
     }
 
 
@@ -227,7 +228,6 @@ public class Robot extends TimedRobot {
         pigeon.enabledAction(teleopCommander);
         drivetrain.autonAction(autonCommader);
         arm.action(autonCommader);
-        intake.IntakePeriodic(autonCommader);
         // hopper.HopperPeriodic(autonCommader);
         gripper.action(autonCommader);
     }
@@ -243,6 +243,7 @@ public class Robot extends TimedRobot {
         // camera.enabled();
 
         intake.setBrakeMode();
+        arm.brakeMode();
         arm.initilizeOffsets();
     }
 
@@ -251,7 +252,6 @@ public class Robot extends TimedRobot {
     public void teleopPeriodic() {
         pigeon.enabledAction(teleopCommander);
         drivetrain.teleAction(teleopCommander);
-        intake.IntakePeriodic(teleopCommander);
         arm.action(teleopCommander);
         arm.brakeMode();
         gripper.action(teleopCommander);

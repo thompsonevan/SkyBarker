@@ -12,6 +12,7 @@ import frc.robot.Autons.AutonBase;
 import frc.robot.sensors.Pigeon;
 import frc.robot.subsystems.Intake;
 import frc.robot.subsystems.Arm.ArmPos;
+import frc.robot.subsystems.Arm.IntakePos;
 import frc.robot.subsystems.Arm.ArmPos.ArmBumpDirection;
 import frc.robot.subsystems.Intake.IntakePos;
 import frc.robot.subsystems.Intake.IntakeSpeed;
@@ -156,6 +157,10 @@ public class AutonCommader extends RobotCommander{
     //     return false;
     // }
 
+    public ArmBumpDirection getArmBumpDirection() {
+        return ArmBumpDirection.bumpZero;
+    }
+
     @Override
     public boolean useNegativeSide() {
         double angle =MathUtil.inputModulus(Pigeon.getAngle(),-180,180);
@@ -172,10 +177,6 @@ public class AutonCommader extends RobotCommander{
 
     public boolean getXMode(){
         return auton.xMode;
-    }
-
-    public ArmBumpDirection getArmBumpDirection() {
-        return ArmBumpDirection.bumpZero;
     }
 
     public boolean xReleased(){
