@@ -242,7 +242,6 @@ public class Robot extends TimedRobot {
 
         // camera.enabled();
 
-        intake.setBrakeMode();
         arm.brakeMode();
         arm.initilizeOffsets();
     }

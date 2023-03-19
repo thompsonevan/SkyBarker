@@ -5,12 +5,10 @@ import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import frc.robot.subsystems.Arm;
 import frc.robot.subsystems.Intake;
 import frc.robot.subsystems.Arm.ArmPos.ArmBumpDirection;
-import frc.robot.subsystems.Intake.IntakePos;
-import frc.robot.subsystems.Intake.IntakeSpeed;
 
 public abstract class RobotCommander {
-    IntakePos intakePos = IntakePos.none;
-    IntakeSpeed intakeSpeed = IntakeSpeed.none;
+
+    double[] intakeArray = {10000, 0};
 
     public Alliance allaince;
 

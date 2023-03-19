@@ -364,5 +364,15 @@ public class TeleopCommander extends RobotCommander{
             return false;
         }
     }
+
+    @Override
+    public boolean runHopper() {
+        // TODO Auto-generated method stub
+        return false;
+    }
+
+    public boolean getAutoLine() {
+        return false;
+    }
     
 }

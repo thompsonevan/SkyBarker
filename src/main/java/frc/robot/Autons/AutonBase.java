@@ -54,7 +54,7 @@ public abstract class AutonBase {
 
     public Trajectory createTrajectory(Pose2d startingPose, Pose2d endPose){
         double headingAngle = Math.toDegrees(Math.atan2(endPose.getY()-startingPose.getY(), 
-                                             endPose.getX()-startingPose.getX()) + offset);
+                                             endPose.getX()-startingPose.getX()));
 
         return TrajectoryGenerator.generateTrajectory(
             new Pose2d(startingPose.getTranslation(), Rotation2d.fromDegrees(headingAngle)),
