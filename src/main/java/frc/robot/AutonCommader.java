@@ -177,10 +177,6 @@ public class AutonCommader extends RobotCommander{
         return auton.xMode;
     }
 
-    public ArmBumpDirection getArmBumpDirection() {
-        return ArmBumpDirection.bumpZero;
-    }
-
     public boolean xReleased(){
         if((operator.getXButtonReleased() == true) && (operator.getRightBumperReleased() == true)){
             return true;
