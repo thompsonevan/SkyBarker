@@ -2,6 +2,7 @@ package frc.robot.Autons;
 
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import frc.robot.sensors.Camera;
 import frc.robot.sensors.Pigeon;
 import frc.robot.subsystems.Drivetrain;
 import frc.robot.subsystems.Arm.ArmPos;
@@ -14,47 +15,42 @@ import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.trajectory.Trajectory;
 import edu.wpi.first.math.trajectory.Trajectory.State;
 
-public class AutoBalance extends AutonBase{
-    enum AutoState {
-        firstPlace,
-        driveToObject,
-        pickUpObject,
-        driveBack,
-        secondPlace,
-        chargingStation,
-        end
-    }
-
-    public AutoState autoState;
-
+public class OhCrap extends AutonBase{
     public Timer timer = new Timer();
 
     int point = 0;
 
     Trajectory trajectory;
 
-    List<Pose2d> path = List.of(new Pose2d(new Translation2d(1.75,4.45), Rotation2d.fromDegrees(-90)),
-                                new Pose2d(new Translation2d(6.62,4.63), Rotation2d.fromDegrees(0)),
-                                new Pose2d(new Translation2d(1.75,4.45), Rotation2d.fromDegrees(-90)),
-                                new Pose2d(new Translation2d(3.9,2.9), Rotation2d.fromDegrees(-90)));
-
-    public AutoBalance(){
+    public OhCrap(){
         reset();
     }
 
     public void reset(){
-        autoState = AutoState.firstPlace;
+        // Drivetrain.setPose(start);
+        
 
-        point = 0;
+        // trajectory = createTrajectory(start, end);
 
         desState = new State();
-
+        targetTheta = Rotation2d.fromDegrees(-90);
+        
         timer.reset();
         timer.start();
     }
 
     public void runAuto(){
         driving = false;
-        autoBalance = true;
+        if(timer.get() < 3){
+            if(timer.get() < 2.5){
+                gripperSpeed = -.4;
+            }else{
+                gripperSpeed = .4;
+            }
+            armPos = ArmPos.topNodeCone;
+        } else {
+            gripperSpeed = 0;
+            armPos = ArmPos.packagePos;
+        }
     }
 }

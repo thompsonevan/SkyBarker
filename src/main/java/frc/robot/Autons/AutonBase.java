@@ -25,11 +25,34 @@ public abstract class AutonBase {
     public boolean pickUpObject;
     public boolean driving;
     public boolean autoBalance;
+    public double gripperSpeed;
+    public boolean overrideNegSide = false;
+    public boolean xMode = false;
 
     public abstract void runAuto();
     public abstract void reset();
 
-    public Trajectory createTrajectory(Pose2d startingPose, Pose2d endPose, double offset){
+    public Trajectory createTrajectory(Pose2d startingPose, Pose2d endPose, Rotation2d heading1, Rotation2d heading2, double vel, double acc, boolean reversed){
+        return TrajectoryGenerator.generateTrajectory(
+            new Pose2d(startingPose.getTranslation(), heading1),
+            List.of(),
+            new Pose2d(endPose.getTranslation(), heading2),
+            new TrajectoryConfig(vel, acc).setReversed(reversed));
+    }
+
+    public Trajectory createTrajectory(Pose2d startingPose, Pose2d endPose, double heading1, double heading2, double vel, double acc, boolean reversed){
+        return TrajectoryGenerator.generateTrajectory(
+            new Pose2d(startingPose.getTranslation(), Rotation2d.fromDegrees(heading1)),
+            List.of(),
+            new Pose2d(endPose.getTranslation(), Rotation2d.fromDegrees(heading2)),
+            new TrajectoryConfig(vel, acc).setReversed(reversed));
+    }
+
+    public Trajectory createTrajectory(Pose2d startingPose, Pose2d endPose, Rotation2d heading1, Rotation2d heading2, double vel, double acc){
+        return createTrajectory(startingPose, endPose, heading1, heading2, vel, acc, false);
+    }
+
+    public Trajectory createTrajectory(Pose2d startingPose, Pose2d endPose){
         double headingAngle = Math.toDegrees(Math.atan2(endPose.getY()-startingPose.getY(), 
                                              endPose.getX()-startingPose.getX()) + offset);
 
@@ -48,6 +71,7 @@ public abstract class AutonBase {
             new TrajectoryConfig(4, 3));
     }
 
+    
     public State getState(double time, Trajectory traj, Rotation2d heading){
         State curState = traj.sample(time);
             

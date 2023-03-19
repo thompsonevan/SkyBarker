@@ -18,18 +18,27 @@ import edu.wpi.first.math.trajectory.TrajectoryGenerator;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.Timer;
+import edu.wpi.first.wpilibj.DriverStation.Alliance;
+import edu.wpi.first.wpilibj.shuffleboard.BuiltInWidgets;
+import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
+import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-import frc.robot.Autons.AutoBalance;
-import frc.robot.Autons.DriveToPoint;
-import frc.robot.Autons.TestAuto;
-// import frc.robot.Autons.AutonLeft1Balance;
-// import frc.robot.Autons.AutonLeft2Balance;
-// import frc.robot.Autons.DriveToPoint;
-// import frc.robot.Autons.TestAuto;
+import frc.robot.Autons.BlueAutoLeft;
+import frc.robot.Autons.BlueAutoLeft1Bal;
+import frc.robot.Autons.BlueAutoLeft2half;
+import frc.robot.Autons.BlueAutoLeft3;
+import frc.robot.Autons.BlueAutoMid1Bal;
+import frc.robot.Autons.BlueAutoRight;
+import frc.robot.Autons.OhCrap;
+import frc.robot.Autons.RedAutoLeft;
+import frc.robot.Autons.RedAutoLeft1Bal;
+import frc.robot.Autons.RedAutoMid1Bal;
+import frc.robot.Autons.RedAutoRight;
 import frc.robot.sensors.Camera;
 import frc.robot.sensors.Pigeon;
 import frc.robot.subsystems.Arm;
 import frc.robot.subsystems.Drivetrain;
+import frc.robot.subsystems.Gripper;
 import frc.robot.subsystems.Hopper;
 import frc.robot.subsystems.Intake;
 
@@ -42,20 +51,28 @@ public class Robot extends TimedRobot {
     private Pigeon pigeon;
     private Camera camera;
     private AutonCommader autonCommader;
-    // private AutonLeft2Balance autonLeft;
-    // private AutonLeft1Balance autonLeft1Balance;
-    private AutoBalance autoBalance;
-    private TestAuto testAuto;
-    // private Auton1 auton;
-    // private Auton67 auton67;
-    private DriveToPoint driveToPoint;
+    private BlueAutoRight blueAutoRight;
+    private Gripper gripper;
+    private BlueAutoLeft blueAutoLeft;
+    private OhCrap ohCrap;
+    private RedAutoRight redAutoRight;
+    private RedAutoLeft redAutoLeft;
+    private RedAutoLeft1Bal redAutoLeft1Bal;
+    private BlueAutoLeft1Bal blueAutoLeft1Bal;
+    // private RedAutoMid1Bal redAutoMid1Bal;
+    private BlueAutoMid1Bal blueAutoMid1Bal;
+    private BlueAutoLeft3 blueAutoLeft3;
+    private BlueAutoLeft2half blueAutoLeft2half;
 
-    private int autonSelection = 2;
-    private VictorSPX gripper;
+    private String autonSelection = "Red Mid 1";
+
+    private Alliance alliance;
+
+    private String autoSelected = "Blue Left";
+    private final SendableChooser<String> m_chooser = new SendableChooser<>();
 
     @Override
     public void robotInit() {
-        gripper = new VictorSPX(Constants.GRIPPER);
         HotLogger.Setup("Theta", "Left Front Absolute", "Left Front Assumed",
         "Right Front Absolute", "Right Front Assumed",
         "Left Rear Absolute", "Left Rear Assumed",
@@ -65,6 +82,18 @@ public class Robot extends TimedRobot {
         "Shoulder Desired Pos", "Extension Desired Pos", "Elbow Desired Pos",
         "HopSensor Bottom", "HopSensor Left", "HopSensor Right", "HopSensor Top", "Hopper Override");
 
+        m_chooser.setDefaultOption("Blue Left", "Blue Left");
+        m_chooser.addOption("Red Right", "Red Right");
+        m_chooser.addOption("Blue Mid 1", "Blue Mid 1");
+        m_chooser.addOption("Red Mid 1 (Intake Towards Right)", "Red Mid 1");
+        m_chooser.addOption("Blue Left 3", "Blue Left 3");
+        m_chooser.addOption("Blue Left 2 Half", "Blue Left 2 Half");
+        // m_chooser.addOption("Red Mid 1 (Intake Towards Right)", "Red Mid 1");
+
+        Shuffleboard.getTab("Competition")
+        .add("Auto Selector", m_chooser)
+        .withWidget(BuiltInWidgets.kComboBoxChooser)
+        .withSize(2, 2);
 
         intake = new Intake();
         teleopCommander = new TeleopCommander();
@@ -73,12 +102,22 @@ public class Robot extends TimedRobot {
         drivetrain = new Drivetrain();
         autonCommader = new AutonCommader();
         arm = new Arm();
-        // autonLeft1Balance = new AutonLeft1Balance();
-        // autonLeft = new AutonLeft2Balance();
+        gripper = new Gripper(Constants.GRIPPER);
         hopper = new Hopper();
-        autoBalance = new AutoBalance();
-        testAuto = new TestAuto();
-        driveToPoint = new DriveToPoint();
+        blueAutoRight = new BlueAutoRight();
+        blueAutoLeft = new BlueAutoLeft();
+        ohCrap = new OhCrap();
+        redAutoRight = new RedAutoRight();
+        redAutoLeft = new RedAutoLeft();
+        redAutoLeft1Bal = new RedAutoLeft1Bal();
+        blueAutoLeft1Bal = new BlueAutoLeft1Bal();
+        blueAutoMid1Bal = new BlueAutoMid1Bal();
+        // redAutoMid1Bal = new RedAutoMid1Bal();
+        blueAutoLeft3 = new BlueAutoLeft3();
+        blueAutoLeft2half = new BlueAutoLeft2half();
+
+        camera.disabled();
+
     }
 
     @Override
@@ -91,46 +130,95 @@ public class Robot extends TimedRobot {
         SmartDashboard.putNumber("Match Time", DriverStation.getMatchTime());
         SmartDashboard.putNumber("FPGA Time", Timer.getFPGATimestamp());
         drivetrain.updatePose();
-
-        SmartDashboard.putNumber("_Pose X", Camera.getRightBotPose().getX());
-        SmartDashboard.putNumber("_Pose Y", Camera.getRightBotPose().getY());
-        SmartDashboard.putNumber("_Pose Degrees", Camera.getRightBotPose().getRotation().getDegrees());
-
+        SmartDashboard.putString("Auton Selected", autoSelected);
     }
 
     @Override
     public void disabledInit() {
         intake.setCoastMode();
         SmartDashboard.putString("Robot Mode", "Disabled");
+        camera.disabled();
     }
 
     @Override
     public void disabledPeriodic() {
         arm.armPercentOutZero();
-        arm.coastMode();
+        arm.brakeMode();
     }
+
 
     @Override
     public void autonomousInit() {
+        autonSelection = m_chooser.getSelected();
+
+        // Shuffleboard.getTab("Competition")
+        // .add("Selected Auto", autonSelection);
+
         SmartDashboard.putString("Robot Mode", "Autonomous");
 
-        // if(autonSelection == 0){
-        //     // autonCommader.initAuton(auton);
-        // } else if(autonSelection == 1){
-        //     autonCommader.initAuton(autonLeft1Balance);
-        // } else if(autonSelection == 2){
-        //     autonCommader.initAuton(driveToPoint);
-        // } else if(autonSelection == 3){
-        //     autonCommader.initAuton(autoBalance);
-        //     // autonCommader.initAuton(auton);
-        // }
+        SmartDashboard.getString("Auton Selection", autonSelection);
 
-        autonCommader.initAuton(testAuto);
+        if(autonSelection == "Blue Left"){
+            alliance = DriverStation.getAlliance();
+            autonCommader.allaince = alliance;
+            autonCommader.initAuton(blueAutoLeft);
+        } else if(autonSelection == "Blue Right"){
+            alliance = DriverStation.getAlliance();
+            autonCommader.allaince = alliance;
+            autonCommader.initAuton(blueAutoRight);
+        } else if(autonSelection == "Red Left"){
+            alliance = DriverStation.getAlliance();
+            autonCommader.allaince = alliance;
+            autonCommader.initAuton(redAutoLeft);
+        } else if(autonSelection == "Red Right"){
+            alliance = DriverStation.getAlliance();
+            autonCommader.allaince = alliance;
+            autonCommader.initAuton(redAutoRight);
+        }else if(autonSelection == "Red Left 1"){
+            alliance = DriverStation.getAlliance();
+            autonCommader.allaince = alliance;
+            autonCommader.initAuton(redAutoLeft1Bal);
+        }else if(autonSelection == "Red Right 1"){
+            // autonCommader.initAuton(redAutoRight1Bal);
+        }else if(autonSelection == "Blue Left 1"){
+            alliance = DriverStation.getAlliance();
+            autonCommader.allaince = alliance;
+            autonCommader.initAuton(blueAutoLeft1Bal);
+        }else if(autonSelection == "Blue Right 1"){
+            // autonCommader.initAuton(redAutoLeft1Bal);
+        }else if(autonSelection == "Blue Mid 1"){
+            alliance = DriverStation.getAlliance();
+            autonCommader.allaince = alliance;
+            autonCommader.initAuton(blueAutoMid1Bal);
+        }else if(autonSelection == "Red Mid 1"){
+            alliance = Alliance.Blue;
+            autonCommader.allaince = alliance;
+            autonCommader.initAuton(blueAutoMid1Bal);
+        } else if(autonSelection == "Blue Left 3"){
+            alliance = DriverStation.getAlliance();
+            autonCommader.allaince = alliance;
+            autonCommader.initAuton(blueAutoLeft3);
+        } else if(autonSelection == "Blue Left 2 Half"){
+            alliance = DriverStation.getAlliance();
+            autonCommader.allaince = alliance;
+            autonCommader.initAuton(blueAutoLeft2half);
+        }else {
+            autonCommader.initAuton(ohCrap);
+        }
 
-        drivetrain.zero(-90);
-        autonCommader.auton.reset();
-        Pigeon.zeroSensor(-90);
-        // Drivetrain.setPose(new Pose2d(0,0, Rotation2d.fromDegrees(-180)), Rotation2d.fromDegrees(-180));
+        if(alliance == Alliance.Blue){
+            drivetrain.zero(-90);
+            autonCommader.auton.reset();
+            Pigeon.zeroSensor(-90);
+        } else {
+            drivetrain.zero(90);
+            autonCommader.auton.reset();
+            Pigeon.zeroSensor(90);
+        }
+
+        // camera.enabled();
+
+        arm.initilizeOffsets();
     }
 
     @Override
@@ -138,34 +226,35 @@ public class Robot extends TimedRobot {
         autonCommader.runAuto();
         pigeon.enabledAction(teleopCommander);
         drivetrain.autonAction(autonCommader);
-        // arm.action(autonCommader);
+        arm.action(autonCommader);
         intake.IntakePeriodic(autonCommader);
-        hopper.HopperPeriodic(autonCommader);
+        // hopper.HopperPeriodic(autonCommader);
+        gripper.action(autonCommader);
     }
-    
+
     @Override
     public void teleopInit() {
         SmartDashboard.putString("Robot Mode", "Teleop");
 
+        teleopCommander.allaince = alliance;
+
+        drivetrain.zero();
+
+        // camera.enabled();
+
         intake.setBrakeMode();
-        drivetrain.zero(-90);
-        Pigeon.zeroSensor(-90);
-        // arm.armZeroSensorPos();
+        arm.initilizeOffsets();
     }
 
     @Override
+    
     public void teleopPeriodic() {
         pigeon.enabledAction(teleopCommander);
         drivetrain.teleAction(teleopCommander);
         intake.IntakePeriodic(teleopCommander);
         arm.action(teleopCommander);
         arm.brakeMode();
-        if (Math.abs(teleopCommander.operator.getRightY()) > .15){
-            gripper.set(ControlMode.PercentOutput, .5);
-        }
-        else {
-            gripper.set(ControlMode.PercentOutput, 0.0);
-        }
-        hopper.HopperPeriodic(teleopCommander);
+        gripper.action(teleopCommander);
+        // hopper.HopperPeriodic(teleopCommander);
     }
 }

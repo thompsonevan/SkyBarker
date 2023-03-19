@@ -12,6 +12,7 @@ import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 // Swerve Bot Constants
 public final class Constants {
     public static final boolean realBot = true;
+    public static final boolean compBot = true;
 
     public static final double DRIVETRAIN_TRACKWIDTH_METERS = 0.57785;
 
@@ -32,31 +33,36 @@ public final class Constants {
     public static final int FRONT_LEFT_MODULE_DRIVE_MOTOR = 1;
     public static final int FRONT_LEFT_MODULE_STEER_MOTOR = 2;
     public static final int FRONT_LEFT_MODULE_STEER_ENCODER = 18;
-    public static final double FRONT_LEFT_MODULE_STEER_OFFSET = -Math.toRadians(349.365234375-180); // 169.1015625
+    public static final double FRONT_LEFT_MODULE_STEER_OFFSET = compBot ? -Math.toRadians(236.37 + 180) : -Math.toRadians(349.365234375-180); // 169.1015625
 
     public static final int FRONT_RIGHT_MODULE_DRIVE_MOTOR = 3;
     public static final int FRONT_RIGHT_MODULE_STEER_MOTOR = 4;
     public static final int FRONT_RIGHT_MODULE_STEER_ENCODER = 19;
-    public static final double FRONT_RIGHT_MODULE_STEER_OFFSET = -Math.toRadians(3.779296875+180); //183.251953125
+    public static final double FRONT_RIGHT_MODULE_STEER_OFFSET = compBot ? -Math.toRadians(35.27 + 180) : -Math.toRadians(3.779296875+180); //183.251953125
 
     public static final int BACK_LEFT_MODULE_DRIVE_MOTOR = 5;
     public static final int BACK_LEFT_MODULE_STEER_MOTOR = 6;
     public static final int BACK_LEFT_MODULE_STEER_ENCODER = 20;
-    public static final double BACK_LEFT_MODULE_STEER_OFFSET = -Math.toRadians(308.935546875-180); // 129.814453125
+    public static final double BACK_LEFT_MODULE_STEER_OFFSET = compBot ? -Math.toRadians(243.57 - 180) : -Math.toRadians(308.935546875-180); // 129.814453125
 
     public static final int BACK_RIGHT_MODULE_DRIVE_MOTOR = 7;
     public static final int BACK_RIGHT_MODULE_STEER_MOTOR = 8;
     public static final int BACK_RIGHT_MODULE_STEER_ENCODER = 21;
-    public static final double BACK_RIGHT_MODULE_STEER_OFFSET = -Math.toRadians(55.72265625+180); //237.48046875
+    public static final double BACK_RIGHT_MODULE_STEER_OFFSET = compBot ? -Math.toRadians(88.41796875+90) : -Math.toRadians(55.72265625+180); //237.48046875 //340.87 - 180
 
     public static final double SLOW_SPEED_MULTIPLIER = .5;
 
-    public static final double INTAKE_PACKAGE_POSITION = 100;
+    public static final int INTAKE_SPEED1_MOTOR_ID = 9;
+    public static final int INTAKE_SPEED2_MOTOR_ID = 12;
+    public static final int INTAKE_ANGLE_MOTOR_ID = 10;
+    public static final double INTAKE_PACKAGE_POSITION = 90.5;
     public static final double INTAKE_STATION_POSITION = 121;
-    public static final double INTAKE_COLLECT_POSITION = 177;
-    public static final double INTAKE_SPEED_CUBE = .55;
+    public static final double INTAKE_COLLECT_POSITION = 168; //169
+    public static final double INTAKE_SPEED_CUBE = .5;
     public static final double INTAKE_SPEED_CONE = 1;
     public static final int INTAKE_TIMEOUT = 200;
+
+    public static final double INTAKE_OFFSET = compBot ? -8.3 : 127.265625;
     
     // Hopper CAN ID
     public static final int HOPPER_MOTOR = 11;
@@ -74,14 +80,14 @@ public final class Constants {
     public static final int EXTENSION = 14;
     public static final int ELBOW = 17;
     public static final int SHOULDER_ENCODER = 22;
-    public static final int ELBOW_ENCODER = 25;
+    public static final int ELBOW_ENCODER = 26;
 
     public static final double SHOULDER_RATIO = (5.0)*(5.0)*(72.0/18.0)*(60.0/12.0) / 360.0;  // Ratio
     public static final double EXTENSION_RATIO = (50.0/12.0)*(50.0/20.0)*(2.0)/(2.0*Math.PI);  // Revolutions to Inches
     public static final double WRIST_RATIO = (9.0)*(7.0)*(96.0/36.0);  // Ratio
 
-    public static final double SHOULDER_OFFSET = 161.016;
-    public static final double ELBOW_OFFSET = 48.516;
+    public static final double SHOULDER_OFFSET = compBot ? 111.709 : 160.049;
+    public static final double ELBOW_OFFSET = compBot ? 50.889 : 167.783;
 
     //Arm pid motion magic gains
     public static final double SHOULDER_MOTOR_kF = 0;
@@ -95,20 +101,20 @@ public final class Constants {
     public static final double EXTENSION_MOTOR_kD = 0;
 
     public static final double ELBOW_MOTOR_kF = 0;
-    public static final double ELBOW_MOTOR_kP = 4;
+    public static final double ELBOW_MOTOR_kP = 3.5;
     public static final double ELBOW_MOTOR_kI = .012;
-    public static final double ELBOW_MOTOR_kI_ZONE = 12;
-    public static final double ELBOW_MOTOR_kD = 0;
+    public static final double ELBOW_MOTOR_kI_ZONE = 10;
+    public static final double ELBOW_MOTOR_kD = .02;
 
     //Arm motion magic parameters
-    public static final double SHOULDER_CRUISEVELOCITY = 16000 * 6;
-    public static final double SHOULDER_ACCEL = 6000 * 6;
+    public static final double SHOULDER_CRUISEVELOCITY = 16000 * 16;
+    public static final double SHOULDER_ACCEL = 6000 * 6; // 16 // new 6
 
-    public static final double EXTENSION_CRUISEVELOCITY = 16000 * 6;
-    public static final double EXTENSION_ACCEL = 6000 * 6;
+    public static final double EXTENSION_CRUISEVELOCITY = 16000 * 10;
+    public static final double EXTENSION_ACCEL = 6000 * 10;
 
-    public static final double ELBOW_CRUIESVELOCITY = 1600 * 24;
-    public static final double ELBOW_ACCEL = 600 * 24;
+    public static final double ELBOW_CRUIESVELOCITY = 1600 * 6;
+    public static final double ELBOW_ACCEL = 600 * 1;
 
     //Arm pid slots
     public static final int SHOULDER_PID_SLOT = 0;
@@ -116,7 +122,6 @@ public final class Constants {
 
     public static final int EXTENSION_PID_SLOT = 0;
     public static final int EXTENSION_K_PID_LOOP_IDX = 0;
-
 
     public static final int ELBOW_PID_SLOT = 0;
     public static final int ELBOW_K_PID_LOOP_IDX = 0;
@@ -127,28 +132,17 @@ public final class Constants {
     // public static final double ELBOW_DEGREES_TO_TICKS = BAG_TICKS_PER_REV * 1;
 
     //Arm motion magic set positions
-    public static final double SHOULDER_TARGET_POSITION_LOW = 90; // In degrees
-    public static final double EXTENSION_TARGET_POSITION_LOW = 0; // In Revolutions
-    public static final double ELBOW_TARGET_POSITION_LOW = 0;
-
-    public static final double SHOULDER_TARGET_POSITION_MIDDLE = 80;
-    public static final double EXTENSION_TARGET_POSITION_MIDDLE = 0;
-    public static final double ELBOW_TARGET_POSITION_MIDDLE = 0;
-
-    public static final double SHOULDER_TARGET_POSITION_HIGH = 45;
-    public static final double EXTENSION_TARGET_POSITION_HIGH = 50;
-    public static final double ELBOW_TARGET_POSITION_HIGH = 0;
-
-    public static final double SHOULDER_TARGET_POSITION_PACKAGE = 0;
-    public static final double EXTENSION_TARGET_POSITION_PACKAGE = 0;
-    public static final double ELBOW_TARGET_POSITION_PACKAGE = 0;
+    public static final int ARM_BUMP_LATCH_TIME = 17;
 
     public static final int ARM_TIMEOUT = 200;
 
 
     // Extension Constraints
     
-    public static final double MAXIMUM_EXTENSION_INCHES = 10;
+    public static final double MAXIMUM_EXTENSION_INCHES = 22.5; // actual maximum is 23
+
+
+    public static final double GRIPPER_HOLD_POWER = -0.4;
 
 }
 

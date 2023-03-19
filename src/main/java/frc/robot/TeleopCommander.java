@@ -1,7 +1,15 @@
 package frc.robot;
 
+import edu.wpi.first.math.MathUtil;
+import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.XboxController;
+import frc.robot.sensors.Pigeon;
+import frc.robot.subsystems.Arm;
+import frc.robot.subsystems.Intake;
 import frc.robot.subsystems.Arm.ArmPos;
+import frc.robot.subsystems.Arm.ArmPos.ArmBumpDirection;
+import frc.robot.subsystems.Intake.IntakePos;
+import frc.robot.subsystems.Intake.IntakeSpeed;
 
 import static frc.robot.Constants.*;
 
@@ -14,12 +22,7 @@ public class TeleopCommander extends RobotCommander{
     
     private boolean manualMode = false;
 
-    private boolean yButtonPressed = false;
-    private boolean aButtonPressed = false;
-    private boolean xButtonPressed = false;
-    private boolean bButtonPressed = false;
-
-    private boolean cubeMode = true; // true ball, false cone
+    private boolean cubeMode = false; // true ball, false cone
 
     private boolean slowSpeed = false;
 
@@ -31,29 +34,42 @@ public class TeleopCommander extends RobotCommander{
     @Override
     public double getForwardCommand() {
         if(!getDriverSlowSpeed()){
-            return (modifyAxis(driver.getLeftY()) * MAX_VELOCITY_METERS_PER_SECOND);
+            return -(modifyAxis(driver.getLeftY()) * MAX_VELOCITY_METERS_PER_SECOND);
         } else {
-            return (modifyAxis(driver.getLeftY()) * MAX_VELOCITY_METERS_PER_SECOND) * SLOW_SPEED_MULTIPLIER;
+            return -(modifyAxis(driver.getLeftY()) * MAX_VELOCITY_METERS_PER_SECOND) * SLOW_SPEED_MULTIPLIER;
         }
     }
 
     @Override
     public double getStrafeCommand() {
         if(!getDriverSlowSpeed()){
-            return (modifyAxis(driver.getLeftX()) * MAX_VELOCITY_METERS_PER_SECOND);
+            return -(modifyAxis(driver.getLeftX()) * MAX_VELOCITY_METERS_PER_SECOND);
         } else {
-            return (modifyAxis(driver.getLeftX()) * MAX_VELOCITY_METERS_PER_SECOND) * SLOW_SPEED_MULTIPLIER;
+            return -(modifyAxis(driver.getLeftX()) * MAX_VELOCITY_METERS_PER_SECOND) * SLOW_SPEED_MULTIPLIER;
         }
     }
 
+//     if(driver.getRightTriggerAxis()){
+//         gripperMotorCommand = GRIPPER_HOLD_POWER + driver.getRightTriggerAxis();
+
+//     }
+// } else {
+//     if(driver.getRightTriggerAxis() > .1){
+//         gripperMotorCommand  = driver.getRightTriggerAxis();
+//     } else {
+//         gripperMotorCommand =  operator.getLeftY();
+
+//     }
+// }
+
     @Override
     public double getTurnCommand() {
-        double value = deadband(Math.abs(driver.getRightX()) * driver.getRightX(), 0.13, 0.4) * (MAX_ANGULAR_VELOCITY_RADIANS_PER_SECOND);
+        double value = deadband(Math.abs(driver.getRightX()) * driver.getRightX(), 0.01, 0.75) * (MAX_ANGULAR_VELOCITY_RADIANS_PER_SECOND);
         
         if(!getDriverSlowSpeed()){
-            return value;
+            return -value;
         } else {
-            return value * SLOW_SPEED_MULTIPLIER;
+            return -value * .5 * SLOW_SPEED_MULTIPLIER;
         }
     }
 
@@ -96,112 +112,119 @@ public class TeleopCommander extends RobotCommander{
         return slowSpeed;
     }
 
-    public double[] getIntakePosition() {
-        boolean Dpad_right = (operator.getPOV() > 70 && operator.getPOV() < 110);
-        boolean Dpad_left = (operator.getPOV() > 250 && operator.getPOV() < 290);
-        boolean Dpad_updown = ((operator.getPOV() > 160 && operator.getPOV() < 200) || (!(operator.getPOV() < 0) && operator.getPOV() < 20));
-        boolean Trigger_right = (operator.getRightTriggerAxis() > .3);
-        boolean Trigger_left = (operator.getLeftTriggerAxis() > .3);
-        boolean Bumper_push = operator.getRightBumperPressed();
-        boolean Bumper_release = operator.getRightBumperReleased();
+    // public double[] getIntakePosition() {
+    //     boolean Dpad_right = (operator.getPOV() > 70 && operator.getPOV() < 110);
+    //     boolean Dpad_left = (operator.getPOV() > 250 && operator.getPOV() < 290);
+    //     boolean Dpad_updown = false;
+    //     boolean Trigger_right = (operator.getRightTriggerAxis() > .3);
+    //     boolean Trigger_left = (operator.getLeftTriggerAxis() > .3);
+    //     // boolean Bumper_push = operator.getRightBumperPressed();
+    //     // boolean Bumper_release = operator.getRightBumperReleased();
+    //     // if(getArmPosition() != ArmPos.Zero && getArmPosition() != ArmPos.manual && getArmPosition() != ArmPos.intake){
+    //         if (!this.getManualMode()) {
+    //             if (getArmPosition() != ArmPos.Zero && 
+    //                 getArmPosition() != ArmPos.manual && 
+    //                 getArmPosition() != ArmPos.intake && 
+    //                 Intake.angleEncoderAngle < 115) { 
+    //                     intakeArray[0] = 102;
+    //             } else {
+    //                 if (Trigger_left && !Trigger_right) {
+    //                     if (Dpad_left && !(Dpad_right || Dpad_updown)) {
+    //                         intakeArray[0] = Constants.INTAKE_PACKAGE_POSITION;
+    //                         intakeArray[1] = Constants.INTAKE_SPEED_CUBE/2;
+    //                     } else if (Dpad_right && !(Dpad_left || Dpad_updown)) {
+    //                         intakeArray[0] = Constants.INTAKE_COLLECT_POSITION;
+    //                         intakeArray[1] = Constants.INTAKE_SPEED_CUBE/2;
+    //                     } else if (Dpad_updown && !(Dpad_left || Dpad_right)) {
+    //                         intakeArray[0] = Constants.INTAKE_STATION_POSITION;
+    //                         intakeArray[1] = Constants.INTAKE_SPEED_CUBE/2;
+    //                     }
+    //                     // else if (operator.getXButton()){
+    //                     //     intakeArray[0] = Constants.INTAKE_STATION_POSITION;
+    //                     // } 
+    //                     else {
+    //                         intakeArray[1] = Constants.INTAKE_SPEED_CUBE;
+    //                     }
+    //                 } else if (Trigger_right && !Trigger_left) {
+    //                     if (Dpad_left && !(Dpad_right || Dpad_updown)) {
+    //                         intakeArray[0] = Constants.INTAKE_PACKAGE_POSITION;
+    //                         intakeArray[1] = -Constants.INTAKE_SPEED_CUBE;
+    //                     } else if (Dpad_right && !(Dpad_left || Dpad_updown)) {
+    //                         intakeArray[0] = Constants.INTAKE_COLLECT_POSITION;
+    //                         intakeArray[1] = -Constants.INTAKE_SPEED_CUBE;
+    //                     } else if (Dpad_updown && !(Dpad_left || Dpad_right)) {
+    //                         intakeArray[0] = Constants.INTAKE_STATION_POSITION;
+    //                         intakeArray[1] = -Constants.INTAKE_SPEED_CUBE;
+    //                     } else {
+    //                         intakeArray[1] = -Constants.INTAKE_SPEED_CUBE;
+    //                     }
+    //                 } else if (Dpad_left && !(Trigger_right || Trigger_left || Dpad_right || Dpad_updown)) {
+    //                     intakeArray[0] = Constants.INTAKE_PACKAGE_POSITION;
+    //                     intakeArray[1] = .0;
+    //                 } else if (Dpad_right && !(Trigger_left || Trigger_right || Dpad_left || Dpad_updown)) {
+    //                     intakeArray[0] = Constants.INTAKE_COLLECT_POSITION;
+    //                     intakeArray[1] = .0;
+    //                 } else if (Dpad_updown && !(Trigger_left || Trigger_right || Dpad_left || Dpad_right)) {
+    //                     intakeArray[0] = Constants.INTAKE_STATION_POSITION;
+    //                     intakeArray[1] = .0;
+    //                 } else {
+    //                     intakeArray[1] = .0;
+    //                 }
+    //             }
+    //         }
+        
+    //     return intakeArray;
+    // }
 
-        if(getCubeMode()){
-            if (Trigger_left && !Trigger_right) {
-                if (Dpad_left && !(Dpad_right || Dpad_updown)) {
-                    intakeArray[0] = Constants.INTAKE_PACKAGE_POSITION;
-                    intakeArray[1] = Constants.INTAKE_SPEED_CUBE;
-                } else if (Dpad_right && !(Dpad_left || Dpad_updown)) {
-                    intakeArray[0] = Constants.INTAKE_COLLECT_POSITION;
-                    intakeArray[1] = Constants.INTAKE_SPEED_CUBE;
-                } else if (Dpad_updown && !(Dpad_left || Dpad_right)) {
-                    intakeArray[0] = Constants.INTAKE_STATION_POSITION;
-                    intakeArray[1] = Constants.INTAKE_SPEED_CUBE;
-                } else {
-                    intakeArray[1] = Constants.INTAKE_SPEED_CUBE;
-                }
-            } else if (Trigger_right && !Trigger_left) {
-                if (Dpad_left && !(Dpad_right || Dpad_updown)) {
-                    intakeArray[0] = Constants.INTAKE_PACKAGE_POSITION;
-                    intakeArray[1] = -Constants.INTAKE_SPEED_CUBE;
-                } else if (Dpad_right && !(Dpad_left || Dpad_updown)) {
-                    intakeArray[0] = Constants.INTAKE_COLLECT_POSITION;
-                    intakeArray[1] = -Constants.INTAKE_SPEED_CUBE;
-                } else if (Dpad_updown && !(Dpad_left || Dpad_right)) {
-                    intakeArray[0] = Constants.INTAKE_STATION_POSITION;
-                    intakeArray[1] = -Constants.INTAKE_SPEED_CUBE;
-                } else {
-                    intakeArray[1] = -Constants.INTAKE_SPEED_CUBE;
-                }
-            } else if (Bumper_push && !(Dpad_left || Dpad_right || Dpad_updown)) {
-                Bumpercheck = true;
-                intakeArray[0] = Constants.INTAKE_COLLECT_POSITION;
-                intakeArray[1] = 0;
-            } else if (Bumper_release && !(Dpad_left || Dpad_right || Dpad_updown) && Bumpercheck) {
-                Bumpercheck = false;
-                intakeArray[0] = Constants.INTAKE_PACKAGE_POSITION;
-                intakeArray[1] = 0;
-            } else if (Dpad_left && !(Trigger_right || Trigger_left || Dpad_right || Dpad_updown)) {
-                intakeArray[0] = Constants.INTAKE_PACKAGE_POSITION;
-                intakeArray[1] = .0;
-            } else if (Dpad_right && !(Trigger_left || Trigger_right || Dpad_left || Dpad_updown)) {
-                intakeArray[0] = Constants.INTAKE_COLLECT_POSITION;
-                intakeArray[1] = .0;
-            } else if (Dpad_updown && !(Trigger_left || Trigger_right || Dpad_left || Dpad_right)) {
-                intakeArray[0] = Constants.INTAKE_STATION_POSITION;
-                intakeArray[1] = .0;
-            } else {
-                intakeArray[1] = .0;
-            }
+    public IntakeSpeed getIntakeSpeed(){
+        if(this.getIntakePosition() == IntakePos.cubeHandoff){
+            intakeSpeed = IntakeSpeed.cubeHandoff;
         } else {
-            if (Trigger_left && !Trigger_right) {
-                if (Dpad_left && !(Dpad_right || Dpad_updown)) {
-                    intakeArray[0] = Constants.INTAKE_PACKAGE_POSITION;
-                    intakeArray[1] = Constants.INTAKE_SPEED_CONE;
-                } else if (Dpad_right && !(Dpad_left || Dpad_updown)) {
-                    intakeArray[0] = Constants.INTAKE_COLLECT_POSITION;
-                    intakeArray[1] = Constants.INTAKE_SPEED_CONE;
-                } else if (Dpad_updown && !(Dpad_left || Dpad_right)) {
-                    intakeArray[0] = Constants.INTAKE_STATION_POSITION;
-                    intakeArray[1] = Constants.INTAKE_SPEED_CONE;
+            if(operator.getRightTriggerAxis() > .4){
+                if(getCubeMode()){
+                    intakeSpeed = IntakeSpeed.onCube;
                 } else {
-                    intakeArray[1] = Constants.INTAKE_SPEED_CONE;
+                    intakeSpeed = IntakeSpeed.onCone;
                 }
-            } else if (Trigger_right && !Trigger_left) {
-                if (Dpad_left && !(Dpad_right || Dpad_updown)) {
-                    intakeArray[0] = Constants.INTAKE_PACKAGE_POSITION;
-                    intakeArray[1] = -Constants.INTAKE_SPEED_CONE;
-                } else if (Dpad_right && !(Dpad_left || Dpad_updown)) {
-                    intakeArray[0] = Constants.INTAKE_COLLECT_POSITION;
-                    intakeArray[1] = -Constants.INTAKE_SPEED_CONE;
-                } else if (Dpad_updown && !(Dpad_left || Dpad_right)) {
-                    intakeArray[0] = Constants.INTAKE_STATION_POSITION;
-                    intakeArray[1] = -Constants.INTAKE_SPEED_CONE;
-                } else {
-                    intakeArray[1] = -Constants.INTAKE_SPEED_CONE;
-                }
-            } else if (Bumper_push && !(Dpad_left || Dpad_right || Dpad_updown)) {
-                Bumpercheck = true;
-                intakeArray[0] = Constants.INTAKE_COLLECT_POSITION;
-                intakeArray[1] = 0;
-            } else if (Bumper_release && !(Dpad_left || Dpad_right || Dpad_updown) && Bumpercheck) {
-                Bumpercheck = false;
-                intakeArray[0] = Constants.INTAKE_PACKAGE_POSITION;
-                intakeArray[1] = 0;
-            } else if (Dpad_left && !(Trigger_right || Trigger_left || Dpad_right || Dpad_updown)) {
-                intakeArray[0] = Constants.INTAKE_PACKAGE_POSITION;
-                intakeArray[1] = .0;
-            } else if (Dpad_right && !(Trigger_left || Trigger_right || Dpad_left || Dpad_updown)) {
-                intakeArray[0] = Constants.INTAKE_COLLECT_POSITION;
-                intakeArray[1] = .0;
-            } else if (Dpad_updown && !(Trigger_left || Trigger_right || Dpad_left || Dpad_right)) {
-                intakeArray[0] = Constants.INTAKE_STATION_POSITION;
-                intakeArray[1] = .0;
+            } else if(operator.getLeftTriggerAxis() > .4){
+                intakeSpeed = IntakeSpeed.out;
             } else {
-                intakeArray[1] = .0;
+                intakeSpeed = IntakeSpeed.none;
             }
         }
-        
-        return intakeArray;
+
+
+        return intakeSpeed;
+    }
+
+    public IntakePos getIntakePosition() {
+        // if(getArmPosition() != ArmPos.Zero && getArmPosition() != ArmPos.manual && getArmPosition() != ArmPos.intake){
+            if (!this.getManualMode()) {
+                if (getArmPosition() != ArmPos.Zero && 
+                    getArmPosition() != ArmPos.manual && 
+                    getArmPosition() != ArmPos.intake && 
+                    Intake.angleEncoderAngle < 115) { 
+                        intakePos = IntakePos.armMoving;
+                } else {
+                    if(operator.getPOV() == 90){
+                        if(this.getCubeMode()){
+                            intakePos = IntakePos.downCube;
+                        } else {
+                            intakePos = IntakePos.downCone;
+                        }
+                    } else if(operator.getPOV() == 270){
+                        intakePos = IntakePos.pack;
+                    } else if(operator.getPOV() == 180){
+                        intakePos = IntakePos.cubeHandoff;
+                    } else {
+                        intakePos = IntakePos.none;
+                    }
+                }
+            }
+        // }
+
+
+        return intakePos;
     }
 
     public boolean getArmReset(){
@@ -214,32 +237,61 @@ public class TeleopCommander extends RobotCommander{
         } else if (manualMode && operator.getBackButton()){
             manualMode = false;
         }
-
         return manualMode;
+    } 
+    
+    public ArmPos getArmPosition(){
+        if (this.getManualMode()) {
+            return ArmPos.manual;
+        } else if (operator.getPOV() == 90 || operator.getPOV() == 180) {
+            return ArmPos.intake;
+        } else if (operator.getPOV() == 0) {
+            return ArmPos.lowerNode;
+        } else if(operator.getYButton()){
+            if(getCubeMode()){
+                return ArmPos.topNodeCube;
+            } else {
+                return ArmPos.topNodeCone;
+            }
+        } else if(operator.getBButton()){
+            if(getCubeMode()){
+                return ArmPos.middleNodeCube;
+            } else {
+                return ArmPos.middleNodeCone;
+            }
+        } else if(operator.getAButton() || driver.getXButton()) {
+            return ArmPos.packagePos;
+        }else if(operator.getXButton()){
+            if (operator.getRightBumper()){
+                return ArmPos.humanPlayerPickup;
+            } else {
+                return ArmPos.humanPlayerReady;
+            }
+        } else {
+            return ArmPos.Zero;
+        }
     }
 
-    public ArmPos getArmPosition(){
-        if (getManualMode()){
-            return ArmPos.manual;
+    public ArmBumpDirection getArmBumpDirection() {
+        if (driver.getBButton()) {
+            return ArmBumpDirection.bumpUp;
+        } else if (driver.getAButton()) {
+            return ArmBumpDirection.bumpDown;
         } else {
-            if(operator.getYButton()){
-                return ArmPos.topNode;
-            } else if (operator.getYButton()){
-                return ArmPos.packagePos;
-            } else if (operator.getBButton()){
-                return ArmPos.middleNode;
-            } else if (operator.getXButton()){
-                return ArmPos.lowerNode;
-            } else {
-                return ArmPos.stay;
-            }
+            return ArmBumpDirection.bumpZero;
         }
     }
 
     public boolean getCubeMode(){
-        if(!cubeMode && operator.getLeftStickButton()){
+        // if(operator.getLeftStickButton()){
+        //     cubeMode = true;
+        // } else if(operator.getRightStickButton()){
+        //     cubeMode = false;
+        // }
+
+        if(operator.getLeftStickButton()){
             cubeMode = true;
-        } else if(cubeMode && operator.getRightStickButton()){
+        } else {
             cubeMode = false;
         }
 
@@ -247,24 +299,26 @@ public class TeleopCommander extends RobotCommander{
     }
 
     public double armShoulder(){     
-        if(Math.abs(operator.getLeftX()) > 0.1){
-            return operator.getLeftX() * 0.8;
+        if(Math.abs(operator.getRightX()) > 0.1){
+            return operator.getRightX() * 0.8;
         } else {
             return 0;
         }
     }
 
     public double armExtension(){
-        if(Math.abs(operator.getRightY()) > 0.1){
-            return -operator.getRightY() * 0.8;
+        if (!operator.getLeftBumper() && operator.getRightBumper()){
+            return -.2;
+        } else if (operator.getLeftBumper() && !operator.getRightBumper()) {
+            return .2;
         } else {
             return 0;
         }
     }
 
-    public double armElbow(){
-        if(Math.abs(operator.getRightX()) > 0.2){
-            return operator.getRightX() * 0.5;
+    public double armElbow() {
+        if(Math.abs(operator.getLeftX()) > 0.2){
+            return operator.getLeftX() * 0.5;
         } else {
             return 0;
         }
@@ -286,9 +340,62 @@ public class TeleopCommander extends RobotCommander{
         return operator.getBButton();
     }
 
+    public boolean runHopper(){
+        if(intakePos == IntakePos.cubeHandoff){
+            return true;
+        } else {
+            return false;
+        }
+    }
+
     @Override
     public boolean getAutoBalance() {
         // TODO Auto-generated method stub
-        return driver.getYButton();
+        return false;
+    }
+
+    private double overrideGripper(){
+        if (driver.getRightTriggerAxis() > .15) {
+            return .8;
+        } else if (driver.getYButton()) {
+            return -.8;
+        } else {
+            return operator.getLeftY();
+        }
+    }
+
+    public double getGripperCommand() {
+        double gripperMotorCommand = 0.0;
+        if (this.getArmPosition() == ArmPos.lowerNode || this.getArmPosition() == ArmPos.topNodeCone || this.getArmPosition() == ArmPos.middleNodeCone || this.getArmPosition() == ArmPos.humanPlayerPickup ||
+        this.getArmPosition() == ArmPos.topNodeCube || this.getArmPosition() == ArmPos.middleNodeCube) {
+            gripperMotorCommand = GRIPPER_HOLD_POWER + overrideGripper();
+        } else {
+            gripperMotorCommand = overrideGripper();
+        }
+
+        return gripperMotorCommand;
+    }
+
+    @Override
+    public boolean useNegativeSide() {
+        double angle =MathUtil.inputModulus(Pigeon.getAngle(),-180,180);
+        if (angle > -180 && angle < 0) {
+            return true;
+        } else  {
+            return false;
+        }
+    }
+    
+    public boolean xReleased(){
+        if((operator.getXButtonReleased() == true) && (operator.getRightBumperReleased() == true)){
+            return true;
+        }
+        else{
+            return false;
+        }
+    }
+
+    public boolean getAutoLine(){
+        return driver.getLeftTriggerAxis() > .2;
     }
 }

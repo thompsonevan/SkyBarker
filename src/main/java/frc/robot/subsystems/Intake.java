@@ -1,13 +1,16 @@
 package frc.robot.subsystems;
 
 import com.ctre.phoenix.motorcontrol.TalonFXControlMode;
+import com.ctre.phoenix.motorcontrol.TalonFXInvertType;
 import com.ctre.phoenix.motorcontrol.can.TalonFX;
 import com.ctre.phoenix.sensors.CANCoder;
+import com.ctre.phoenix.sensors.CANCoderConfiguration;
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.CANSparkMax.IdleMode;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 
 import edu.wpi.first.math.controller.PIDController;
+import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.RobotCommander;
 import frc.robot.TeleopCommander;
@@ -15,54 +18,77 @@ import frc.robot.TeleopCommander;
 import static frc.robot.Constants.*;
 
 public class Intake {
-    double speed;
+    public static enum IntakePos {
+        none(0),
+        pack(90),
+        downCube(185.5),
+        downCone(185.5),
+        armMoving(102),
+        cubeHandoff(100);
+
+        private final double pos;
+        public double getPos() {
+            return pos;
+        }
+
+        IntakePos(double pos) {
+            this.pos = pos;
+        }
+    }
+
+    public static enum IntakeSpeed {
+        none(0,0),
+        onCube(-.5,-.5),
+        onCone(-.5,.5),
+        out(.5,5),
+        cubeHandoff(-1,-1);
+
+        private final double sp1;
+        public double getSpeed1() {
+            return sp1;
+        }
+
+        private final double sp2;
+        public double getSpeed2() {
+            return sp2;
+        }
+
+        IntakeSpeed(double sp1, double sp2) {
+            this.sp1 = sp1;
+            this.sp2 = sp2;
+        }
+    }
+
+    double speed1;
+    double speed2;
     double angle;
-    TalonFX speedMotor;
+    TalonFX speedMotor1;
+    TalonFX speedMotor2;
     CANSparkMax angleMotor;
     CANCoder angleEncoder;
     PIDController pidController;
+    public static double angleEncoderAngle;
+
+    DigitalInput sensor;
 
     public static double startPosition;
 
     public Intake(){
         angle = 45;
-        speed = 0;
-        speedMotor = new TalonFX(9);
-        angleMotor = new CANSparkMax(10, MotorType.kBrushless);
+        speed1 = 0;
+        speed2 = 0;
+        speedMotor1 = new TalonFX(INTAKE_SPEED1_MOTOR_ID);
+        speedMotor2 = new TalonFX(INTAKE_SPEED2_MOTOR_ID);
+        angleMotor = new CANSparkMax(INTAKE_ANGLE_MOTOR_ID, MotorType.kBrushless);
         angleEncoder = new CANCoder(23);
-        pidController = new PIDController(.017, 0.0015, 0.000075); //.0175, 0.001, 0.000075
+        pidController = new PIDController(.0175, 0.0015, 0.000075); //.0175, 0.001, 0.000075
         startPosition = angleEncoder.getAbsolutePosition();
+        angleEncoder.configSensorDirection(true);
+        angleEncoder.configMagnetOffset(INTAKE_OFFSET);
+        sensor = new DigitalInput(0);
 
-        // //Configure sensor source for primary PID
-        // angleMotor.configSelectedFeedbackSensor(TalonFXFeedbackDevice.IntegratedSensor, SHOULDER_K_PID_LOOP_IDX,
-        // ARM_TIMEOUT);   
-
-        // angleMotor.setSensorPhase(false);
-        // angleMotor.setInverted(false);
-
-        // /* Set relevant frame periods to be at least as fast as periodic rate */
-        // angleMotor.setStatusFramePeriod(StatusFrameEnhanced.Status_13_Base_PIDF0, 10, INTAKE_TIMEOUT);
-        // angleMotor.setStatusFramePeriod(StatusFrameEnhanced.Status_10_MotionMagic,10);
-        // /* Set the peak and nominal outputs */
-        // angleMotor.configNominalOutputForward(0, ARM_TIMEOUT);
-        // angleMotor.configNominalOutputReverse(0, ARM_TIMEOUT);
-        // angleMotor.configPeakOutputForward(1, ARM_TIMEOUT);
-        // angleMotor.configPeakOutputReverse(-1, ARM_TIMEOUT);
-
-        // /* Set Motion Magic gains in slot0 - see documentation */
-        // angleMotor.selectProfileSlot(SHOULDER_PID_SLOT, SHOULDER_K_PID_LOOP_IDX);
-        // angleMotor.config_kF(SHOULDER_PID_SLOT, SHOULDER_MOTOR_kF, ARM_TIMEOUT);
-        // angleMotor.config_kP(SHOULDER_PID_SLOT, SHOULDER_MOTOR_kP, ARM_TIMEOUT);
-        // angleMotor.config_kI(SHOULDER_PID_SLOT, SHOULDER_MOTOR_kI, ARM_TIMEOUT);
-        // angleMotor.config_kD(SHOULDER_PID_SLOT, SHOULDER_MOTOR_kD, ARM_TIMEOUT);
-
-        // /* Set acceleration and vcruise velocity - see documentation */
-        // angleMotor.configMotionCruiseVelocity(SHOULDER_CRUISEVELOCITY, ARM_TIMEOUT);
-        // angleMotor.configMotionAcceleration(SHOULDER_ACCEL, ARM_TIMEOUT);
-
-        // /* Zero the sensor once on robot boot up */
-        // angleMotor.setSelectedSensorPosition(0, SHOULDER_K_PID_LOOP_IDX, ARM_TIMEOUT);
-
+        speedMotor2.setInverted(TalonFXInvertType.OpposeMaster);
+        speedMotor2.follow(speedMotor1);
     }
 
     public void setBrakeMode(){
@@ -74,23 +100,46 @@ public class Intake {
     }
 
     public void IntakePeriodic(RobotCommander commander){
-        SmartDashboard.putNumber("Intake Desired Angle", commander.getIntakePosition()[0]);
-        SmartDashboard.putNumber("Intake Desired Speed", commander.getIntakePosition()[1]);
+        SmartDashboard.putNumber("Intake Desired Angle", commander.getIntakePosition().getPos());
+        // SmartDashboard.putNumber("Intake Desired Speed", commander.getIntakePosition().getSpeed());
         speedPeriodic(commander);
         anglePeriodic(commander);
+        SmartDashboard.putString("INtake Pos", commander.getIntakePosition().toString());
+
     }
     
     public void speedPeriodic(RobotCommander commander){
-        speed = commander.getIntakePosition()[1];
-        SmartDashboard.putNumber("Speed", speed);
-        speedMotor.set(TalonFXControlMode.PercentOutput, -speed);
+        IntakePos intakePos = commander.getIntakePosition();
+
+        speed1 = commander.getIntakeSpeed().sp1;
+        speed2 = commander.getIntakeSpeed().sp2;
+
+        if (intakePos == IntakePos.cubeHandoff){
+            if(Math.abs(intakePos.pos - angleEncoder.getAbsolutePosition()) < 3){
+                speedMotor1.set(TalonFXControlMode.PercentOutput, speed1);
+                speedMotor2.set(TalonFXControlMode.PercentOutput, speed2);
+            } else {
+                speedMotor1.set(TalonFXControlMode.PercentOutput, 0);
+                speedMotor2.set(TalonFXControlMode.PercentOutput, 0);
+            }
+        } else {
+            if(sensor.get()){
+                speedMotor1.set(TalonFXControlMode.PercentOutput, 0);
+                speedMotor2.set(TalonFXControlMode.PercentOutput, 0);
+            } else {
+                speedMotor1.set(TalonFXControlMode.PercentOutput, speed1);
+                speedMotor2.set(TalonFXControlMode.PercentOutput, speed2);
+            }
+        }
+
+
     }
 
     public void anglePeriodic(RobotCommander commander){
-        if(commander.getIntakePosition()[0] == 10000){
+        if(commander.getIntakePosition() == IntakePos.none){
             angleMotor.set(0);
         } else {
-            angle = commander.getIntakePosition()[0];
+            angle = commander.getIntakePosition().getPos();
             double ourAngle = angleEncoder.getAbsolutePosition();
             double change = pidController.calculate(ourAngle, angle);
             SmartDashboard.putNumber("Change", change);
@@ -103,7 +152,9 @@ public class Intake {
 
     }
 
-    public void logData(){
-        SmartDashboard.putNumber("Intake Absolute Encoder", angleEncoder.getAbsolutePosition());
+    public void logData() {
+        angleEncoderAngle = angleEncoder.getAbsolutePosition();
+        SmartDashboard.putNumber("Intake Absolute Encoder", angleEncoderAngle);
+        SmartDashboard.putBoolean("Intake Sensor Reading", sensor.get());
     }
 }
