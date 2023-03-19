@@ -12,6 +12,7 @@ import frc.robot.Autons.AutonBase;
 import frc.robot.sensors.Pigeon;
 import frc.robot.subsystems.Intake;
 import frc.robot.subsystems.Arm.ArmPos;
+import frc.robot.subsystems.Arm.IntakePos;
 import frc.robot.subsystems.Arm.ArmPos.ArmBumpDirection;
 
 public class AutonCommader extends RobotCommander{
@@ -82,7 +83,7 @@ public class AutonCommader extends RobotCommander{
     }
 
     @Override
-    public double[] getIntakePosition() {
+    public IntakePos getIntakePosition() {
         // TODO Auto-generated method stub
         if(auton.intakeOn){
             intakeArray[0] = Constants.INTAKE_COLLECT_POSITION;
@@ -100,7 +101,7 @@ public class AutonCommader extends RobotCommander{
             }
         }
 
-        return intakeArray;
+        return IntakePos.none;
     }
 
     @Override

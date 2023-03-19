@@ -11,8 +11,10 @@ import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import frc.robot.Constants;
 import frc.robot.RobotCommander;
 import frc.robot.TeleopCommander;
+import frc.robot.subsystems.Arm.IntakePos;
 
 import static frc.robot.Constants.*;
 
@@ -24,11 +26,14 @@ public class Intake {
     CANSparkMax angleMotor;
     CANCoder angleEncoder;
     PIDController pidController;
+    private IntakePos determineIntakePosReading = IntakePos.none;
     public static double angleEncoderAngle;
 
     public static double startPosition;
 
     public Intake(){
+
+
         angle = 45;
         speed = 0;
         speedMotor1 = new TalonFX(INTAKE_SPEED1_MOTOR_ID);
@@ -83,24 +88,25 @@ public class Intake {
         angleMotor.setIdleMode(IdleMode.kCoast);
     }
 
-    public void IntakePeriodic(RobotCommander commander){
-        SmartDashboard.putNumber("Intake Desired Angle", commander.getIntakePosition()[0]);
-        SmartDashboard.putNumber("Intake Desired Speed", commander.getIntakePosition()[1]);
-        speedPeriodic(commander);
-        anglePeriodic(commander);
+    public void IntakePeriodic(IntakePos posIntake){
+        SmartDashboard.putNumber("Intake Desired Angle", posIntake.getPositionReading());
+        SmartDashboard.putNumber("Intake Desired Speed", posIntake.getSpeedReading1());
+        speedPeriodic(posIntake);
+        anglePeriodic(posIntake);
     }
     
-    public void speedPeriodic(RobotCommander commander){
-        speed = commander.getIntakePosition()[1];
+    public void speedPeriodic(IntakePos posIntake){
+        speed = posIntake.getSpeedReading1();
         SmartDashboard.putNumber("Speed", speed);
         speedMotor1.set(TalonFXControlMode.PercentOutput, -speed);
     }
 
-    public void anglePeriodic(RobotCommander commander){
-        if(commander.getIntakePosition()[0] == 10000){
+    public void anglePeriodic(IntakePos posIntake){
+        
+        if(posIntake.getPositionReading() == 0){
             angleMotor.set(0);
         } else {
-            angle = commander.getIntakePosition()[0];
+            angle = posIntake.getPositionReading();
             double ourAngle = angleEncoder.getAbsolutePosition();
             double change = pidController.calculate(ourAngle, angle);
             SmartDashboard.putNumber("Change", change);
@@ -111,7 +117,9 @@ public class Intake {
             }
         }
 
-    }
+        SmartDashboard.putNumber("Desired Intake Angle", posIntake.getPositionReading());
+
+    } 
 
     public void logData() {
         angleEncoderAngle = angleEncoder.getAbsolutePosition();

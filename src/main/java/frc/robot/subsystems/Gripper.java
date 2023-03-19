@@ -10,7 +10,7 @@ import frc.robot.subsystems.Arm.ArmPos;
 
 public class Gripper {
     VictorSPX gripper;
-    private Arm arm = new Arm();
+    // private Arm arm = new Arm();
     private ArmPos armPositionPrev;
     int timer;
     
