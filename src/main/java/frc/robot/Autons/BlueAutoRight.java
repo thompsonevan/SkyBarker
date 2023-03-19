@@ -54,97 +54,97 @@ public class BlueAutoRight extends AutonBase{
     }
 
     public void runAuto(){
-        switch(autoState){
-            case firstPlace:
-                driving = false;
-                if(timer.get() < 3){
-                    if(timer.get() < 2.5){
-                        gripperSpeed = -.4;
-                    }else{
-                        gripperSpeed = .4;
-                    }
-                    armPos = ArmPos.topNodeCone;
-                } else {
-                    gripperSpeed = 0;
-                    armPos = ArmPos.packagePos;
-                }
+        // switch(autoState){
+        //     case firstPlace:
+        //         driving = false;
+        //         if(timer.get() < 3){
+        //             if(timer.get() < 2.5){
+        //                 gripperSpeed = -.4;
+        //             }else{
+        //                 gripperSpeed = .4;
+        //             }
+        //             armPos = ArmPos.topNodeCone;
+        //         } else {
+        //             gripperSpeed = 0;
+        //             armPos = ArmPos.packagePos;
+        //         }
 
-                if(timer.get() > 5){
-                    trajectory = createTrajectory(path.get(point), path.get(point+1),
-                    Rotation2d.fromDegrees(-40), Rotation2d.fromDegrees(10));
+        //         if(timer.get() > 5){
+        //             trajectory = createTrajectory(path.get(point), path.get(point+1),
+        //             Rotation2d.fromDegrees(-40), Rotation2d.fromDegrees(10));
             
-                    point++;
+        //             point++;
 
-                    timer.reset();
+        //             timer.reset();
 
-                    autoState = AutoState.driveToObject1;
-                }
-            break;
-            case driveToObject1:
-                driving = true;
-                armPos = ArmPos.intake;
-                if(timer.get() > 1){
-                    intakeOn = true;
-                }
+        //             autoState = AutoState.driveToObject1;
+        //         }
+        //     break;
+        //     case driveToObject1:
+        //         driving = true;
+        //         armPos = ArmPos.intake;
+        //         if(timer.get() > 1){
+        //             intakeOn = true;
+        //         }
                 
-                desState = trajectory.sample(timer.get());
-                targetTheta = path.get(point).getRotation();
+        //         desState = trajectory.sample(timer.get());
+        //         targetTheta = path.get(point).getRotation();
 
-                if(timer.get() > trajectory.getTotalTimeSeconds()){
-                    timer.reset();
+        //         if(timer.get() > trajectory.getTotalTimeSeconds()){
+        //             timer.reset();
 
-                    autoState = AutoState.pause;
-                }
-            break;
-            case pause:
-                driving = false;
-                intakeOn = false;
-                armPos = ArmPos.intake;
-                if(timer.get() > 1){
-                    trajectory = createTrajectory(path.get(point), path.get(point+1), 
-                    Rotation2d.fromDegrees(10 + 180), Rotation2d.fromDegrees(-10 + 180));
+        //             autoState = AutoState.pause;
+        //         }
+        //     break;
+        //     case pause:
+        //         driving = false;
+        //         intakeOn = false;
+        //         armPos = ArmPos.intake;
+        //         if(timer.get() > 1){
+        //             trajectory = createTrajectory(path.get(point), path.get(point+1), 
+        //             Rotation2d.fromDegrees(10 + 180), Rotation2d.fromDegrees(-10 + 180));
 
-                    point++;
+        //             point++;
 
-                    timer.reset();
+        //             timer.reset();
 
-                    autoState = AutoState.driveToObject2;
-                }
-            break;
-            case driveToObject2:
-                driving = true;
-                intakeOn = false;
+        //             autoState = AutoState.driveToObject2;
+        //         }
+        //     break;
+        //     case driveToObject2:
+        //         driving = true;
+        //         intakeOn = false;
 
-                armPos = ArmPos.packagePos;
-                gripperSpeed = -.4;
+        //         armPos = ArmPos.packagePos;
+        //         gripperSpeed = -.4;
                 
-                desState = trajectory.sample(timer.get());
-                targetTheta = path.get(point).getRotation();
+        //         desState = trajectory.sample(timer.get());
+        //         targetTheta = path.get(point).getRotation();
 
-                if(timer.get() > trajectory.getTotalTimeSeconds()){                    
-                    timer.reset();
+        //         if(timer.get() > trajectory.getTotalTimeSeconds()){                    
+        //             timer.reset();
                     
-                    gripperSpeed = 0;
+        //             gripperSpeed = 0;
 
-                    autoState = AutoState.score2;
-                }
-            break;
-            case score2:
-                driving = false;
-                if(timer.get() < 3.5){
-                    if(timer.get() < 2.5){
-                        gripperSpeed = -.4;
-                    }else{
-                        gripperSpeed = .2;
-                    }
-                    armPos = ArmPos.topNodeCone;
-                } else {
-                    gripperSpeed = 0;
-                    armPos = ArmPos.packagePos;
-                }
-            case end:
-                driving = false;
-            break;
-        }
+        //             autoState = AutoState.score2;
+        //         }
+        //     break;
+        //     case score2:
+        //         driving = false;
+        //         if(timer.get() < 3.5){
+        //             if(timer.get() < 2.5){
+        //                 gripperSpeed = -.4;
+        //             }else{
+        //                 gripperSpeed = .2;
+        //             }
+        //             armPos = ArmPos.topNodeCone;
+        //         } else {
+        //             gripperSpeed = 0;
+        //             armPos = ArmPos.packagePos;
+        //         }
+        //     case end:
+        //         driving = false;
+        //     break;
+        // }
     }
 }

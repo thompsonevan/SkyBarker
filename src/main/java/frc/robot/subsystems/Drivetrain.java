@@ -164,14 +164,14 @@ public class Drivetrain{
 
         states = kinematics.toSwerveModuleStates(new ChassisSpeeds());
 
-        thetaController = new ProfiledPIDController(1, .3, 0.06,
+        thetaController = new ProfiledPIDController(2, .3, 0.06,
                                                 new TrapezoidProfile.Constraints(6.28, 3.14));
 
         thetaController.enableContinuousInput(-Math.PI, Math.PI);
 
         holonomicController = new HolonomicDriveController(
             new PIDController(3.5, .6, .025),  //x Long side of field
-            new PIDController(20, .6, .025), //y Short side of field
+            new PIDController(15, .6, .025), //y Short side of field
             thetaController); // (2Pk,PI) constrains to 1 2pi/sec
 
         poseEstimator = new SwerveDrivePoseEstimator(
@@ -248,6 +248,11 @@ public class Drivetrain{
                         states[2].angle.getRadians());
         backRightModule.set(states[3].speedMetersPerSecond / MAX_VELOCITY_METERS_PER_SECOND * MAX_VOLTAGE,
                         states[3].angle.getRadians());
+
+        SmartDashboard.putNumber("Left Front", frontLeftDrive.getMotorOutputPercent());
+        SmartDashboard.putNumber("Right Front", frontRightDrive.getMotorOutputPercent());
+        SmartDashboard.putNumber("Left Rear", backLeftDrive.getMotorOutputPercent());
+        SmartDashboard.putNumber("Right Rear", backRightDrive.getMotorOutputPercent());
     }
 
     public void setModulePositions(){

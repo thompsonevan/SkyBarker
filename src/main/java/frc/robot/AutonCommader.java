@@ -13,6 +13,8 @@ import frc.robot.sensors.Pigeon;
 import frc.robot.subsystems.Intake;
 import frc.robot.subsystems.Arm.ArmPos;
 import frc.robot.subsystems.Arm.ArmPos.ArmBumpDirection;
+import frc.robot.subsystems.Intake.IntakePos;
+import frc.robot.subsystems.Intake.IntakeSpeed;
 
 public class AutonCommader extends RobotCommander{
 
@@ -82,25 +84,25 @@ public class AutonCommader extends RobotCommander{
     }
 
     @Override
-    public double[] getIntakePosition() {
-        // TODO Auto-generated method stub
-        if(auton.intakeOn){
-            intakeArray[0] = Constants.INTAKE_COLLECT_POSITION;
-            intakeArray[1] = -Constants.INTAKE_SPEED_CUBE;
-        } else {
-            if (getArmPosition() != ArmPos.Zero && 
-            getArmPosition() != ArmPos.manual && 
-            getArmPosition() != ArmPos.intake && 
-            Intake.angleEncoderAngle < 115) { 
-                intakeArray[0] = 102;
-                intakeArray[1] = 0;
-            } else {
-                intakeArray[0] = Constants.INTAKE_PACKAGE_POSITION;
-                intakeArray[1] = 0;
-            }
-        }
+    public IntakePos getIntakePosition() {
+        // // TODO Auto-generated method stub
+        // if(auton.intakeOn){
+        //     intakeArray[0] = Constants.INTAKE_COLLECT_POSITION;
+        //     intakeArray[1] = -Constants.INTAKE_SPEED_CUBE;
+        // } else {
+        //     if (getArmPosition() != ArmPos.Zero && 
+        //     getArmPosition() != ArmPos.manual && 
+        //     getArmPosition() != ArmPos.intake && 
+        //     Intake.angleEncoderAngle < 115) { 
+        //         intakeArray[0] = 102;
+        //         intakeArray[1] = 0;
+        //     } else {
+        //         intakeArray[0] = Constants.INTAKE_PACKAGE_POSITION;
+        //         intakeArray[1] = 0;
+        //     }
+        // }
 
-        return intakeArray;
+        return intakePos;
     }
 
     @Override
@@ -183,5 +185,17 @@ public class AutonCommader extends RobotCommander{
         else{
             return false;
         }
+    }
+
+    @Override
+    public boolean runHopper() {
+        // TODO Auto-generated method stub
+        return false;
+    }
+
+    @Override
+    public IntakeSpeed getIntakeSpeed() {
+        // TODO Auto-generated method stub
+        return null;
     }
 }

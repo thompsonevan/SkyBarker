@@ -62,7 +62,7 @@ public final class Constants {
     public static final double INTAKE_SPEED_CONE = 1;
     public static final int INTAKE_TIMEOUT = 200;
 
-    public static final double INTAKE_OFFSET = compBot ? 248.818 : 127.265625;
+    public static final double INTAKE_OFFSET = compBot ? -8.3 : 127.265625;
     
     // Hopper CAN ID
     public static final int HOPPER_MOTOR = 11;

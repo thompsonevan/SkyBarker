@@ -72,7 +72,8 @@ public class BlueAutoLeft extends AutonBase{
                     gripperSpeed = 0;
 
                     trajectory = createTrajectory(path.get(point), path.get(point+1),
-                    Rotation2d.fromDegrees(42.5), Rotation2d.fromDegrees(-12.5));
+                    Rotation2d.fromDegrees(42.5), Rotation2d.fromDegrees(-12.5),
+                    4,2.5);
             
                     point++;
 
@@ -104,7 +105,8 @@ public class BlueAutoLeft extends AutonBase{
                 gripperSpeed = -.4;
                 if(timer.get() > .25){
                     trajectory = createTrajectory(path.get(point), path.get(point+1), 
-                    Rotation2d.fromDegrees(-9 + 180), Rotation2d.fromDegrees(9 + 180));
+                    Rotation2d.fromDegrees(-9 + 180), Rotation2d.fromDegrees(9 + 180),
+                    4,2.5);
 
                     point++;
 

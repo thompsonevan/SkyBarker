@@ -25,6 +25,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.Autons.BlueAutoLeft;
 import frc.robot.Autons.BlueAutoLeft1Bal;
+import frc.robot.Autons.BlueAutoLeft2half;
 import frc.robot.Autons.BlueAutoLeft3;
 import frc.robot.Autons.BlueAutoMid1Bal;
 import frc.robot.Autons.BlueAutoRight;
@@ -61,6 +62,7 @@ public class Robot extends TimedRobot {
     // private RedAutoMid1Bal redAutoMid1Bal;
     private BlueAutoMid1Bal blueAutoMid1Bal;
     private BlueAutoLeft3 blueAutoLeft3;
+    private BlueAutoLeft2half blueAutoLeft2half;
 
     private String autonSelection = "Red Mid 1";
 
@@ -85,8 +87,8 @@ public class Robot extends TimedRobot {
         m_chooser.addOption("Blue Mid 1", "Blue Mid 1");
         m_chooser.addOption("Red Mid 1 (Intake Towards Right)", "Red Mid 1");
         m_chooser.addOption("Blue Left 3", "Blue Left 3");
+        m_chooser.addOption("Blue Left 2 Half", "Blue Left 2 Half");
         // m_chooser.addOption("Red Mid 1 (Intake Towards Right)", "Red Mid 1");
-
 
         Shuffleboard.getTab("Competition")
         .add("Auto Selector", m_chooser)
@@ -112,6 +114,7 @@ public class Robot extends TimedRobot {
         blueAutoMid1Bal = new BlueAutoMid1Bal();
         // redAutoMid1Bal = new RedAutoMid1Bal();
         blueAutoLeft3 = new BlueAutoLeft3();
+        blueAutoLeft2half = new BlueAutoLeft2half();
 
         camera.disabled();
 
@@ -195,6 +198,10 @@ public class Robot extends TimedRobot {
             alliance = DriverStation.getAlliance();
             autonCommader.allaince = alliance;
             autonCommader.initAuton(blueAutoLeft3);
+        } else if(autonSelection == "Blue Left 2 Half"){
+            alliance = DriverStation.getAlliance();
+            autonCommader.allaince = alliance;
+            autonCommader.initAuton(blueAutoLeft2half);
         }else {
             autonCommader.initAuton(ohCrap);
         }
@@ -209,15 +216,13 @@ public class Robot extends TimedRobot {
             Pigeon.zeroSensor(90);
         }
 
-        camera.enabled();
+        // camera.enabled();
 
         arm.initilizeOffsets();
     }
 
     @Override
     public void autonomousPeriodic() {
-        // System.out.println(autonSelection);
-
         autonCommader.runAuto();
         pigeon.enabledAction(teleopCommander);
         drivetrain.autonAction(autonCommader);
@@ -226,36 +231,16 @@ public class Robot extends TimedRobot {
         // hopper.HopperPeriodic(autonCommader);
         gripper.action(autonCommader);
     }
-        
+
     @Override
     public void teleopInit() {
         SmartDashboard.putString("Robot Mode", "Teleop");
 
-        // alliance = DriverStation.getAlliance();
-        // alliance = Alliance.Blue;
-
         teleopCommander.allaince = alliance;
-
-        // if(Camera.rightAprilDetected()){
-        //     drivetrain.zero(Camera.getRightBotPose().getRotation().getDegrees());
-        //     Drivetrain.setPose(Camera.getRightBotPose());
-        //     Pigeon.zeroSensor(Camera.getRightBotPose().getRotation().getDegrees());
-        // } else {
-        //     if(alliance == Alliance.Blue){
-        //         drivetrain.zero(-90);
-        //         Pigeon.zeroSensor(-90);
-        //     } else {
-        //         drivetrain.zero(90);
-        //         Pigeon.zeroSensor(90);
-        //     }
-        // }
-
-        // X - 1.785, Y - 1.621
 
         drivetrain.zero();
 
-
-        camera.enabled();
+        // camera.enabled();
 
         intake.setBrakeMode();
         arm.initilizeOffsets();
@@ -270,6 +255,6 @@ public class Robot extends TimedRobot {
         arm.action(teleopCommander);
         arm.brakeMode();
         gripper.action(teleopCommander);
-        //hopper.HopperPeriodic(teleopCommander);
+        // hopper.HopperPeriodic(teleopCommander);
     }
 }

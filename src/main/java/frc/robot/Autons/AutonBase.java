@@ -59,10 +59,6 @@ public abstract class AutonBase {
         return createTrajectory(startingPose, endPose, headingAngle, headingAngle, 4, 2.5, false);
     }
 
-    public Trajectory createTrajectory(Pose2d startingPose, Pose2d endPose, Rotation2d heading1, Rotation2d heading2){
-        return createTrajectory(startingPose, endPose, heading1, heading2);
-    }
-
 
     
     public State getState(double time, Trajectory traj, Rotation2d heading){
