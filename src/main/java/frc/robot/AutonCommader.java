@@ -82,27 +82,6 @@ public class AutonCommader extends RobotCommander{
         return auton.armPos;
     }
 
-    @Override
-    public IntakePos getIntakePosition() {
-        // TODO Auto-generated method stub
-        if(auton.intakeOn){
-            intakeArray[0] = Constants.INTAKE_COLLECT_POSITION;
-            intakeArray[1] = -Constants.INTAKE_SPEED_CUBE;
-        } else {
-            if (getArmPosition() != ArmPos.Zero && 
-            getArmPosition() != ArmPos.manual && 
-            getArmPosition() != ArmPos.intake && 
-            Intake.angleEncoderAngle < 115) { 
-                intakeArray[0] = 102;
-                intakeArray[1] = 0;
-            } else {
-                intakeArray[0] = Constants.INTAKE_PACKAGE_POSITION;
-                intakeArray[1] = 0;
-            }
-        }
-
-        return IntakePos.none;
-    }
 
     @Override
     public boolean getPickUpObject() {
@@ -184,5 +163,17 @@ public class AutonCommader extends RobotCommander{
         else{
             return false;
         }
+    }
+
+    @Override
+    public boolean runHopper() {
+        // TODO Auto-generated method stub
+        return false;
+    }
+
+    @Override
+    public IntakePos getIntakePosition() {
+        // TODO Auto-generated method stub
+        return null;
     }
 }

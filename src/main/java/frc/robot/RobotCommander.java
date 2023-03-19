@@ -7,6 +7,7 @@ import frc.robot.subsystems.Intake;
 import frc.robot.subsystems.Arm.ArmPos.ArmBumpDirection;
 
 public abstract class RobotCommander {
+
     double[] intakeArray = {10000, 0};
 
     public Alliance allaince;
@@ -31,4 +32,5 @@ public abstract class RobotCommander {
     public abstract double getGripperCommand();
     public abstract boolean useNegativeSide();
     public abstract ArmBumpDirection getArmBumpDirection();
+    public abstract boolean runHopper();
 }

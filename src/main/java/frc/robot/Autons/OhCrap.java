@@ -27,6 +27,11 @@ public class OhCrap extends AutonBase{
     }
 
     public void reset(){
+        // Drivetrain.setPose(start);
+        
+
+        // trajectory = createTrajectory(start, end);
+
         desState = new State();
         targetTheta = Rotation2d.fromDegrees(-90);
         
