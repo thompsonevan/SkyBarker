@@ -92,6 +92,7 @@ public class Arm {
         station(Constants.INTAKE_STATION_POSITION , Constants.INTAKE_SPEED_CUBE/2,0),
         pack(Constants.INTAKE_PACKAGE_POSITION , Constants.INTAKE_SPEED_CUBE/2,0),
         collect(Constants.INTAKE_COLLECT_POSITION, Constants.INTAKE_SPEED_CUBE/2,0),
+        armMoving(102, 0,0),
         handoff(91,0,0),
         handoffIntermediate(120,0,0),
         manual(0,0,0),
@@ -168,7 +169,7 @@ public class Arm {
         else if(extension.getExtensionPosition() < 20 && (Math.abs(shoulder.getShoulderAngle()) < 3 && Math.abs(elbow.getElbowAngle()) < 3)){
             return ArmZoneForHandoff.downCenter;
         }
-        else if((extension.getExtensionPosition() >= 20 && extension.getExtensionPosition() <= 22) && Math.abs(shoulder.getShoulderAngle()) < 3 && Math.abs(elbow.getElbowAngle()) < 3){
+        else if((extension.getExtensionPosition() >= 20 && extension.getExtensionPosition() <= 22)){
             return ArmZoneForHandoff.handoff;
         }
         else{
@@ -425,6 +426,7 @@ public class Arm {
         else{
 
         intake.IntakePeriodic (commander.getIntakePosition());
+        SmartDashboard.putString("Desired Intake Position", commander.getIntakePosition().toString());
 
         if(Math.abs(elbow.getElbowAngle()) < 10){
             useNegativeSide = commander.useNegativeSide();
@@ -559,6 +561,7 @@ public class Arm {
         
         SmartDashboard.putNumber("intake commanded pos", shoulderBump);
         HotLogger.Log("determineArmZoneHandOff", this.determineZoneHandoff().toString());
+        SmartDashboard.putString("determineArmZoneHandOff", this.determineZoneHandoff().toString());
         HotLogger.Log("DesiredIntakeAngle",desiredIntakePos);
     }
     }
