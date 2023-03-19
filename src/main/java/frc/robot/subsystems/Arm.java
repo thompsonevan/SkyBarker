@@ -634,47 +634,6 @@ public class Arm {
         return shoulderBumpOffSet * humanPlayerModifier * negativeModifier;
     }
 
-
-
-    private double determineShoulderBump(RobotCommander commander) {
-        double negativeModifier;
-        if (commander.useNegativeSide()) {
-            negativeModifier = -1;
-        } else {
-            negativeModifier = 1;
-        }
-
-        double humanPlayerModifier = 1;
-        if (commander.getArmPosition() == ArmPos.humanPlayerReady || commander.getArmPosition() == ArmPos.humanPlayerPickup) {
-            humanPlayerModifier = -1;
-        }
-        
-        if (commander.getArmPosition() == ArmPos.Zero && 
-            (armTargetPrevious != ArmPos.intake && armTargetPrevious != ArmPos.packagePos && armTargetPrevious != ArmPos.manual)) {
-            bumpLatchCommand = armTargetPrevious;
-            if (bumpLatchTimer >= Constants.ARM_BUMP_LATCH_TIME) {
-                shoulderBumpOffSet = 0.0;
-                bumpLatchTimer = Constants.ARM_BUMP_LATCH_TIME + 1;
-            } else {
-                bumpLatchTimer++;
-            }
-        } else if (commander.getArmPosition() != ArmPos.Zero && 
-                   commander.getArmPosition() != ArmPos.intake && 
-                   commander.getArmPosition() != ArmPos.packagePos && 
-                   commander.getArmPosition() != ArmPos.manual) {
-            shoulderBumpOffSet+=commander.getArmBumpDirection().getShoulder();
-            bumpLatchTimer = 0;
-        } else {
-            shoulderBumpOffSet = 0.0;
-            bumpLatchTimer = Constants.ARM_BUMP_LATCH_TIME + 1;
-        }
-
-        SmartDashboard.putNumber("shoulderBumpOffSet", shoulderBumpOffSet);
-        SmartDashboard.putNumber("bumpLatchTimer", bumpLatchTimer);
-
-        return shoulderBumpOffSet * humanPlayerModifier * negativeModifier;
-    }
-
     public void updatePose(){
         extension.updatePose();
         elbow.updatePose();
