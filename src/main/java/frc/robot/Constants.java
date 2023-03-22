@@ -107,14 +107,14 @@ public final class Constants {
     public static final double ELBOW_MOTOR_kD = .02;
 
     //Arm motion magic parameters
-    public static final double SHOULDER_CRUISEVELOCITY = 16000 * 16;
-    public static final double SHOULDER_ACCEL = 6000 * 6; // 16 // new 6
+    public static final double SHOULDER_CRUISEVELOCITY = 16000 * 18;
+    public static final double SHOULDER_ACCEL = 6000 * 8; // 16 // new 6
 
     public static final double EXTENSION_CRUISEVELOCITY = 16000 * 10;
     public static final double EXTENSION_ACCEL = 6000 * 10;
 
-    public static final double ELBOW_CRUIESVELOCITY = 1600 * 6;
-    public static final double ELBOW_ACCEL = 600 * 1;
+    public static final double ELBOW_CRUIESVELOCITY = 1600 * 24;
+    public static final double ELBOW_ACCEL = 600 * 8;
 
     //Arm pid slots
     public static final int SHOULDER_PID_SLOT = 0;
