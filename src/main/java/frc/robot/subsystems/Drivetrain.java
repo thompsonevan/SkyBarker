@@ -171,7 +171,7 @@ public class Drivetrain{
 
         holonomicController = new HolonomicDriveController(
             new PIDController(3.5, .6, .025),  //x Long side of field
-            new PIDController(15, .6, .025), //y Short side of field
+            new PIDController(12.5, .6, .025), //y Short side of field
             thetaController); // (2Pk,PI) constrains to 1 2pi/sec
 
         poseEstimator = new SwerveDrivePoseEstimator(

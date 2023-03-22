@@ -80,7 +80,8 @@ public class Robot extends TimedRobot {
         "TargetX", "TargetY", "TargetTheta", "Robot State Theta", "poseX", "poseY",
         "Shoulder Absolute Pos", "Shoulder Motor Pos", "Extension Pos", "Elbow Absolute Pos", "Elbow Motor Pos",
         "Shoulder Desired Pos", "Extension Desired Pos", "Elbow Desired Pos",
-        "HopSensor Bottom", "HopSensor Left", "HopSensor Right", "HopSensor Top", "Hopper Override","determineArmZoneHandOff","DesiredIntakeAngle");
+        "HopSensor Bottom", "HopSensor Left", "HopSensor Right", "HopSensor Top", "Hopper Override","determineArmZoneHandOff","DesiredIntakeAngle",
+        "Commanded Extension Position");
 
         m_chooser.setDefaultOption("Blue Left", "Blue Left");
         m_chooser.addOption("Red Right", "Red Right");
@@ -254,6 +255,6 @@ public class Robot extends TimedRobot {
         arm.action(teleopCommander);
         arm.brakeMode();
         gripper.action(teleopCommander);
-        // hopper.HopperPeriodic(teleopCommander);
+        hopper.HopperPeriodic(teleopCommander);
     }
 }

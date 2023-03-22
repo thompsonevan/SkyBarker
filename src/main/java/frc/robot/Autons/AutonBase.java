@@ -13,6 +13,8 @@ import edu.wpi.first.math.trajectory.TrajectoryConfig;
 import edu.wpi.first.wpilibj.Timer;
 import frc.robot.subsystems.Arm;
 import frc.robot.subsystems.Drivetrain;
+import frc.robot.subsystems.Arm.IntakePos;
+import frc.robot.subsystems.Arm.IntakeSpeed;
 
 public abstract class AutonBase {
     public State desState;
@@ -26,6 +28,8 @@ public abstract class AutonBase {
     public boolean driving;
     public boolean autoBalance;
     public double gripperSpeed;
+    public IntakeSpeed intakeSpeed = IntakeSpeed.none;
+    public IntakePos intakePos = IntakePos.none;
     public boolean overrideNegSide = false;
     public boolean xMode = false;
 

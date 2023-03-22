@@ -31,18 +31,18 @@ public class Hopper {
       CONE
     }
 
+    double timer = 0;
+
     public void HopperPeriodic(RobotCommander commander){
-        // if(commander.operator.getRightStickButton()){
-        //   hopperMotor.set(-.3); // .25
+        // if( > .5){
+        if(Math.abs(commander.getGripperCommand()) > 0.1){
+          hopperMotor.set(.1);
+        } else {
+          hopperMotor.set(-.1);
+        }
         // } else {
         //   hopperMotor.set(0);
-
         // }
-        if(commander.runHopper()){
-          hopperMotor.set(-.2);
-        } else {
-          hopperMotor.set(0);
-        }
     }
 
   public void logData(){

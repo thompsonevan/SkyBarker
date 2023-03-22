@@ -33,7 +33,7 @@ public final class Constants {
     public static final int FRONT_LEFT_MODULE_DRIVE_MOTOR = 1;
     public static final int FRONT_LEFT_MODULE_STEER_MOTOR = 2;
     public static final int FRONT_LEFT_MODULE_STEER_ENCODER = 18;
-    public static final double FRONT_LEFT_MODULE_STEER_OFFSET = compBot ? -Math.toRadians(236.37 + 180) : -Math.toRadians(349.365234375-180); // 169.1015625
+    public static final double FRONT_LEFT_MODULE_STEER_OFFSET = compBot ? -Math.toRadians(57.74414062500001) : -Math.toRadians(349.365234375-180); // 169.1015625
 
     public static final int FRONT_RIGHT_MODULE_DRIVE_MOTOR = 3;
     public static final int FRONT_RIGHT_MODULE_STEER_MOTOR = 4;
@@ -48,21 +48,40 @@ public final class Constants {
     public static final int BACK_RIGHT_MODULE_DRIVE_MOTOR = 7;
     public static final int BACK_RIGHT_MODULE_STEER_MOTOR = 8;
     public static final int BACK_RIGHT_MODULE_STEER_ENCODER = 21;
-    public static final double BACK_RIGHT_MODULE_STEER_OFFSET = compBot ? -Math.toRadians(88.41796875+90) : -Math.toRadians(55.72265625+180); //237.48046875 //340.87 - 180
+    public static final double BACK_RIGHT_MODULE_STEER_OFFSET = compBot ? -Math.toRadians(3.515625 + 180) : -Math.toRadians(55.72265625+180); //237.48046875 //340.87 - 180
 
     public static final double SLOW_SPEED_MULTIPLIER = .5;
 
+    public static final int INTAKE_CUBE_SENSOR = 0;
+    public static final int INTAKE_CANCODER = 23;
     public static final int INTAKE_SPEED1_MOTOR_ID = 9;
     public static final int INTAKE_SPEED2_MOTOR_ID = 12;
     public static final int INTAKE_ANGLE_MOTOR_ID = 10;
-    public static final double INTAKE_PACKAGE_POSITION = 90.5;
-    public static final double INTAKE_STATION_POSITION = 121;
-    public static final double INTAKE_COLLECT_POSITION = 168; //169
+    public static final double INTAKE_PACKAGE_POSITION = 95;
+    public static final double INTAKE_STATION_POSITION = 110;
+    public static final double INTAKE_COLLECT_POSITION = 185.5; //176
     public static final double INTAKE_SPEED_CUBE = .5;
     public static final double INTAKE_SPEED_CONE = 1;
     public static final int INTAKE_TIMEOUT = 200;
+    public static final int INTAKE_DELAY = 5;
+    public static final double INTAKE_ANGLE_MAX_SPEED = .7;
+    public static final double INTAKE_PID_DEADBAND = .2;
+    public static final double INTAKE_DEADBAND = 30;
 
     public static final double INTAKE_OFFSET = compBot ? -8.3 : 52.5;
+
+    public static final double ip = 0.0175;
+    public static final double ii = 0.0015;
+    public static final double id = 0.0000005;
+    public static final double iiz = 0;
+    public static final double iff = 0;
+    public static final double imax = 1;
+    public static final double imin = -1;
+    public static final double imaxrpm = 1;
+    public static final double imaxvel = 1;
+    public static final double iminvel = -1;
+    public static final double imaxacc = 5;
+    public static final double ierror = .4;
     
     // Hopper CAN ID
     public static final int HOPPER_MOTOR = 11;

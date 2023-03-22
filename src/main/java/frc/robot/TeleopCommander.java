@@ -8,7 +8,7 @@ import frc.robot.subsystems.Arm;
 import frc.robot.subsystems.Intake;
 import frc.robot.subsystems.Arm.ArmPos;
 import frc.robot.subsystems.Arm.IntakePos;
-
+import frc.robot.subsystems.Arm.IntakeSpeed;
 import frc.robot.subsystems.Arm.ArmPos.ArmBumpDirection;
 
 import static frc.robot.Constants.*;
@@ -113,6 +113,23 @@ public class TeleopCommander extends RobotCommander{
     }
 
     IntakePos intakePos = IntakePos.none;
+    IntakeSpeed intakeSpeed = IntakeSpeed.none;
+
+    public IntakeSpeed getIntakeSpeed(){
+        if(operator.getRightTriggerAxis() > .3){
+            if(!getCubeMode()){
+                intakeSpeed = IntakeSpeed.onCube;
+            } else {
+                intakeSpeed = IntakeSpeed.onCone;
+            }
+        } else if (operator.getLeftTriggerAxis() > .3){
+            intakeSpeed = IntakeSpeed.out;
+        } else {
+            intakeSpeed = IntakeSpeed.none;
+        }
+
+        return intakeSpeed;
+    }
 
     public IntakePos getIntakePosition() {
         boolean Dpad_right = (operator.getPOV() > 70 && operator.getPOV() < 110);
@@ -120,9 +137,6 @@ public class TeleopCommander extends RobotCommander{
         boolean Dpad_updown = false;
         boolean Trigger_right = (operator.getRightTriggerAxis() > .3);
         boolean Trigger_left = (operator.getLeftTriggerAxis() > .3);
-        // boolean Bumper_push = operator.getRightBumperPressed();
-        // boolean Bumper_release = operator.getRightBumperReleased();
-        // if(getArmPosition() != ArmPos.Zero && getArmPosition() != ArmPos.manual && getArmPosition() != ArmPos.intake){
             if (!this.getManualMode()) {
                 if (getArmPosition() != ArmPos.Zero && 
                     getArmPosition() != ArmPos.manual && 
@@ -130,52 +144,25 @@ public class TeleopCommander extends RobotCommander{
                     Intake.angleEncoderAngle < 115) { 
                         intakeArray[0] = 102;
                         intakePos = IntakePos.armMoving;
-                } else if(!getCubeMode()) {
-                    if (Trigger_left && !Trigger_right) {
-                        if (Dpad_left && !(Dpad_right || Dpad_updown)) {
-                            intakeArray[0] = Constants.INTAKE_PACKAGE_POSITION;
-                            intakeArray[1] = Constants.INTAKE_SPEED_CUBE/2;
-                            intakePos = IntakePos.pack;
-                        } else if (Dpad_right && !(Dpad_left || Dpad_updown)) {
-                            intakeArray[0] = Constants.INTAKE_COLLECT_POSITION;
-                            intakeArray[1] = Constants.INTAKE_SPEED_CUBE/2;
-                            intakePos = IntakePos.collect;
-
-                        } else if (Dpad_updown && !(Dpad_left || Dpad_right)) {
-                            intakeArray[0] = Constants.INTAKE_STATION_POSITION;
-                            intakeArray[1] = Constants.INTAKE_SPEED_CUBE/2;
-                            intakePos = IntakePos.station;
-                        }
-                        // else if (operator.getXButton()){
-                        //     intakeArray[0] = Constants.INTAKE_STATION_POSITION;
-                        // } 
-                        else {
-                            intakeArray[1] = Constants.INTAKE_SPEED_CUBE;
-                            intakePos = IntakePos.none;
-                        }
-                    } else if (Trigger_right && !Trigger_left) {
-                        if (Dpad_left && !(Dpad_right || Dpad_updown)) {
-                            intakeArray[0] = Constants.INTAKE_PACKAGE_POSITION;
-                            intakeArray[1] = -Constants.INTAKE_SPEED_CUBE;
-                            intakePos = IntakePos.pack;
-                        } else if (Dpad_right && !(Dpad_left || Dpad_updown)) {
-                            intakeArray[0] = Constants.INTAKE_COLLECT_POSITION;
-                            intakeArray[1] = -Constants.INTAKE_SPEED_CUBE;
-                            intakePos = IntakePos.collect;
-                        } else if (Dpad_updown && !(Dpad_left || Dpad_right)) {
-                            intakeArray[0] = Constants.INTAKE_STATION_POSITION;
-                            intakeArray[1] = -Constants.INTAKE_SPEED_CUBE;
-                            intakePos = IntakePos.station;
-                        } else {
-                            intakeArray[1] = -Constants.INTAKE_SPEED_CUBE;
-                            intakePos = IntakePos.none;
-                        }
-                    } else if (Dpad_left && !(Trigger_right || Trigger_left || Dpad_right || Dpad_updown)) {
+                } else if(getCubeMode()) {
+                    if (Dpad_left && !(Trigger_right || Trigger_left || Dpad_right || Dpad_updown)) {
                         intakePos = IntakePos.pack;
                     } else if (Dpad_right && !(Trigger_left || Trigger_right || Dpad_left || Dpad_updown)) {
-                        intakePos = IntakePos.collect;
+                        intakePos = IntakePos.collectCone;
                     } else if (Dpad_updown && !(Trigger_left || Trigger_right || Dpad_left || Dpad_right)) {
                         intakePos = IntakePos.station;
+                    } else {
+                        intakePos = IntakePos.none;
+                    }
+                } else {
+                    if (Dpad_left && !(Trigger_right || Trigger_left || Dpad_right || Dpad_updown)) {
+                        intakePos = IntakePos.pack;
+                    } else if (Dpad_right && !(Trigger_left || Trigger_right || Dpad_left || Dpad_updown)) {
+                        intakePos = IntakePos.collectCube;
+                    } else if (Dpad_updown && !(Trigger_left || Trigger_right || Dpad_left || Dpad_right)) {
+                        intakePos = IntakePos.station;
+                    } else if (operator.getPOV() == 180 && !(Trigger_left || Trigger_right || Dpad_left || Dpad_right)) {
+                        intakePos = IntakePos.cubeHandoff;
                     } else {
                         intakePos = IntakePos.none;
                     }
@@ -187,6 +174,10 @@ public class TeleopCommander extends RobotCommander{
 
     public boolean getArmReset(){
         return operator.getBackButton();
+    }
+
+    public boolean getCubeStopIntake(){
+        return operator.getRightStickButton();
     }
 
     public boolean getManualMode(){
@@ -206,7 +197,7 @@ public class TeleopCommander extends RobotCommander{
         } else if (operator.getPOV() == 0) {
             return ArmPos.lowerNode;
         } else if(operator.getPOV() == 180){
-            return ArmPos.intakeConeGrab;
+            return ArmPos.intake;
             
         }else if(operator.getYButton()){
             if(getCubeMode()){
@@ -319,10 +310,12 @@ public class TeleopCommander extends RobotCommander{
 
     public double getGripperCommand() {
         double gripperMotorCommand = 0.0;
-        if (this.getArmPosition() == ArmPos.lowerNode || this.getArmPosition() == ArmPos.topNodeCone || this.getArmPosition() == ArmPos.middleNodeCone || this.getArmPosition() == ArmPos.humanPlayerPickup ||
+        if (this.getArmPosition() == ArmPos.lowerNode || this.getArmPosition() == ArmPos.topNodeCone || this.getArmPosition() == ArmPos.middleNodeCone ||
         this.getArmPosition() == ArmPos.topNodeCube || this.getArmPosition() == ArmPos.middleNodeCube) {
             gripperMotorCommand = GRIPPER_HOLD_POWER + overrideGripper();
-        } else {
+        } else if(this.getArmPosition() == ArmPos.humanPlayerPickup ){
+            gripperMotorCommand = -.75;
+        }else{
             gripperMotorCommand = overrideGripper();
         }
 
