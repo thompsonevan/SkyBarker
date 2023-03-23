@@ -217,12 +217,19 @@ public class Intake {
         if(intakePos == IntakePos.cubeHandoff && Math.abs(angle - intakePos.getPositionReading()) < 5){
             speedMotor1.set(TalonFXControlMode.PercentOutput, -1);
             speedMotor2.set(TalonFXControlMode.PercentOutput, 1);
-        } else if(ballSensor.get() && robotCommander.getCubeStopIntake()){
-            speedMotor1.set(TalonFXControlMode.PercentOutput, 0);
-            speedMotor2.set(TalonFXControlMode.PercentOutput, 0);
+        } else if(!ballSensor.get() && intakeSpeed != IntakeSpeed.out){
+            if(tick < INTAKE_DELAY){
+                speedMotor1.set(TalonFXControlMode.PercentOutput, speed);
+                speedMotor2.set(TalonFXControlMode.PercentOutput, -speed);
+                tick += 1;
+            } else {
+                speedMotor1.set(TalonFXControlMode.PercentOutput, 0);
+                speedMotor2.set(TalonFXControlMode.PercentOutput, 0);
+            }
         } else {
             speedMotor1.set(TalonFXControlMode.PercentOutput, speed);
             speedMotor2.set(TalonFXControlMode.PercentOutput, -speed);
+            tick = 0;
         }
 
     }

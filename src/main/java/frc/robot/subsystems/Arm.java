@@ -116,7 +116,7 @@ public class Arm {
 
     public static enum IntakeSpeed{
         none(0,0),
-        onCube(-.45,-.45),
+        onCube(-.65,-.65),
         onCone(-.8,-.8),
         out(.5,5),
         cubeHandoff(-1,-1);

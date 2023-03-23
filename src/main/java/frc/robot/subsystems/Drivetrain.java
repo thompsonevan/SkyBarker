@@ -21,6 +21,8 @@ import static frc.robot.Constants.FRONT_RIGHT_MODULE_STEER_OFFSET;
 import static frc.robot.Constants.MAX_VELOCITY_METERS_PER_SECOND;
 import static frc.robot.Constants.MAX_VOLTAGE;
 
+import org.hotutilites.hotlogger.HotLogger;
+
 import com.ctre.phoenix.motorcontrol.can.TalonFX;
 import com.swervedrivespecialties.swervelib.Mk4iSwerveModuleHelper;
 import com.swervedrivespecialties.swervelib.SdsModuleConfigurations;
@@ -171,7 +173,7 @@ public class Drivetrain{
 
         holonomicController = new HolonomicDriveController(
             new PIDController(3.5, .6, .025),  //x Long side of field
-            new PIDController(12.5, .6, .025), //y Short side of field
+            new PIDController(11, .6, .025), //y Short side of field
             thetaController); // (2Pk,PI) constrains to 1 2pi/sec
 
         poseEstimator = new SwerveDrivePoseEstimator(
@@ -269,56 +271,7 @@ public class Drivetrain{
     PIDController y = new PIDController(.06,0,0);
 
     public void teleAction(TeleopCommander commander){
-        if(commander.getAutoLine()){
-            // if(Pigeon.getAngle() > 0){
-                // if(Pigeon.getRotation2d().getDegrees() > 92.5 || Pigeon.getRotation2d().getDegrees() < 87.5){
-                if(Pigeon.getRotation2d().getDegrees() > 93.5){
-                    setSwerveModuleStates(new ChassisSpeeds(
-                        0,
-                        0,
-                        turn.calculate(Pigeon.getRotation2d().getDegrees(), 90)
-                    ));
-                } else if (Pigeon.getRotation2d().getDegrees() < 86.5){
-                    setSwerveModuleStates(new ChassisSpeeds(
-                        0,
-                        0,
-                        turn.calculate(Pigeon.getRotation2d().getDegrees(), 90)
-                    ));
-                } else {
-                    setSwerveModuleStates(ChassisSpeeds.fromFieldRelativeSpeeds(
-                        -x.calculate(Camera.getLeftY(), 5),
-                        -y.calculate(Camera.getLeftX(), 0),
-                        turn.calculate(Pigeon.getRotation2d().getDegrees(), 90),
-                        Pigeon.getRotation2d()
-                    ));
-                }
-
-                // } else {
-                //     setSwerveModuleStates(ChassisSpeeds.fromFieldRelativeSpeeds(
-                //         -x.calculate(Camera.getLeftY(), 0),
-                //         -y.calculate(Camera.getLeftX(), 0),
-                //         turn.calculate(Pigeon.getRotation2d().getDegrees(), 90),
-                //         Pigeon.getRotation2d()
-                //     ));
-                // }
-            // }
-            // } else {
-            //     if(Pigeon.getAngle() > 91.5 || Pigeon.getAngle() < 88.5){
-            //         setSwerveModuleStates(new ChassisSpeeds(
-            //             0,
-            //             0,//-(Camera.getLeftY() -8) * .1,
-            //             (-90 - Pigeon.getAngle()) * .125
-            //         ));
-            //     } else {
-            //         setSwerveModuleStates(new ChassisSpeeds(
-            //             -Camera.getLeftX() * .1,
-            //             0,
-            //             0
-            //         ));
-            //     }
-            // }
-
-        } else if (commander.driver.getPOV() == 180){
+        if (commander.driver.getPOV() == 180){
             setModulePositions();
         }else {
             chassisSpeeds = ChassisSpeeds.fromFieldRelativeSpeeds(
@@ -419,8 +372,11 @@ public class Drivetrain{
         SmartDashboard.putNumber("Commanded Turn", speeds.omegaRadiansPerSecond);
 
         SmartDashboard.putNumber("Commanded Theta",theta.getDegrees());
+        HotLogger.Log("TargetTheta", theta.getDegrees());
         SmartDashboard.putNumber("Commanded X", state.poseMeters.getX());
+        HotLogger.Log("TargetX", state.poseMeters.getY());
         SmartDashboard.putNumber("Commanded Y", state.poseMeters.getY());
+        HotLogger.Log("TargetY", state.poseMeters.getY());
     }
 
     public void updatePose(){
@@ -448,36 +404,10 @@ public class Drivetrain{
         poseEstimator.updateWithTime(Timer.getFPGATimestamp(), Pigeon.getRotation2d(), positions);
 
         SmartDashboard.putNumber("Estimated Theta", Rotation2d.fromDegrees(Pigeon.getAngle()).getDegrees());
+        HotLogger.Log("Pose Theta", Pigeon.getRotation2d().getDegrees());
         SmartDashboard.putNumber("Estimated X", poseEstimator.getEstimatedPosition().getX());
+        HotLogger.Log("poseX", poseEstimator.getEstimatedPosition().getX());
         SmartDashboard.putNumber("Estimated Y", poseEstimator.getEstimatedPosition().getY());
+        HotLogger.Log("poseY", poseEstimator.getEstimatedPosition().getY());
     }
 }
-
-
-// if(Pigeon.getRoll() < 15 && !rampPassed){
-//     chassisSpeeds = new ChassisSpeeds(
-//         0,
-//         -1,
-//         0
-//     );
-//     rampPassed = false;
-// } else {
-//     rampPassed = true;
-// }
-
-// if(rampPassed){
-//     if(Pigeon.getRoll() > 12){
-//         chassisSpeeds = new ChassisSpeeds(
-//             0,
-//             -Pigeon.getRoll() * .05,
-//             0
-//         );
-//     } else {
-//         chassisSpeeds = new ChassisSpeeds(
-//             0,
-//             0,
-//             0
-//         );
-//     }
-
-// }

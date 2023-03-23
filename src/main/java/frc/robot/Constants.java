@@ -52,6 +52,26 @@ public final class Constants {
 
     public static final double SLOW_SPEED_MULTIPLIER = .5;
 
+    // LED constants (rgb)
+    public static final int LED_PWM = 2;
+    public static final int LED_LENGTH = 19;
+
+    public static final int[] LED_TELEOP_DEFAULT = {0, 0, 255};
+    public static final int[] LED_AUTON_RED = {255, 0, 0};
+    public static final int[] LED_AUTON_BLUE = {0, 0, 255};
+
+    public static final int[] LED_DETECT_CORRECT = {0, 255, 0};
+    public static final int[] LED_DETECT_BAD = {255, 0, 0};
+
+    public static final int[] LED_CUBE_PICKUP = {196, 46, 255};
+    public static final int[] LED_CONE_PICKUP = {252, 236, 0};
+
+    public static final double LED_LEFT_THRESH_LOW = 9;
+    public static final double LED_LEFT_THRESH_HIGH = 17;
+
+    public static final double LED_RIGHT_THRESH_LOW = -10;
+    public static final double LED_RIGHT_THRESH_HIGH = -2;
+
     public static final int INTAKE_CUBE_SENSOR = 0;
     public static final int INTAKE_CANCODER = 23;
     public static final int INTAKE_SPEED1_MOTOR_ID = 9;
@@ -63,7 +83,7 @@ public final class Constants {
     public static final double INTAKE_SPEED_CUBE = .5;
     public static final double INTAKE_SPEED_CONE = 1;
     public static final int INTAKE_TIMEOUT = 200;
-    public static final int INTAKE_DELAY = 5;
+    public static final int INTAKE_DELAY = 10;
     public static final double INTAKE_ANGLE_MAX_SPEED = .7;
     public static final double INTAKE_PID_DEADBAND = .2;
     public static final double INTAKE_DEADBAND = 30;

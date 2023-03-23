@@ -18,8 +18,8 @@ public class Camera {
     static NetworkTableEntry leftY;
     static NetworkTableEntry rightY;
 
-    // static NetworkTableEntry leftTagDetected;
-    // static NetworkTableEntry rightTagDetected;
+    static NetworkTableEntry leftTagDetected;
+    static NetworkTableEntry rightTagDetected;
 
     static Pose2d leftPose = new Pose2d(0,0, new Rotation2d());
     static Pose2d rightPose = new Pose2d(0,0, new Rotation2d());
@@ -31,20 +31,8 @@ public class Camera {
         leftY = limelightLeft.getEntry("ty");
         rightX = limelightRight.getEntry("tx");
         rightY = limelightRight.getEntry("ty");
-        // leftTagDetected = limelightLeft.getEntry("tv");
-        // rightTagDetected = limelightRight.getEntry("tv");
-
-        // Alliance color = Alliance.Blue;
-
-        // if (color == Alliance.Blue) {
-        //     leftBotPose = limelightLeft.getEntry("botpose_wpiblue");
-        //     rightBotPose = limelightRight.getEntry("botpose_wpiblue");
-        //     System.out.println("Here");
-        // } else {
-        //     leftBotPose = limelightLeft.getEntry("botpose_wpired");
-        //     rightBotPose = limelightRight.getEntry("botpose_wpired");
-        //     System.out.println("There");
-        // }
+        leftTagDetected = limelightLeft.getEntry("tv");
+        rightTagDetected = limelightRight.getEntry("tv");
     }
 
 
@@ -76,5 +64,14 @@ public class Camera {
 
     public void logData(){
         SmartDashboard.putNumber("LEft y", leftY.getDouble(0));
+    }
+
+
+    public static boolean getLeftDetecting(){
+        return leftTagDetected.getDouble(0) == 1;
+    }
+
+    public static boolean getRightDetecting(){
+        return rightTagDetected.getDouble(0) == 1;
     }
 }
