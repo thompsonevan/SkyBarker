@@ -188,13 +188,13 @@ public class Drivetrain{
         poseEstimator.resetPosition(Rotation2d.fromDegrees(0), positions, new Pose2d(0,0, Rotation2d.fromDegrees(0)));
     }
 
-    public void zero(double angle){
+    public void zero(double angle, Pose2d pose){
         frontLeftModule.zeroMotorPos();
         frontRightModule.zeroMotorPos();
         backLeftModule.zeroMotorPos();
         backRightModule.zeroMotorPos();
 
-        poseEstimator.resetPosition(Rotation2d.fromDegrees(angle), positions, new Pose2d(0,0, Rotation2d.fromDegrees(angle)));
+        poseEstimator.resetPosition(Rotation2d.fromDegrees(angle), positions, pose);
     }
 
     public void zero(){

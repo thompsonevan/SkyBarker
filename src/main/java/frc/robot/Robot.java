@@ -29,6 +29,7 @@ import frc.robot.Autons.BlueAutoLeft3;
 import frc.robot.Autons.BlueAutoLeftBalance;
 import frc.robot.Autons.BlueAutoMid1Bal;
 import frc.robot.Autons.CableAuto;
+import frc.robot.Autons.NewTestAuto;
 import frc.robot.Autons.OhCrap;
 import frc.robot.Autons.RedAutoMid1Bal;
 import frc.robot.Autons.RedAutoRight;
@@ -60,6 +61,7 @@ public class Robot extends TimedRobot {
     private RedAutoRight3 redAutoRight3;
     private BlueAutoLeftBalance blueAutoLeftBalance;
     private CableAuto cableAuto;
+    private NewTestAuto newTestAuto;
 
     LED leds;
 
@@ -90,6 +92,8 @@ public class Robot extends TimedRobot {
         m_chooser.addOption("Red Right Balance", "Red Right Balance");
         m_chooser.addOption("Blue Left Balance", "Blue Left Balance");
         m_chooser.addOption("Cable", "Cable");
+        m_chooser.addOption("Test", "Test");
+
 
         Shuffleboard.getTab("Competition")
         .add("Auto Selector", m_chooser)
@@ -114,11 +118,9 @@ public class Robot extends TimedRobot {
         redAutoRight3 = new RedAutoRight3();
         blueAutoLeftBalance = new BlueAutoLeftBalance();
         cableAuto = new CableAuto();
+        newTestAuto = new NewTestAuto();
 
         camera.disabled();
-
-        // PortForwarder.add(5800, "limelight.local", 5800);
-        // PortForwarder.add(5801, "limelight.local", 5801);
     }
 
     @Override
@@ -180,21 +182,17 @@ public class Robot extends TimedRobot {
         } else if(autonSelection == "Cable"){
             alliance = Alliance.Blue;
             autonCommader.initAuton(cableAuto);
+        } else if(autonSelection == "Test"){
+            autonCommader.initAuton(newTestAuto);
         }else {
             autonCommader.initAuton(ohCrap);
         }
 
         autonCommader.allaince = alliance;
 
-        if(alliance == Alliance.Blue){
-            drivetrain.zero(-90);
-            autonCommader.auton.reset();
-            Pigeon.zeroSensor(-90);
-        } else {
-            drivetrain.zero(90);
-            autonCommader.auton.reset();
-            Pigeon.zeroSensor(90);
-        }
+        Pigeon.zeroSensor(autonCommader.auton.initalPose.getRotation().getDegrees());
+        drivetrain.zero(autonCommader.auton.initalPose.getRotation().getDegrees(), autonCommader.auton.initalPose);
+        autonCommader.auton.reset();
 
         leds.autonInit();
 
@@ -221,7 +219,7 @@ public class Robot extends TimedRobot {
 
         teleopCommander.allaince = alliance;
 
-        drivetrain.zero(Pigeon.getRotation2d().getDegrees());
+        drivetrain.zero();
 
         // camera.enabled();
 
