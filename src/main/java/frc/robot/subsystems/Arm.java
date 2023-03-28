@@ -29,8 +29,8 @@ public class Arm {
 
         packagePos(0,.1,0),
         readyPosition(-23,.1,100),
-        topNodeCone(50,20,181),
-        topNodeCube(57,20,181),
+        topNodeCone(53,20,181),
+        topNodeCube(55,20,181),
         middleNodeCone(51,.2,181),
         middleNodeCube(58,.2,181),
         lowerNode(27,.2,69),
@@ -91,36 +91,49 @@ public class Arm {
     }
 
     public static enum IntakePos{
-        station(Constants.INTAKE_STATION_POSITION , Constants.INTAKE_SPEED_CUBE/2,0),
-        pack(Constants.INTAKE_PACKAGE_POSITION , Constants.INTAKE_SPEED_CUBE/2,0),
-        collect(Constants.INTAKE_COLLECT_POSITION, Constants.INTAKE_SPEED_CUBE/2,0),
-        armMoving(102, 0,0),
-        handoff(91,0,0),
-        handoffIntermediate(120,0,0),
-        manual(0,0,0),
-        none(0,0,0),
-        noneManualMode(0,0,0);
+        station(Constants.INTAKE_STATION_POSITION),
+        cubeHandoff(95),
+        pack(Constants.INTAKE_PACKAGE_POSITION),
+        collectCone(187),
+        collectCube(180),
+        armMoving(110),
+        handoff(91),
+        handoffIntermediate(120),
+        manual(0),
+        none(0),
+        noneManualMode(0);
 
-
-        public double speedReading1;
         public double positionReading;
-        public double speedReading2;
-    
-        public double getSpeedReading1(){
-            return speedReading1;
-        }
     
         public double getPositionReading(){
             return positionReading;
         }
 
-        public double getSpeedReading2(){
+        IntakePos(double positionReading) {
+            this.positionReading = positionReading;
+        }
+    }
+
+    public static enum IntakeSpeed{
+        none(0,0),
+        onCube(-.65,-.65),
+        onCone(-.8,-.8),
+        out(.65,.65),
+        cubeHandoff(-1,-1);
+
+        public double speedReading1;
+        public double speedReading2;
+
+        public double getSpeedReading1() {
+            return speedReading1;
+        }
+
+        public double getSpeedReading2() {
             return speedReading2;
         }
 
-        IntakePos(double positionReading, double speedReading1, double speedReading2) {
+        IntakeSpeed(double speedReading1, double speedReading2) {
             this.speedReading1 = speedReading1;
-            this.positionReading = positionReading;
             this.speedReading2 = speedReading2;
         }
     }
@@ -187,9 +200,9 @@ public class Arm {
     private double shoulderAngleMotor;
     private double shoulderAngleCANCODER;
 
-    private Extension extension;
-    private Elbow elbow;
-    private Shoulder shoulder;
+    private static Extension extension;
+    private static Elbow elbow;
+    private static Shoulder shoulder;
     private ArmPos armTargetPrevious;
     private ArmZone currentZone;
     private ArmZone currentCommandedZone = ArmZone.none;
@@ -314,20 +327,20 @@ public class Arm {
                 extension.goToPostion(21);
                 shoulder.goToPostion(commander, 0);
                 elbow.goToPostion(0);
-                intake.IntakePeriodic (this.returnIntakePos(120));
+                intake.IntakePeriodic (this.returnIntakePos(120), IntakeSpeed.none, commander);
                 }
                 else{
                 extension.goToPostion(21);
                 shoulder.goToPostion(commander, 0);
                 elbow.goToPostion(0);
-                intake.IntakePeriodic (this.returnIntakePos(91));
+                intake.IntakePeriodic (this.returnIntakePos(91), IntakeSpeed.none, commander);
                 }
             }
             else if(determineZoneHandoff() == ArmZoneHandoff.armDownCenterIntakeDown){
                     extension.goToPostion(21);
                     shoulder.goToPostion(commander, 0);
                     elbow.goToPostion(0);
-                    intake.IntakePeriodic (this.returnIntakePos(91));
+                    intake.IntakePeriodic (this.returnIntakePos(91), IntakeSpeed.none, commander);
                     
 
             }
@@ -339,13 +352,13 @@ public class Arm {
                 extension.goToPostion(21);
                 shoulder.goToPostion(commander, 0);
                 elbow.goToPostion(0);
-                intake.IntakePeriodic (this.returnIntakePos(120));
+                intake.IntakePeriodic (this.returnIntakePos(120), IntakeSpeed.none, commander);
             }
                 else{
                 extension.goToPostion(21);
                 shoulder.goToPostion(commander, 0);
                 elbow.goToPostion(0);
-                intake.IntakePeriodic (this.returnIntakePos(91));
+                intake.IntakePeriodic (this.returnIntakePos(91), IntakeSpeed.none, commander);
                 }
                 
             }
@@ -353,21 +366,21 @@ public class Arm {
                 extension.goToPostion(21);;
                 shoulder.goToPostion(commander, 0);
                 elbow.goToPostion(0);
-                intake.IntakePeriodic (this.returnIntakePos(91));
+                intake.IntakePeriodic (this.returnIntakePos(91), IntakeSpeed.none, commander);
                 
             }
             else if(determineZoneHandoff() == ArmZoneHandoff.armUpNotCenterIntakeDown){
                 extension.goToPostion(21);
                 shoulder.goToPostion(commander, 0);
                 elbow.goToPostion(0);
-                intake.IntakePeriodic (this.returnIntakePos(91));
+                intake.IntakePeriodic (this.returnIntakePos(91), IntakeSpeed.none, commander);
                 
             }
             else if(determineZoneHandoff() == ArmZoneHandoff.armUpCenterIntakeDown){
                 extension.goToPostion(21);
                 shoulder.goToPostion(commander, 0);
                 elbow.goToPostion(0);
-                intake.IntakePeriodic (this.returnIntakePos(91));
+                intake.IntakePeriodic (this.returnIntakePos(91), IntakeSpeed.none, commander);
                 
             }
             else if(determineZoneHandoff() == ArmZoneHandoff.armDownNotCenterIntakeUp){
@@ -375,19 +388,19 @@ public class Arm {
                 extension.goToPostion(0);
                 shoulder.goToPostion(commander, 0);
                 elbow.goToPostion(0);
-                intake.IntakePeriodic (this.returnIntakePos(120));
+                intake.IntakePeriodic (this.returnIntakePos(120), IntakeSpeed.none, commander);
                 }
                 else if (intake.angleEncoder.getAbsolutePosition() <= 90 && extension.getExtensionPosition() < 20.5){
                 extension.goToPostion(21);
                 shoulder.goToPostion(commander, 0);
                 elbow.goToPostion(0);
-                intake.IntakePeriodic (this.returnIntakePos(120));
+                intake.IntakePeriodic (this.returnIntakePos(120), IntakeSpeed.none, commander);
                 }
                 else{
                 extension.goToPostion(21);
                 shoulder.goToPostion(commander, 0);
                 elbow.goToPostion(0);
-                intake.IntakePeriodic (this.returnIntakePos(91));
+                intake.IntakePeriodic (this.returnIntakePos(91), IntakeSpeed.none, commander);
                 }
                 
             }
@@ -396,19 +409,19 @@ public class Arm {
                     extension.goToPostion(0);
                     shoulder.goToPostion(commander, 0);
                     elbow.goToPostion(0);
-                    intake.IntakePeriodic (this.returnIntakePos(120));
+                    intake.IntakePeriodic (this.returnIntakePos(120), IntakeSpeed.none, commander);
                     }
                     else if (intake.angleEncoder.getAbsolutePosition() <= 90 && extension.getExtensionPosition() < 20.5){
                     extension.goToPostion(21);
                     shoulder.goToPostion(commander, 0);
                     elbow.goToPostion(0);
-                    intake.IntakePeriodic (this.returnIntakePos(120));
+                    intake.IntakePeriodic (this.returnIntakePos(120), IntakeSpeed.none, commander);
                     }
                     else{
                     extension.goToPostion(21);
                     shoulder.goToPostion(commander, 0);
                     elbow.goToPostion(0);
-                    intake.IntakePeriodic (this.returnIntakePos(91));
+                    intake.IntakePeriodic (this.returnIntakePos(91), IntakeSpeed.none, commander);
                     }
                 
             }
@@ -416,7 +429,7 @@ public class Arm {
                 extension.goToPostion(21);
                 shoulder.goToPostion(commander, 0);
                 elbow.goToPostion(0);
-                intake.IntakePeriodic (this.returnIntakePos(91));
+                intake.IntakePeriodic (this.returnIntakePos(91), IntakeSpeed.none, commander);
                 
             }
             
@@ -427,7 +440,7 @@ public class Arm {
 
         else{
 
-        intake.IntakePeriodic (commander.getIntakePosition());
+        intake.IntakePeriodic (commander.getIntakePosition(), commander.getIntakeSpeed(), commander);
         SmartDashboard.putString("Desired Intake Position", commander.getIntakePosition().toString());
 
         if(Math.abs(elbow.getElbowAngle()) < 10){
@@ -670,6 +683,10 @@ public class Arm {
 
     private boolean determineAchivePosition() {
         return shoulder.getAchivedTarget() && extension.getAchivedTarget() && elbow.getAchivedTarget();
+    }
+
+    public static boolean getAchivedPostion(){
+        return shoulder.getAutoAchived() && extension.getAutoAchived() && elbow.getAutoAchived();
     }
 
     public void brakeMode(){

@@ -12,7 +12,7 @@ import org.hotutilites.hotlogger.HotLogger;
 
 public class Hopper {
     public static int PixieCam = 0;
-    public static Servo fingerServo = new Servo(FINGER_SERVO);
+    // public static Servo fingerServo = new Servo(FINGER_SERVO);
     // public static DigitalInput sensorTop= new DigitalInput(TOP_SENSOR);
     // public static DigitalInput sensorLeft= new DigitalInput(LEFT_SENSOR);
     // public static DigitalInput sensorRight= new DigitalInput(RIGHT_SENSOR);
@@ -31,18 +31,18 @@ public class Hopper {
       CONE
     }
 
+    double timer = 0;
+
     public void HopperPeriodic(RobotCommander commander){
-        // if(commander.operator.getRightStickButton()){
-        //   hopperMotor.set(-.3); // .25
+        // if( > .5){
+        if(Math.abs(commander.getGripperCommand()) > 0.1){
+          hopperMotor.set(.1);
+        } else {
+          hopperMotor.set(-.1);
+        }
         // } else {
         //   hopperMotor.set(0);
-
         // }
-        if(commander.runHopper()){
-          hopperMotor.set(-.2);
-        } else {
-          hopperMotor.set(0);
-        }
     }
 
   public void logData(){

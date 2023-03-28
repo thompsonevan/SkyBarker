@@ -13,6 +13,7 @@ import frc.robot.sensors.Pigeon;
 import frc.robot.subsystems.Intake;
 import frc.robot.subsystems.Arm.ArmPos;
 import frc.robot.subsystems.Arm.IntakePos;
+import frc.robot.subsystems.Arm.IntakeSpeed;
 import frc.robot.subsystems.Arm.ArmPos.ArmBumpDirection;
 
 public class AutonCommader extends RobotCommander{
@@ -173,7 +174,31 @@ public class AutonCommader extends RobotCommander{
 
     @Override
     public IntakePos getIntakePosition() {
+        if (getArmPosition() != ArmPos.Zero && 
+        getArmPosition() != ArmPos.manual && 
+        getArmPosition() != ArmPos.intake && 
+        Intake.angleEncoderAngle < 115) { 
+            return IntakePos.armMoving;
+        } else {
+            return auton.intakePos;
+        }
+    }
+
+    @Override
+    public IntakeSpeed getIntakeSpeed() {
         // TODO Auto-generated method stub
-        return null;
+        return auton.intakeSpeed;
+    }
+
+    @Override
+    public boolean getCubeStopIntake() {
+        // TODO Auto-generated method stub
+        return false;
+    }
+
+    @Override
+    public boolean getCubeMode() {
+        // TODO Auto-generated method stub
+        return false;
     }
 }

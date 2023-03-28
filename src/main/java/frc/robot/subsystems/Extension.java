@@ -15,6 +15,7 @@ public class Extension {
     TalonFX extension;
     private double extensionPosition;
     private boolean achivedTarget = false;
+    private static boolean achivedTargetAuto = false;
 
     public double getExtensionPosition() {
         return extensionPosition;
@@ -67,6 +68,7 @@ public class Extension {
     public void updatePose() {
         extensionPosition = this.convertToInches(extension.getSelectedSensorPosition()); 
         achivedTarget = Math.abs(this.convertToInches(extension.getClosedLoopTarget()) - extensionPosition) < 1;
+        achivedTargetAuto = Math.abs(this.convertToInches(extension.getClosedLoopTarget()) - extensionPosition) < .5;
         SmartDashboard.putNumber("Extension Closed loop target", this.convertToInches(extension.getClosedLoopTarget()));
         SmartDashboard.putNumber("Extension", extensionPosition);
         HotLogger.Log("Extension Pos", extensionPosition);
@@ -87,6 +89,7 @@ public class Extension {
         } else {
             extension.set(ControlMode.PercentOutput, 0.0);
         }
+        HotLogger.Log("Commanded Extension Position", inches);
         SmartDashboard.putNumber("Elbow Angle Command", this.convertToTicks(inches));
         SmartDashboard.putNumber("Elbow Command", inches);
         SmartDashboard.putNumber("Elbow Command Actual", extension.getActiveTrajectoryPosition());
@@ -111,5 +114,9 @@ public class Extension {
         } else {
             return false;
         }
+    }
+
+    public boolean getAutoAchived(){
+        return achivedTargetAuto;
     }
 }

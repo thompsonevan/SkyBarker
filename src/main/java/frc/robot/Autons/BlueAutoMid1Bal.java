@@ -105,7 +105,6 @@ public class BlueAutoMid1Bal extends AutonBase{
                 if(totalTime.get() > 14){
                     autoState = AutoState.end;
                 }
-
             break;
             case end:
                 driving = false;

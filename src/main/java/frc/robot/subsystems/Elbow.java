@@ -26,6 +26,7 @@ public class Elbow {
 
     private double elbowOffset;
     private boolean achivedTarget = false;
+    private static boolean achivedTargetAuto = false;
 
     public Elbow (int motorCANID, int encoderCANID) {
         
@@ -87,6 +88,7 @@ public class Elbow {
     public void updatePose() {
         elbowAngle = (elbow.getSelectedSensorPosition(Constants.ELBOW_K_PID_LOOP_IDX) - elbowOffset)*360/4096; 
         achivedTarget = Math.abs(this.convertToDegrees(elbow.getClosedLoopTarget() - elbowOffset) - elbowAngle) < 10;
+        achivedTargetAuto = Math.abs(this.convertToDegrees(elbow.getClosedLoopTarget() - elbowOffset) - elbowAngle) < 10;
         SmartDashboard.putNumber("Elbow Angle", elbowAngle);
         SmartDashboard.putNumber("Elbow elbowOffset", elbowOffset);
         SmartDashboard.putNumber("Elbow Closed loop target", this.convertToDegrees(elbow.getClosedLoopTarget() - elbowOffset));
@@ -134,5 +136,9 @@ public class Elbow {
         } else {
             return false;
         }
+    }
+
+    public boolean getAutoAchived(){
+        return achivedTargetAuto;
     }
 }

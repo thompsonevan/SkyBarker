@@ -23,6 +23,7 @@ public abstract class RobotCommander {
     public abstract double armExtension();
     public abstract Arm.ArmPos getArmPosition();
     public abstract Arm.IntakePos getIntakePosition();
+    public abstract Arm.IntakeSpeed getIntakeSpeed();
     public abstract boolean getPickUpObject();
     public abstract boolean getArmReset();
     public abstract double armElbow();
@@ -33,4 +34,6 @@ public abstract class RobotCommander {
     public abstract boolean useNegativeSide();
     public abstract ArmBumpDirection getArmBumpDirection();
     public abstract boolean runHopper();
+    public abstract boolean getCubeStopIntake();
+    public abstract boolean getCubeMode();
 }
