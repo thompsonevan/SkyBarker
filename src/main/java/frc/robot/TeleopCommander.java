@@ -155,13 +155,13 @@ public class TeleopCommander extends RobotCommander{
                         intakePos = IntakePos.none;
                     }
                 } else {
-                    if (Dpad_left && !(Trigger_right || Trigger_left || Dpad_right || Dpad_updown)) {
+                    if (Dpad_left) {
                         intakePos = IntakePos.pack;
-                    } else if (Dpad_right && !(Trigger_left || Trigger_right || Dpad_left || Dpad_updown)) {
+                    } else if (Dpad_right) {
                         intakePos = IntakePos.collectCube;
-                    } else if (Dpad_updown && !(Trigger_left || Trigger_right || Dpad_left || Dpad_right)) {
+                    } else if (Dpad_updown) {
                         intakePos = IntakePos.station;
-                    } else if (operator.getPOV() == 180 && !(Trigger_left || Trigger_right || Dpad_left || Dpad_right)) {
+                    } else if (operator.getPOV() == 180) {
                         intakePos = IntakePos.cubeHandoff;
                     } else {
                         intakePos = IntakePos.none;
@@ -314,7 +314,7 @@ public class TeleopCommander extends RobotCommander{
         this.getArmPosition() == ArmPos.topNodeCube || this.getArmPosition() == ArmPos.middleNodeCube) {
             gripperMotorCommand = GRIPPER_HOLD_POWER + overrideGripper();
         } else if(this.getArmPosition() == ArmPos.humanPlayerPickup ){
-            gripperMotorCommand = -.75;
+            gripperMotorCommand = -1;
         }else{
             gripperMotorCommand = overrideGripper();
         }

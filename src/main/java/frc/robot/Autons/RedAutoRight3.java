@@ -22,7 +22,7 @@ import edu.wpi.first.math.trajectory.TrajectoryConfig;
 import edu.wpi.first.math.trajectory.TrajectoryGenerator;
 import edu.wpi.first.math.trajectory.Trajectory.State;
 
-public class BlueAutoLeft3 extends AutonBase{
+public class RedAutoRight3 extends AutonBase{
     enum AutoState {
         firstPlace,
         driveToObject1,
@@ -42,25 +42,24 @@ public class BlueAutoLeft3 extends AutonBase{
 
     int point = 0;
 
-    List<Pose2d> path = List.of(new Pose2d(new Translation2d(0,0), Rotation2d.fromDegrees(-90)),
-                               // new Pose2d(new Translation2d(1.75,.75), Rotation2d.fromDegrees(-45)),
-                                new Pose2d(new Translation2d(5.3,.75), Rotation2d.fromDegrees(-10)), //4.82, .5
-                                new Pose2d(new Translation2d(-.025,.1), Rotation2d.fromDegrees(-90)),
-                                new Pose2d(new Translation2d(4.75, .5), Rotation2d.fromDegrees(-90)),
-                                new Pose2d(new Translation2d(4.9, -1.5), Rotation2d.fromDegrees(-90)),
-                                new Pose2d(new Translation2d(3, 0), Rotation2d.fromDegrees(-90)));
+    List<Pose2d> path = List.of(new Pose2d(new Translation2d(0,0), Rotation2d.fromDegrees(90)),
+                                new Pose2d(new Translation2d(5.3,-.29), Rotation2d.fromDegrees(10)), //4.82, .5
+                                new Pose2d(new Translation2d(-.05,-.125), Rotation2d.fromDegrees(90)),
+                                new Pose2d(new Translation2d(4.75, -.3), Rotation2d.fromDegrees(90)),
+                                new Pose2d(new Translation2d(4.9, 1.5), Rotation2d.fromDegrees(90)),
+                                new Pose2d(new Translation2d(3, .25), Rotation2d.fromDegrees(90)));
 
     Trajectory trajectory;
 
     double armTime;
 
-    public BlueAutoLeft3(){
+    public RedAutoRight3(){
         reset();
     }
 
     public void reset(){
         desState = new State();
-        targetTheta = Rotation2d.fromDegrees(-90);
+        targetTheta = Rotation2d.fromDegrees(90);
 
         point = 0;
         
@@ -88,7 +87,7 @@ public class BlueAutoLeft3 extends AutonBase{
                         gripperSpeed = 0;
 
                         trajectory = createTrajectory(path.get(point), path.get(point+1),
-                        Rotation2d.fromDegrees(40), Rotation2d.fromDegrees(0),
+                        Rotation2d.fromDegrees(-40), Rotation2d.fromDegrees(10),
                         4,2.5);
                 
                         point++;
@@ -102,7 +101,7 @@ public class BlueAutoLeft3 extends AutonBase{
             case driveToObject1:
                 driving = true;
                 armPos = ArmPos.intake;
-                if(timer.get() > .8){
+                if(timer.get() > .5){
                     intakePos = IntakePos.collectCube;
                     intakeSpeed = IntakeSpeed.onCube;
                 }
@@ -127,7 +126,7 @@ public class BlueAutoLeft3 extends AutonBase{
                 gripperSpeed = -.4;
                 if(timer.get() > .25){
                     trajectory = createTrajectory(path.get(point), path.get(point+1), 
-                    Rotation2d.fromDegrees(-12 + 180), Rotation2d.fromDegrees(12 + 180),
+                    Rotation2d.fromDegrees(12 + 180), Rotation2d.fromDegrees(-12 + 180),
                     4,2.5);
 
                     point++;
@@ -165,6 +164,8 @@ public class BlueAutoLeft3 extends AutonBase{
                 }
             break;
             case score2:
+                intakeSpeed = IntakeSpeed.none;
+
                 driving = false;
                 if(timer.get() < .75){
                     gripperSpeed = -.4;
@@ -177,9 +178,9 @@ public class BlueAutoLeft3 extends AutonBase{
                         gripperSpeed = 0;
                     } else {
                         trajectory = TrajectoryGenerator.generateTrajectory(
-                        new Pose2d(path.get(point).getTranslation(), Rotation2d.fromDegrees(10)), 
+                        new Pose2d(path.get(point).getTranslation(), Rotation2d.fromDegrees(-5)), 
                         List.of(path.get(point+1).getTranslation()),
-                        new Pose2d(path.get(point+2).getTranslation(), Rotation2d.fromDegrees(-90)), 
+                        new Pose2d(path.get(point+2).getTranslation(), Rotation2d.fromDegrees(90)), 
                         new TrajectoryConfig(3.5, 2));
     
                         point += 2;
@@ -219,16 +220,10 @@ public class BlueAutoLeft3 extends AutonBase{
                 intakeSpeed = IntakeSpeed.onCube;
 
                 armPos = ArmPos.intake;
-
                 gripperSpeed = -.4;
                 if(timer.get() > .25){
-                    // trajectory = TrajectoryGenerator.generateTrajectory(
-                    //     new Pose2d(path.get(point).getTranslation(), Rotation2d.fromDegrees(45+180)), 
-                    //     List.of(path.get(point+1).getTranslation()),
-                    //     new Pose2d(path.get(point+2).getTranslation(), Rotation2d.fromDegrees(-5 + 180)), 
-                    //     new TrajectoryConfig(4, 2.5));
                     trajectory = createTrajectory(path.get(point), path.get(point+1), 
-                    Rotation2d.fromDegrees(-90 + 180), Rotation2d.fromDegrees(0 + 180),
+                    Rotation2d.fromDegrees(90 + 180), Rotation2d.fromDegrees(0 + 180),
                     4,2.5);
 
                     point++;
@@ -243,10 +238,13 @@ public class BlueAutoLeft3 extends AutonBase{
 
                 desState = trajectory.sample(timer.get());
                 targetTheta = path.get(point).getRotation();
-                
-                intakePos = IntakePos.cubeHandoff;
 
-                gripperSpeed = -.75;
+                intakeOn = false;
+                
+                intakePos = IntakePos.pack;
+                intakeSpeed = IntakeSpeed.none;
+
+                // gripperSpeed = -.75;
 
                 if(Math.abs(Drivetrain.getPose().getX() - path.get(point).getX()) < .05 &&
                 Math.abs(Drivetrain.getPose().getY() - path.get(point).getY()) < .05){       

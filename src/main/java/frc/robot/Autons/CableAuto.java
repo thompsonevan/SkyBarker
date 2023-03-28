@@ -17,7 +17,7 @@ import edu.wpi.first.math.trajectory.TrajectoryConfig;
 import edu.wpi.first.math.trajectory.TrajectoryGenerator;
 import edu.wpi.first.math.trajectory.Trajectory.State;
 
-public class BlueAutoMid1Bal extends AutonBase{
+public class CableAuto extends AutonBase{
     enum AutoState {
         firstPlace,
         driveToStation,
@@ -34,11 +34,11 @@ public class BlueAutoMid1Bal extends AutonBase{
     int point = 0;
 
     Pose2d startingPose = new Pose2d(0,0, Rotation2d.fromDegrees(-90));
-    Pose2d endPose = new Pose2d(4.25,0, Rotation2d.fromDegrees(-90));
+    Pose2d endPose = new Pose2d(4,0, Rotation2d.fromDegrees(-90));
 
     Trajectory trajectory;
 
-    public BlueAutoMid1Bal(){
+    public CableAuto(){
         reset();
     }
 
@@ -96,13 +96,6 @@ public class BlueAutoMid1Bal extends AutonBase{
                 if(timer.get() > trajectory.getTotalTimeSeconds()){
                     timer.reset();
 
-                    autoState = AutoState.balance;
-                }
-            break;
-            case balance:
-                driving = false;
-                autoBalance = true;
-                if(totalTime.get() > 14){
                     autoState = AutoState.end;
                 }
             break;

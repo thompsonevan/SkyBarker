@@ -121,6 +121,7 @@ import static frc.robot.Constants.ip;
 import static frc.robot.Constants.*;
 
 import com.ctre.phoenix.motorcontrol.ControlMode;
+import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.ctre.phoenix.motorcontrol.TalonFXControlMode;
 import com.ctre.phoenix.motorcontrol.can.TalonFX;
 import com.ctre.phoenix.sensors.CANCoder;
@@ -168,6 +169,7 @@ public class Intake {
         ballSensor= new DigitalInput(INTAKE_CUBE_SENSOR);
         speedMotor1 = new TalonFX(INTAKE_SPEED1_MOTOR_ID);
         speedMotor2 = new TalonFX(INTAKE_SPEED2_MOTOR_ID);
+        speedMotor2.setNeutralMode(NeutralMode.Brake);
         angleMotor = new CANSparkMax(INTAKE_ANGLE_MOTOR_ID, MotorType.kBrushless);
         angleEncoder = new CANCoder(INTAKE_CANCODER);
         pidController = new PIDController(ip, ii, id); //.017, 0.0015, 0
@@ -196,6 +198,8 @@ public class Intake {
 
         speedPeriodic();
         anglePeriodic();
+
+        SmartDashboard.putBoolean("_intake Sensor", ballSensor.get());
     }
     
     public void speedPeriodic(){
@@ -214,7 +218,7 @@ public class Intake {
 
         SmartDashboard.putBoolean("_Breaking Things", robotCommander.getCubeStopIntake());
 
-        if(intakePos == IntakePos.cubeHandoff && Math.abs(angle - intakePos.getPositionReading()) < 5){
+        if(intakePos == IntakePos.cubeHandoff && Math.abs(angle - intakePos.getPositionReading()) < 10){
             speedMotor1.set(TalonFXControlMode.PercentOutput, -1);
             speedMotor2.set(TalonFXControlMode.PercentOutput, 1);
         } else if(!ballSensor.get() && intakeSpeed != IntakeSpeed.out){

@@ -33,22 +33,22 @@ public final class Constants {
     public static final int FRONT_LEFT_MODULE_DRIVE_MOTOR = 1;
     public static final int FRONT_LEFT_MODULE_STEER_MOTOR = 2;
     public static final int FRONT_LEFT_MODULE_STEER_ENCODER = 18;
-    public static final double FRONT_LEFT_MODULE_STEER_OFFSET = compBot ? -Math.toRadians(57.74414062500001) : -Math.toRadians(349.365234375-180); // 169.1015625
+    public static final double FRONT_LEFT_MODULE_STEER_OFFSET = compBot ? -Math.toRadians(164.091796875 +180) : -Math.toRadians(349.365234375-180); //343.740234375
 
     public static final int FRONT_RIGHT_MODULE_DRIVE_MOTOR = 3;
     public static final int FRONT_RIGHT_MODULE_STEER_MOTOR = 4;
     public static final int FRONT_RIGHT_MODULE_STEER_ENCODER = 19;
-    public static final double FRONT_RIGHT_MODULE_STEER_OFFSET = compBot ? -Math.toRadians(35.27 + 180) : -Math.toRadians(3.779296875+180); //183.251953125
+    public static final double FRONT_RIGHT_MODULE_STEER_OFFSET = compBot ? -Math.toRadians(271.23046875-180) : -Math.toRadians(3.779296875+180); //35.27 + 180
 
     public static final int BACK_LEFT_MODULE_DRIVE_MOTOR = 5;
     public static final int BACK_LEFT_MODULE_STEER_MOTOR = 6;
     public static final int BACK_LEFT_MODULE_STEER_ENCODER = 20;
-    public static final double BACK_LEFT_MODULE_STEER_OFFSET = compBot ? -Math.toRadians(243.57 - 180) : -Math.toRadians(308.935546875-180); // 129.814453125
+    public static final double BACK_LEFT_MODULE_STEER_OFFSET = compBot ? -Math.toRadians(96.591796875+180) : -Math.toRadians(308.935546875-180); //243.57 - 180
 
     public static final int BACK_RIGHT_MODULE_DRIVE_MOTOR = 7;
     public static final int BACK_RIGHT_MODULE_STEER_MOTOR = 8;
     public static final int BACK_RIGHT_MODULE_STEER_ENCODER = 21;
-    public static final double BACK_RIGHT_MODULE_STEER_OFFSET = compBot ? -Math.toRadians(3.515625 + 180) : -Math.toRadians(55.72265625+180); //237.48046875 //340.87 - 180
+    public static final double BACK_RIGHT_MODULE_STEER_OFFSET = compBot ? -Math.toRadians(301.201171875) : -Math.toRadians(55.72265625+180); //235.634765625 //55.283203125+180
 
     public static final double SLOW_SPEED_MULTIPLIER = .5;
 
@@ -83,7 +83,7 @@ public final class Constants {
     public static final double INTAKE_SPEED_CUBE = .5;
     public static final double INTAKE_SPEED_CONE = 1;
     public static final int INTAKE_TIMEOUT = 200;
-    public static final int INTAKE_DELAY = 10;
+    public static final int INTAKE_DELAY = 1;
     public static final double INTAKE_ANGLE_MAX_SPEED = .7;
     public static final double INTAKE_PID_DEADBAND = .2;
     public static final double INTAKE_DEADBAND = 30;
@@ -125,7 +125,7 @@ public final class Constants {
     public static final double EXTENSION_RATIO = (50.0/12.0)*(50.0/20.0)*(2.0)/(2.0*Math.PI);  // Revolutions to Inches
     public static final double WRIST_RATIO = (9.0)*(7.0)*(96.0/36.0);  // Ratio
 
-    public static final double SHOULDER_OFFSET = compBot ? 111.709 : 160.049;
+    public static final double SHOULDER_OFFSET = compBot ? 112.709 : 160.049;
     public static final double ELBOW_OFFSET = compBot ? 50.889 : 167.783;
 
     //Arm pid motion magic gains

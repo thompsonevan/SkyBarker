@@ -64,7 +64,7 @@ public abstract class AutonBase {
             new Pose2d(startingPose.getTranslation(), Rotation2d.fromDegrees(headingAngle)),
             List.of(),
             new Pose2d(endPose.getTranslation(), Rotation2d.fromDegrees(headingAngle)),
-            new TrajectoryConfig(4, 3).setKinematics(Drivetrain.kinematics));
+            new TrajectoryConfig(2, 1).setKinematics(Drivetrain.kinematics));
     }
 
     public Trajectory createTrajectory(Pose2d startingPose, Pose2d endPose, Rotation2d heading1, Rotation2d heading2){

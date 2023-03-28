@@ -15,6 +15,7 @@ import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.trajectory.Trajectory;
 import edu.wpi.first.math.trajectory.TrajectoryConfig;
 import edu.wpi.first.math.trajectory.TrajectoryGenerator;
+import edu.wpi.first.net.PortForwarder;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.Timer;
@@ -24,12 +25,14 @@ import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.Autons.BlueAutoLeft;
-import frc.robot.Autons.BlueAutoLeft2half;
 import frc.robot.Autons.BlueAutoLeft3;
+import frc.robot.Autons.BlueAutoLeftBalance;
 import frc.robot.Autons.BlueAutoMid1Bal;
+import frc.robot.Autons.CableAuto;
 import frc.robot.Autons.OhCrap;
 import frc.robot.Autons.RedAutoMid1Bal;
 import frc.robot.Autons.RedAutoRight;
+import frc.robot.Autons.RedAutoRight3;
 import frc.robot.Autons.RedAutoRightBalance;
 import frc.robot.sensors.Camera;
 import frc.robot.sensors.Pigeon;
@@ -53,8 +56,10 @@ public class Robot extends TimedRobot {
     private RedAutoRight redAutoRight;
     private BlueAutoMid1Bal blueAutoMid1Bal;
     private BlueAutoLeft3 blueAutoLeft3;
-    private BlueAutoLeft2half blueAutoLeft2half;
     private RedAutoRightBalance redAutoRightBalance;
+    private RedAutoRight3 redAutoRight3;
+    private BlueAutoLeftBalance blueAutoLeftBalance;
+    private CableAuto cableAuto;
 
     LED leds;
 
@@ -74,15 +79,17 @@ public class Robot extends TimedRobot {
         "TargetX", "TargetY", "TargetTheta", "Pose Theta", "poseX", "poseY",
         "Shoulder Absolute Pos", "Shoulder Motor Pos", "Extension Pos", "Elbow Absolute Pos", "Elbow Motor Pos",
         "Shoulder Desired Pos", "Extension Desired Pos", "Elbow Desired Pos","determineArmZoneHandOff","DesiredIntakeAngle",
-        "Commanded Extension Position", "AutoState");
+        "Commanded Extension Position", "AutoState", "Driving");
 
         m_chooser.setDefaultOption("Blue Left", "Blue Left");
         m_chooser.addOption("Red Right", "Red Right");
         m_chooser.addOption("Blue Mid 1", "Blue Mid 1");
         m_chooser.addOption("Red Mid 1 (Intake Towards Right)", "Red Mid 1");
         m_chooser.addOption("Blue Left 3", "Blue Left 3");
-        m_chooser.addOption("Blue Left 2 Half", "Blue Left 2 Half");
+        m_chooser.addOption("Red Right 3", "Red Right 3");
         m_chooser.addOption("Red Right Balance", "Red Right Balance");
+        m_chooser.addOption("Blue Left Balance", "Blue Left Balance");
+        m_chooser.addOption("Cable", "Cable");
 
         Shuffleboard.getTab("Competition")
         .add("Auto Selector", m_chooser)
@@ -102,11 +109,16 @@ public class Robot extends TimedRobot {
         redAutoRight = new RedAutoRight();
         blueAutoMid1Bal = new BlueAutoMid1Bal();
         blueAutoLeft3 = new BlueAutoLeft3();
-        blueAutoLeft2half = new BlueAutoLeft2half();
         leds = new LED();
         redAutoRightBalance = new RedAutoRightBalance();
+        redAutoRight3 = new RedAutoRight3();
+        blueAutoLeftBalance = new BlueAutoLeftBalance();
+        cableAuto = new CableAuto();
 
         camera.disabled();
+
+        // PortForwarder.add(5800, "limelight.local", 5800);
+        // PortForwarder.add(5801, "limelight.local", 5801);
     }
 
     @Override
@@ -127,7 +139,7 @@ public class Robot extends TimedRobot {
         SmartDashboard.putString("Robot Mode", "Disabled");
 
         camera.disabled();
-        arm.coastMode();
+        // arm.coastMode();
 
         leds.disabledAction();
     }
@@ -135,7 +147,7 @@ public class Robot extends TimedRobot {
     @Override
     public void disabledPeriodic() {
         arm.armPercentOutZero();
-        arm.coastMode();
+        // arm.coastMode();
     }
 
     @Override
@@ -159,10 +171,15 @@ public class Robot extends TimedRobot {
             autonCommader.initAuton(blueAutoMid1Bal);
         } else if(autonSelection == "Blue Left 3"){
             autonCommader.initAuton(blueAutoLeft3);
-        } else if(autonSelection == "Blue Left 2 Half"){
-            autonCommader.initAuton(blueAutoLeft2half);
         } else if (autonSelection == "Red Right Balance"){
             autonCommader.initAuton(redAutoRightBalance);
+        } else if(autonSelection == "Red Right 3"){
+            autonCommader.initAuton(redAutoRight3);
+        } else if(autonSelection == "Blue Left Balance"){
+            autonCommader.initAuton(blueAutoLeftBalance);
+        } else if(autonSelection == "Cable"){
+            alliance = Alliance.Blue;
+            autonCommader.initAuton(cableAuto);
         }else {
             autonCommader.initAuton(ohCrap);
         }
@@ -192,7 +209,7 @@ public class Robot extends TimedRobot {
         pigeon.enabledAction(teleopCommander);
         drivetrain.autonAction(autonCommader);
         arm.action(autonCommader);
-        // hopper.HopperPeriodic(autonCommader);
+        hopper.HopperPeriodic(autonCommader);
         gripper.action(autonCommader);
 
         leds.autonAction();
@@ -204,7 +221,7 @@ public class Robot extends TimedRobot {
 
         teleopCommander.allaince = alliance;
 
-        drivetrain.zero();
+        drivetrain.zero(Pigeon.getRotation2d().getDegrees());
 
         // camera.enabled();
 

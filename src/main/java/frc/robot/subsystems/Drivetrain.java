@@ -173,7 +173,7 @@ public class Drivetrain{
 
         holonomicController = new HolonomicDriveController(
             new PIDController(3.5, .6, .025),  //x Long side of field
-            new PIDController(11, .6, .025), //y Short side of field
+            new PIDController(8, .6, .025), //y Short side of field
             thetaController); // (2Pk,PI) constrains to 1 2pi/sec
 
         poseEstimator = new SwerveDrivePoseEstimator(
@@ -287,6 +287,7 @@ public class Drivetrain{
     }
     
     public void autonAction(AutonCommader autonCommader){
+        HotLogger.Log("Driving", autonCommader.isDriving());
         if(autonCommader.isDriving()){
             driveToPos(autonCommader.getDesiredState(), autonCommader.getTargetTheta());
             rampPassed = false;

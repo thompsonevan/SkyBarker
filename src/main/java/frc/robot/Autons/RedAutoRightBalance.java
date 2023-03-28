@@ -40,10 +40,10 @@ public class RedAutoRightBalance extends AutonBase{
     int point = 0;
 
     List<Pose2d> path = List.of(new Pose2d(new Translation2d(0,0), Rotation2d.fromDegrees(90)),
-                                new Pose2d(new Translation2d(5.3,-.35), Rotation2d.fromDegrees(10)), //4.82, .5
-                                new Pose2d(new Translation2d(-.05,-.225), Rotation2d.fromDegrees(90)),
-                                new Pose2d(new Translation2d(.5, .5), Rotation2d.fromDegrees(90)));
-                                //new Pose2d(new Translation2d(2, .5), Rotation2d.fromDegrees(90)));
+                                new Pose2d(new Translation2d(5.3,-.29), Rotation2d.fromDegrees(10)), //4.82, .5
+                                new Pose2d(new Translation2d(-.05,-.125), Rotation2d.fromDegrees(90)),
+                                new Pose2d(new Translation2d(.5, .75), Rotation2d.fromDegrees(90)),
+                                new Pose2d(new Translation2d(2.7, .85), Rotation2d.fromDegrees(90)));
 
     Trajectory trajectory;
 
@@ -83,8 +83,8 @@ public class RedAutoRightBalance extends AutonBase{
                         gripperSpeed = 0;
 
                         trajectory = createTrajectory(path.get(point), path.get(point+1),
-                        Rotation2d.fromDegrees(-42.5), Rotation2d.fromDegrees(12.5),
-                        5,3);
+                        Rotation2d.fromDegrees(-40), Rotation2d.fromDegrees(10),
+                        4,2.5);
                 
                         point++;
 
@@ -97,7 +97,7 @@ public class RedAutoRightBalance extends AutonBase{
             case driveToObject1:
                 driving = true;
                 armPos = ArmPos.intake;
-                if(timer.get() > .6){
+                if(timer.get() > .65){
                     intakePos = IntakePos.collectCube;
                     intakeSpeed = IntakeSpeed.onCube;
                 }
@@ -105,8 +105,8 @@ public class RedAutoRightBalance extends AutonBase{
                 desState = trajectory.sample(timer.get());
                 targetTheta = path.get(point).getRotation();
 
-                if(Math.abs(Drivetrain.getPose().getX() - path.get(point).getX()) < .05 &&
-                Math.abs(Drivetrain.getPose().getY() - path.get(point).getY()) < .05){
+                if(Math.abs(Drivetrain.getPose().getX() - path.get(point).getX()) < .1 &&
+                Math.abs(Drivetrain.getPose().getY() - path.get(point).getY()) < .1){
                     timer.reset();
 
                     autoState = AutoState.pause;
@@ -115,15 +115,15 @@ public class RedAutoRightBalance extends AutonBase{
             case pause:
                 driving = false;
 
-                intakePos = IntakePos.pack;
-                intakeSpeed = IntakeSpeed.onCube;
+                intakePos = IntakePos.cubeHandoff;
+                intakeSpeed = IntakeSpeed.cubeHandoff;
 
                 armPos = ArmPos.intake;
                 gripperSpeed = -.4;
                 if(timer.get() > .25){
                     trajectory = createTrajectory(path.get(point), path.get(point+1), 
                     Rotation2d.fromDegrees(12 + 180), Rotation2d.fromDegrees(-12 + 180),
-                    5,3);
+                    4,2.5);
 
                     point++;
 
@@ -134,18 +134,65 @@ public class RedAutoRightBalance extends AutonBase{
             break;
             case driveToObject2:
                 driving = true;
-                intakeOn = false;
+                // intakeOn = false;
                 
-                intakeSpeed = IntakeSpeed.none;
+                intakePos = IntakePos.cubeHandoff;
+                intakeSpeed = IntakeSpeed.cubeHandoff;
 
-                if(timer.get() > 1){
+                if(timer.get() > 1.25){
                     armPos = ArmPos.topNodeCube;
-                } else if (timer.get()>.75){
+                    intakePos = IntakePos.pack;
+                } else if(timer.get() > .75){
                     armPos = ArmPos.packagePos;
                 }
 
-                gripperSpeed = -.4;
+                gripperSpeed = -.75;
                 
+                desState = trajectory.sample(timer.get());
+                targetTheta = path.get(point).getRotation();
+
+                if(Math.abs(Drivetrain.getPose().getX() - path.get(point).getX()) < .075 &&
+                Math.abs(Drivetrain.getPose().getY() - path.get(point).getY()) < .075){                    
+                    timer.reset();
+                    
+                    gripperSpeed = 0;
+
+                    autoState = AutoState.score2;
+                }
+            break;
+            case score2:
+                intakeSpeed = IntakeSpeed.none;
+
+                driving = false;
+                if(timer.get() < .75){
+                    gripperSpeed = -.4;
+                    armPos = ArmPos.topNodeCube;
+                } else {
+                    if(timer.get() < 1.25){
+                        gripperSpeed = .5;
+                    } else if(timer.get() < 1.75){
+                        armPos = ArmPos.packagePos;
+                        gripperSpeed = 0;
+                    } else {
+                        trajectory = TrajectoryGenerator.generateTrajectory(
+                        new Pose2d(path.get(point).getTranslation(), Rotation2d.fromDegrees(45)), 
+                        List.of(path.get(point+1).getTranslation()),
+                        new Pose2d(path.get(point+2).getTranslation(), Rotation2d.fromDegrees(0)), 
+                        new TrajectoryConfig(2, 1));
+
+                        // trajectory = createTrajectory(path.get(point), path.get(point+1));
+    
+                        point += 2;
+                        // point++;
+
+                        timer.reset();
+
+                        autoState = AutoState.driveToBal;
+                    }
+                }
+            break;
+            case driveToBal:
+                driving = true;
                 desState = trajectory.sample(timer.get());
                 targetTheta = path.get(point).getRotation();
 
@@ -155,59 +202,16 @@ public class RedAutoRightBalance extends AutonBase{
                     
                     gripperSpeed = 0;
 
-                    autoState = AutoState.score2;
+                    autoState = AutoState.end;
                 }
-            break;
-            case score2:
-                driving = false;
-                if(timer.get() < 2){
-                    gripperSpeed = -.4;
-                    armPos = ArmPos.topNodeCube;
-                } else {
-                    if(timer.get() < 3){
-                        gripperSpeed = .5;
-                    } else if(timer.get() < 6){
-                        armPos = ArmPos.packagePos;
-                        gripperSpeed = 0;
-                    } else {
-                        // trajectory = TrajectoryGenerator.generateTrajectory(
-                        // new Pose2d(path.get(point).getTranslation(), Rotation2d.fromDegrees(90)), 
-                        // List.of(path.get(point+1).getTranslation()),
-                        // new Pose2d(path.get(point+2).getTranslation(), Rotation2d.fromDegrees(0)), 
-                        // new TrajectoryConfig(2, 1));
-
-                        trajectory = createTrajectory(path.get(point), path.get(point+1), 
-                        Rotation2d.fromDegrees(90), Rotation2d.fromDegrees(0),
-                        2,1);
-    
-
-                        // point += 2;
-                        point++;
-
-                        timer.reset();
-
-                        autoState = AutoState.driveToBal;
-                    }
-                }
-            case driveToBal:
-                driving = true;
-                desState = trajectory.sample(timer.get());
-                targetTheta = path.get(point).getRotation();
-
-                // if(Math.abs(Drivetrain.getPose().getX() - path.get(point).getX()) < .05 &&
-                // Math.abs(Drivetrain.getPose().getY() - path.get(point).getY()) < .05){                    
-                //     timer.reset();
-                    
-                //     gripperSpeed = 0;
-
-                //     autoState = AutoState.end;
-                // }
             break;
             case end:
                 driving = false;
+                xMode = true;
             break;
         }
         HotLogger.Log("AutoState", autoState.toString());
+        SmartDashboard.putString("AutoState", autoState.toString());
         SmartDashboard.putBoolean("Arm Achieved Position", Arm.getAchivedPostion());
     }
 }

@@ -45,7 +45,7 @@ public class Arm {
         outOfHopperToTop(40,10,180),
         outOfHumanPlayerInitialExtension(6.8,7.5,-12),
         humanPlayerReady(6.8,22,-67),
-        humanPlayerPickup(-5,21.5,-56.2),
+        humanPlayerPickup(-7,21.5,-56.2),
         outOfReturnFromHumanPlayer(20,22,-25),
         intakeConeGrab(0,10,0);
 
@@ -118,7 +118,7 @@ public class Arm {
         none(0,0),
         onCube(-.65,-.65),
         onCone(-.8,-.8),
-        out(.5,5),
+        out(.65,.65),
         cubeHandoff(-1,-1);
 
         public double speedReading1;
