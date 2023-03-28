@@ -47,7 +47,13 @@ public class Arm {
         humanPlayerReady(6.8,22,-67),
         humanPlayerPickup(-7,21.5,-56.2),
         outOfReturnFromHumanPlayer(20,22,-25),
-        intakeConeGrab(0,10,0);
+        intakeConeGrab(0,10,0),
+        outOfHopperToGround(5,4,-10),
+        outOfHopperToGround2(-35,4,-175),
+        groundGripperCone(-85,10.5,-175),
+        groundGripperConePick(-92,10.5,-175),
+        groundToHopper(-30,10,-160),
+        groundToHopper2(-5,10,-40),;
 
         private final double shoulder;
         public double getShoulder() {
@@ -483,10 +489,9 @@ public class Arm {
                 //First intermediary step is set for the human player final position.
                 if (commander.getArmPosition() == ArmPos.humanPlayerPickup || commander.getArmPosition() == ArmPos.humanPlayerReady) {
                     actualCommand = ArmPos.outOfHumanPlayerInitialExtension;
-                }
-                
-                //else if it's not going to the human player it will go to the generic out of hopper direction.
-                else {
+                } else if (commander.getArmPosition() == ArmPos.groundGripperCone || commander.getArmPosition() == ArmPos.groundGripperConePick) {
+                    actualCommand = ArmPos.outOfHopperToGround;
+                } else { //else if it's not going to the human player it will go to the generic out of hopper direction.
                     actualCommand = ArmPos.outOfHopperToDirection;
                 }
                 transitionStateInProgress = true;
@@ -498,6 +503,8 @@ public class Arm {
             else if (currentCommandedZone == ArmZone.hopper && currentZone == ArmZone.postive) {
                 if (extension.getExtensionPosition() > 15 && shoulder.getShoulderAngle() < 15) {
                     actualCommand = ArmPos.outOfReturnFromHumanPlayer;
+                } else if (extension.getExtensionPosition() > 10 && shoulder.getShoulderAngle() > 85) {
+                    actualCommand = ArmPos.groundToHopper;
                 } else {
                     if (elbow.getElbowAngle() < 80) {
                         actualCommand = ArmPos.outOfDirectionLowToHopper1;
@@ -513,6 +520,8 @@ public class Arm {
                 if (commander.getArmPosition() == ArmPos.humanPlayerPickup || commander.getArmPosition() == ArmPos.humanPlayerReady) {
                     actualCommand = ArmPos.outOfHumanPlayerInitialExtension;
 
+                } else if (commander.getArmPosition() == ArmPos.groundGripperCone || commander.getArmPosition() == ArmPos.groundGripperConePick) {
+                    actualCommand = ArmPos.outOfHopperToGround;
                 } else {
                     actualCommand = ArmPos.outOfHopperToDirection;
                 }
@@ -523,6 +532,8 @@ public class Arm {
             else if (currentCommandedZone == ArmZone.hopper && currentZone == ArmZone.negative) {
                 if (extension.getExtensionPosition() > 15 && shoulder.getShoulderAngle() > -15) {
                     actualCommand = ArmPos.outOfReturnFromHumanPlayer;
+                } else if (extension.getExtensionPosition() > 10 && shoulder.getShoulderAngle() < -85) {
+                    actualCommand = ArmPos.groundToHopper;
                 } else {
                     if (elbow.getElbowAngle() > -80) {
                         actualCommand = ArmPos.outOfDirectionLowToHopper1;
@@ -541,7 +552,13 @@ public class Arm {
                     if (actualCommand == ArmPos.outOfDirectionToHopper1  || actualCommand == ArmPos.outOfDirectionLowToHopper1) {
                         actualCommand = ArmPos.outOfPostiveToHopper2;
                         transitionStateInProgress = true;
-                    } else if (actualCommand == ArmPos.outOfHopperToDirection && 
+                    }  else if (actualCommand == ArmPos.groundToHopper) {
+                        actualCommand = ArmPos.groundToHopper2;
+                        transitionStateInProgress = true;
+                    }  else if (actualCommand == ArmPos.outOfHopperToGround) {
+                        actualCommand = ArmPos.outOfHopperToGround2;
+                        transitionStateInProgress = true;
+                    }  else if (actualCommand == ArmPos.outOfHopperToDirection && 
                                (commander.getArmPosition() == ArmPos.middleNodeCone || 
                                 commander.getArmPosition() == ArmPos.middleNodeCube ||
                                 commander.getArmPosition() == ArmPos.lowerNode)) {
@@ -552,7 +569,7 @@ public class Arm {
                                 commander.getArmPosition() == ArmPos.topNodeCube)) {
                      actualCommand = ArmPos.outOfHopperToTop;
                      transitionStateInProgress = true;
-                    }  else {
+                    } else {
                         actualCommand = commander.getArmPosition();
                         transitionStateInProgress = false;
                     }
