@@ -26,7 +26,6 @@ public class Arm {
     double desiredIntakePos;
 
     public static enum ArmPos {
-
         packagePos(0,.1,0),
         readyPosition(-23,.1,100),
         topNodeCone(53,20,181),
@@ -36,7 +35,7 @@ public class Arm {
         lowerNode(27,.2,69),
         manual(0,0,0), // manual motor commands
         Zero(0,0,0), // No motor command
-        intake(0,10,0), 
+        intake(0,10,0),
         outOfHopperToDirection(-5,2,10), 
         outOfDirectionToHopper1(20,5,180),
         outOfDirectionLowToHopper1(20,5,69),

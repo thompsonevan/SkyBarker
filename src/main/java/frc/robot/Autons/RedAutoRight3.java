@@ -42,12 +42,12 @@ public class RedAutoRight3 extends AutonBase{
 
     int point = 0;
 
-    List<Pose2d> path = List.of(new Pose2d(new Translation2d(0,0), Rotation2d.fromDegrees(90)),
-                                new Pose2d(new Translation2d(5.3,-.29), Rotation2d.fromDegrees(10)), //4.82, .5
-                                new Pose2d(new Translation2d(-.05,-.125), Rotation2d.fromDegrees(90)),
-                                new Pose2d(new Translation2d(4.75, -.3), Rotation2d.fromDegrees(90)),
-                                new Pose2d(new Translation2d(4.9, 1.5), Rotation2d.fromDegrees(90)),
-                                new Pose2d(new Translation2d(3, .25), Rotation2d.fromDegrees(90)));
+    List<Pose2d> path = List.of(new Pose2d(new Translation2d(2.3,3.95), Rotation2d.fromDegrees(90)),
+                                new Pose2d(new Translation2d(7.6,3.66), Rotation2d.fromDegrees(10)), //4.82, .5
+                                new Pose2d(new Translation2d(2.25,3.2), Rotation2d.fromDegrees(90)),
+                                new Pose2d(new Translation2d(7.05, 3.65), Rotation2d.fromDegrees(90)),
+                                new Pose2d(new Translation2d(7.2, 5.45), Rotation2d.fromDegrees(90)),
+                                new Pose2d(new Translation2d(5.3, 3.5), Rotation2d.fromDegrees(90)));
 
     Trajectory trajectory;
 
@@ -101,7 +101,7 @@ public class RedAutoRight3 extends AutonBase{
             case driveToObject1:
                 driving = true;
                 armPos = ArmPos.intake;
-                if(timer.get() > .5){
+                if(timer.get() > trajectory.getTotalTimeSeconds()/2){
                     intakePos = IntakePos.collectCube;
                     intakeSpeed = IntakeSpeed.onCube;
                 }
@@ -198,7 +198,7 @@ public class RedAutoRight3 extends AutonBase{
 
                 armPos = ArmPos.intake;
 
-                if(timer.get() > 1.5){
+                if(timer.get() > trajectory.getTotalTimeSeconds()/2){
                     intakePos = IntakePos.collectCube;
                     intakeSpeed = IntakeSpeed.onCube;
                 }

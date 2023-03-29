@@ -28,6 +28,7 @@ import frc.robot.Autons.BlueAutoLeft;
 import frc.robot.Autons.BlueAutoLeft3;
 import frc.robot.Autons.BlueAutoLeftBalance;
 import frc.robot.Autons.BlueAutoMid1Bal;
+import frc.robot.Autons.BlueAutoRight2;
 import frc.robot.Autons.CableAuto;
 import frc.robot.Autons.OhCrap;
 import frc.robot.Autons.RedAutoMid1Bal;
@@ -60,6 +61,7 @@ public class Robot extends TimedRobot {
     private RedAutoRight3 redAutoRight3;
     private BlueAutoLeftBalance blueAutoLeftBalance;
     private CableAuto cableAuto;
+    private BlueAutoRight2 blueAutoRight2;
 
     LED leds;
 
@@ -90,6 +92,8 @@ public class Robot extends TimedRobot {
         m_chooser.addOption("Red Right Balance", "Red Right Balance");
         m_chooser.addOption("Blue Left Balance", "Blue Left Balance");
         m_chooser.addOption("Cable", "Cable");
+        m_chooser.addOption("Blue Right 2", "Blue Right 2");
+        m_chooser.addOption("Blue Right 2 Balance", "Blue Right 2 Balance");
 
         Shuffleboard.getTab("Competition")
         .add("Auto Selector", m_chooser)
@@ -114,6 +118,7 @@ public class Robot extends TimedRobot {
         redAutoRight3 = new RedAutoRight3();
         blueAutoLeftBalance = new BlueAutoLeftBalance();
         cableAuto = new CableAuto();
+        blueAutoRight2 = new BlueAutoRight2();
 
         camera.disabled();
 
@@ -124,7 +129,7 @@ public class Robot extends TimedRobot {
     @Override
     public void robotPeriodic() {
         arm.updatePose();
-        camera.logData();
+        // camera.logData();
         pigeon.logData();
         hopper.logData();
         arm.logdata();
@@ -177,6 +182,12 @@ public class Robot extends TimedRobot {
             autonCommader.initAuton(redAutoRight3);
         } else if(autonSelection == "Blue Left Balance"){
             autonCommader.initAuton(blueAutoLeftBalance);
+        } else if(autonSelection == "Blue Right 2"){
+            alliance = Alliance.Red;
+            autonCommader.initAuton(blueAutoRight2);
+        } else if(autonSelection == "Blue Right 2 Balance"){
+            alliance = Alliance.Red;
+            autonCommader.initAuton(blueAutoRight2);
         } else if(autonSelection == "Cable"){
             alliance = Alliance.Blue;
             autonCommader.initAuton(cableAuto);
@@ -186,15 +197,20 @@ public class Robot extends TimedRobot {
 
         autonCommader.allaince = alliance;
 
-        if(alliance == Alliance.Blue){
-            drivetrain.zero(-90);
-            autonCommader.auton.reset();
-            Pigeon.zeroSensor(-90);
-        } else {
-            drivetrain.zero(90);
-            autonCommader.auton.reset();
-            Pigeon.zeroSensor(90);
-        }
+        // if(alliance == Alliance.Blue){
+        //     drivetrain.zero(-90);
+        //     autonCommader.auton.reset();
+        //     Pigeon.zeroSensor(-90);
+        // } else {
+        //     drivetrain.zero(90);
+        //     autonCommader.auton.reset();
+        //     Pigeon.zeroSensor(90);
+        // }
+
+
+        drivetrain.zero(90, new Pose2d(2.3,3.95,Rotation2d.fromDegrees(90)));
+        autonCommader.auton.reset();
+        Pigeon.zeroSensor(90);
 
         leds.autonInit();
 
@@ -221,7 +237,11 @@ public class Robot extends TimedRobot {
 
         teleopCommander.allaince = alliance;
 
-        drivetrain.zero(Pigeon.getRotation2d().getDegrees());
+        if(Camera.getLeftDetecting()){
+
+        }
+    
+        drivetrain.zero();
 
         // camera.enabled();
 

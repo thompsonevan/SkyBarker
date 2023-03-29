@@ -181,20 +181,20 @@ public class Drivetrain{
             Pigeon.getRotation2d(),
             positions,
             new Pose2d(),
-            VecBuilder.fill(0.05, 0.05, Units.degreesToRadians(5)),
-            VecBuilder.fill(0.5, 0.5, Units.degreesToRadians(30))
+            VecBuilder.fill(0.05, 0.05, Units.degreesToRadians(2.5)),
+            VecBuilder.fill(5, 5, Units.degreesToRadians(60))
         );
 
         poseEstimator.resetPosition(Rotation2d.fromDegrees(0), positions, new Pose2d(0,0, Rotation2d.fromDegrees(0)));
     }
 
-    public void zero(double angle){
+    public void zero(double angle, Pose2d pose){
         frontLeftModule.zeroMotorPos();
         frontRightModule.zeroMotorPos();
         backLeftModule.zeroMotorPos();
         backRightModule.zeroMotorPos();
 
-        poseEstimator.resetPosition(Rotation2d.fromDegrees(angle), positions, new Pose2d(0,0, Rotation2d.fromDegrees(angle)));
+        poseEstimator.resetPosition(Rotation2d.fromDegrees(angle), positions, pose);
     }
 
     public void zero(){
@@ -398,9 +398,17 @@ public class Drivetrain{
         positions[3].angle = new Rotation2d(backRightModule.getSteerAngle());
         positions[3].distanceMeters = backRightPos;
 
-        // if(Camera.rightAprilDetected()){
-        //     poseEstimator.addVisionMeasurement(Camera.getRightBotPose(), Timer.getFPGATimestamp());
-        // }
+        if(Pigeon.getRotation2d().getDegrees() > 45 && Pigeon.getRotation2d().getDegrees() < 135){
+            if(Camera.getRightDetecting()){
+                // poseEstimator.addVisionMeasurement(Camera.getRightBotPose(), Timer.getFPGATimestamp());
+                poseEstimator.addVisionMeasurement(Camera.getRightBotPose(), Timer.getFPGATimestamp() - (Camera.getTargetingLatencyRight()/1000) - (Camera.getCaptureLatencyRight()/1000));
+            }
+    
+            if(Camera.getLeftDetecting()){
+                // poseEstimator.addVisionMeasurement(Camera.getLeftBotPose(), Timer.getFPGATimestamp());
+                poseEstimator.addVisionMeasurement(Camera.getLeftBotPose(), Timer.getFPGATimestamp() - (Camera.getTargetingLatencyLeft()/1000) - (Camera.getCaptureLatencyLeft()/1000));
+            }
+        }         
 
         poseEstimator.updateWithTime(Timer.getFPGATimestamp(), Pigeon.getRotation2d(), positions);
 
