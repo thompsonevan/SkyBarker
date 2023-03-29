@@ -143,9 +143,9 @@ public class AutonCommader extends RobotCommander{
     public boolean useNegativeSide() {
         double angle =MathUtil.inputModulus(Pigeon.getAngle(),-180,180);
         if (angle > -180 && angle < 0) {
-            return true;
-        } else  {
             return false;
+        } else  {
+            return true;
         }
     }
 

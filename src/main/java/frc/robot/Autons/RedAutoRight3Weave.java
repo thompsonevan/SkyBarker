@@ -44,9 +44,8 @@ public class RedAutoRight3Weave extends AutonBase{
 
     Trajectory drive;
     
-
     double armTime;
-
+    
     public RedAutoRight3Weave(){
         reset();
     }
@@ -70,11 +69,45 @@ public class RedAutoRight3Weave extends AutonBase{
     public void runAuto(){
         switch(autoState){
             case firstPlace:
+                driving = false;
+                if(!Arm.getAchivedPostion()){
+                    gripperSpeed = -.4;
+                    armPos = ArmPos.topNodeCone;
+                    armTime = timer.get();
+                } else {
+                    if(Math.abs(armTime - timer.get()) < .25){
+                        gripperSpeed = .75;
+                    } else {
+                        armPos = ArmPos.packagePos;
+                        gripperSpeed = 0;
+
+                        timer.reset();
+
+                        autoState = AutoState.driveToObject1;
+                    }
+                }
+            break;
+            case driveToObject1:
                 driving = true;
-                armPos = ArmPos.Zero;
+                if(Arm.getAchivedPostion()){
+                    armPos = ArmPos.groundGripperCone;
+                }
 
                 desState = drive.sample(timer.get());
                 targetTheta = Rotation2d.fromDegrees(-90);
+
+                driving = false;
+                armPos = ArmPos.groundGripperConePick;
+
+                gripperSpeed = -.8;
+            
+                if(timer.get() > 1){
+                    autoState = AutoState.driveToObject2;
+                }
+                
+            break;
+            case driveToObject2:
+                armPos = ArmPos.packagePos;
             break;
         }
 

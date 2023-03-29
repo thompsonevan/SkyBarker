@@ -44,7 +44,7 @@ public class Arm {
         outOfHopperToTop(40,10,180),
         outOfHumanPlayerInitialExtension(6.8,7.5,-12),
         humanPlayerReady(6.8,22,-67),
-        humanPlayerPickup(-7,21.5,-56.2),
+        humanPlayerPickup(-5.5,21.5,-56.2),
         outOfReturnFromHumanPlayer(20,22,-25),
         intakeConeGrab(0,10,0),
         outOfHopperToGround(5,4,-10),
@@ -52,7 +52,7 @@ public class Arm {
         groundGripperCone(-85,10.5,-175),
         groundGripperConePick(-92,10.5,-175),
         groundToHopper(-30,10,-160),
-        groundToHopper2(-5,10,-40),;
+        groundToHopper2(-5,10,-40);
 
         private final double shoulder;
         public double getShoulder() {
@@ -243,13 +243,22 @@ public class Arm {
     public enum ArmZone {
         hopper,
         negative,
-        postive, anyZone, none
+        postive, anyZone, none, ground
     }
 
 
+    // public boolean isGround(double shoulder, double extension, double elbow){
+    //     if(Math.abs(elbow) > 170 && (Math.abs(shoulder) > 80)){
+    //         return true;
+    //     } else{
+    //         return false;
+    //     }
+    // }
 
     public ArmZone determineArmZone(double shoulder, double extension, double elbow) {
 
+        // if(Math.abs(elbow) > 170 && (Math.abs(shoulder) > 80)){
+        //     return ArmZone.ground;
         if (elbow < -40 || (shoulder > 17 && shoulder < 22 && elbow < 10)) {
             return ArmZone.negative;
         } else if (elbow > 40 || (shoulder < -17 && shoulder > -22  && elbow > -10)) {
@@ -323,10 +332,7 @@ public class Arm {
     //armTargetPrevious is set to commander.getarmposition at the end of the teleop action.
 
     public void action(RobotCommander commander) {
-
         if(commander.getArmPosition() == ArmPos.intakeConeGrab){
-            
-
             if(determineZoneHandoff() == ArmZoneHandoff.armDownNotCenterIntakeDown){
                 if(extension.getExtensionPosition() < 20.5){
                 extension.goToPostion(21);
@@ -346,8 +352,6 @@ public class Arm {
                     shoulder.goToPostion(commander, 0);
                     elbow.goToPostion(0);
                     intake.IntakePeriodic (this.returnIntakePos(91), IntakeSpeed.none, commander);
-                    
-
             }
             //if the arm is up and not center, move intake down to let the arm center.
             //if the arm is up and center, the intake will move into position with the arm
@@ -371,8 +375,7 @@ public class Arm {
                 extension.goToPostion(21);;
                 shoulder.goToPostion(commander, 0);
                 elbow.goToPostion(0);
-                intake.IntakePeriodic (this.returnIntakePos(91), IntakeSpeed.none, commander);
-                
+                intake.IntakePeriodic (this.returnIntakePos(91), IntakeSpeed.none, commander);   
             }
             else if(determineZoneHandoff() == ArmZoneHandoff.armUpNotCenterIntakeDown){
                 extension.goToPostion(21);
@@ -461,7 +464,7 @@ public class Arm {
             shoulder.setMotorCommand(0.0);
             actualCommand = ArmPos.Zero;
             transitionStateInProgress = false;
-        } 
+        }
         //If the commanded position is != the previously set position
         else if (commander.getArmPosition() != armTargetPrevious) {
             if (useNegativeSide) {
@@ -518,7 +521,6 @@ public class Arm {
             else if (currentCommandedZone == ArmZone.negative && currentZone == ArmZone.hopper) {
                 if (commander.getArmPosition() == ArmPos.humanPlayerPickup || commander.getArmPosition() == ArmPos.humanPlayerReady) {
                     actualCommand = ArmPos.outOfHumanPlayerInitialExtension;
-
                 } else if (commander.getArmPosition() == ArmPos.groundGripperCone || commander.getArmPosition() == ArmPos.groundGripperConePick) {
                     actualCommand = ArmPos.outOfHopperToGround;
                 } else {

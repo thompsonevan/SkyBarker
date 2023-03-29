@@ -211,6 +211,7 @@ public class TeleopCommander extends RobotCommander{
             } else {
                 return ArmPos.middleNodeCone;
             }
+            // return ArmPos.groundGripperCone;
         } else if(operator.getAButton() || driver.getXButton()) {
             return ArmPos.packagePos;
         }else if(operator.getXButton()){
