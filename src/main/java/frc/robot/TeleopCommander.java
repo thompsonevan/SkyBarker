@@ -315,7 +315,9 @@ public class TeleopCommander extends RobotCommander{
             gripperMotorCommand = GRIPPER_HOLD_POWER + overrideGripper();
         } else if(this.getArmPosition() == ArmPos.humanPlayerPickup ){
             gripperMotorCommand = -1;
-        }else{
+        } else if (this.getArmPosition() == ArmPos.groundGripperConePick ){
+            gripperMotorCommand = -1;
+        } else{
             gripperMotorCommand = overrideGripper();
         }
 
