@@ -182,7 +182,7 @@ public class Drivetrain{
             positions,
             new Pose2d(),
             VecBuilder.fill(0.05, 0.05, Units.degreesToRadians(2.5)),
-            VecBuilder.fill(5, 5, Units.degreesToRadians(60))
+            VecBuilder.fill(10,10, Units.degreesToRadians(2000))
         );
 
         poseEstimator.resetPosition(Rotation2d.fromDegrees(0), positions, new Pose2d(0,0, Rotation2d.fromDegrees(0)));
@@ -375,7 +375,7 @@ public class Drivetrain{
         SmartDashboard.putNumber("Commanded Theta",theta.getDegrees());
         HotLogger.Log("TargetTheta", theta.getDegrees());
         SmartDashboard.putNumber("Commanded X", state.poseMeters.getX());
-        HotLogger.Log("TargetX", state.poseMeters.getY());
+        HotLogger.Log("TargetX", state.poseMeters.getX());
         SmartDashboard.putNumber("Commanded Y", state.poseMeters.getY());
         HotLogger.Log("TargetY", state.poseMeters.getY());
     }
@@ -398,17 +398,17 @@ public class Drivetrain{
         positions[3].angle = new Rotation2d(backRightModule.getSteerAngle());
         positions[3].distanceMeters = backRightPos;
 
-        if(Pigeon.getRotation2d().getDegrees() > 45 && Pigeon.getRotation2d().getDegrees() < 135){
-            if(Camera.getRightDetecting()){
-                // poseEstimator.addVisionMeasurement(Camera.getRightBotPose(), Timer.getFPGATimestamp());
-                poseEstimator.addVisionMeasurement(Camera.getRightBotPose(), Timer.getFPGATimestamp() - (Camera.getTargetingLatencyRight()/1000) - (Camera.getCaptureLatencyRight()/1000));
-            }
+        // if((Pigeon.getRotation2d().getDegrees() > 45 && Pigeon.getRotation2d().getDegrees() < 135) || (Pigeon.getRotation2d().getDegrees() < -45 && Pigeon.getRotation2d().getDegrees() > -135)){
+        //     if(Camera.getRightDetecting()){
+        //         // poseEstimator.addVisionMeasurement(Camera.getRightBotPose(), Timer.getFPGATimestamp());
+        //         poseEstimator.addVisionMeasurement(Camera.getRightBotPose(), Timer.getFPGATimestamp() - (Camera.getTargetingLatencyRight()/1000) - (Camera.getCaptureLatencyRight()/1000));
+        //     }
     
-            if(Camera.getLeftDetecting()){
-                // poseEstimator.addVisionMeasurement(Camera.getLeftBotPose(), Timer.getFPGATimestamp());
-                poseEstimator.addVisionMeasurement(Camera.getLeftBotPose(), Timer.getFPGATimestamp() - (Camera.getTargetingLatencyLeft()/1000) - (Camera.getCaptureLatencyLeft()/1000));
-            }
-        }         
+        //     if(Camera.getLeftDetecting() && Camera.isLeftGood()){
+        //         // poseEstimator.addVisionMeasurement(Camera.getLeftBotPose(), Timer.getFPGATimestamp());
+        //         poseEstimator.addVisionMeasurement(Camera.getLeftBotPose(), Timer.getFPGATimestamp() - (Camera.getTargetingLatencyLeft()/1000) - (Camera.getCaptureLatencyLeft()/1000));
+        //     }
+        // }
 
         poseEstimator.updateWithTime(Timer.getFPGATimestamp(), Pigeon.getRotation2d(), positions);
 

@@ -34,6 +34,7 @@ import frc.robot.Autons.OhCrap;
 import frc.robot.Autons.RedAutoMid1Bal;
 import frc.robot.Autons.RedAutoRight;
 import frc.robot.Autons.RedAutoRight3;
+import frc.robot.Autons.RedAutoRight3Weave;
 import frc.robot.Autons.RedAutoRightBalance;
 import frc.robot.sensors.Camera;
 import frc.robot.sensors.Pigeon;
@@ -62,6 +63,7 @@ public class Robot extends TimedRobot {
     private BlueAutoLeftBalance blueAutoLeftBalance;
     private CableAuto cableAuto;
     private BlueAutoRight2 blueAutoRight2;
+    private RedAutoRight3Weave weave;
 
     LED leds;
 
@@ -94,6 +96,7 @@ public class Robot extends TimedRobot {
         m_chooser.addOption("Cable", "Cable");
         m_chooser.addOption("Blue Right 2", "Blue Right 2");
         m_chooser.addOption("Blue Right 2 Balance", "Blue Right 2 Balance");
+        m_chooser.addOption("Weave", "Weave");
 
         Shuffleboard.getTab("Competition")
         .add("Auto Selector", m_chooser)
@@ -119,6 +122,7 @@ public class Robot extends TimedRobot {
         blueAutoLeftBalance = new BlueAutoLeftBalance();
         cableAuto = new CableAuto();
         blueAutoRight2 = new BlueAutoRight2();
+        weave = new RedAutoRight3Weave();
 
         camera.disabled();
 
@@ -188,6 +192,8 @@ public class Robot extends TimedRobot {
         } else if(autonSelection == "Blue Right 2 Balance"){
             alliance = Alliance.Red;
             autonCommader.initAuton(blueAutoRight2);
+        } else if(autonSelection == "Weave"){
+            autonCommader.initAuton(weave);
         } else if(autonSelection == "Cable"){
             alliance = Alliance.Blue;
             autonCommader.initAuton(cableAuto);
@@ -208,9 +214,9 @@ public class Robot extends TimedRobot {
         // }
 
 
-        drivetrain.zero(90, new Pose2d(2.3,3.95,Rotation2d.fromDegrees(90)));
+        drivetrain.zero(-90, new Pose2d(14.714, 3.905, Rotation2d.fromDegrees(-90)));
         autonCommader.auton.reset();
-        Pigeon.zeroSensor(90);
+        Pigeon.zeroSensor(-90);
 
         leds.autonInit();
 

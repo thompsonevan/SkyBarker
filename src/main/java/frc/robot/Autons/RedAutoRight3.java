@@ -42,12 +42,13 @@ public class RedAutoRight3 extends AutonBase{
 
     int point = 0;
 
-    List<Pose2d> path = List.of(new Pose2d(new Translation2d(2.3,3.95), Rotation2d.fromDegrees(90)),
-                                new Pose2d(new Translation2d(7.6,3.66), Rotation2d.fromDegrees(10)), //4.82, .5
-                                new Pose2d(new Translation2d(2.25,3.2), Rotation2d.fromDegrees(90)),
-                                new Pose2d(new Translation2d(7.05, 3.65), Rotation2d.fromDegrees(90)),
-                                new Pose2d(new Translation2d(7.2, 5.45), Rotation2d.fromDegrees(90)),
-                                new Pose2d(new Translation2d(5.3, 3.5), Rotation2d.fromDegrees(90)));
+    List<Pose2d> path = List.of(new Pose2d(new Translation2d(1.82,4.1), Rotation2d.fromDegrees(90)),
+                                new Pose2d(new Translation2d(6.75,3.6), Rotation2d.fromDegrees(10)), //4.82, .5
+                                new Pose2d(new Translation2d(1.82,3.7), Rotation2d.fromDegrees(90)),
+                                new Pose2d(new Translation2d(6.75, 3.65), Rotation2d.fromDegrees(90)),
+                                new Pose2d(new Translation2d(7, 5.45), Rotation2d.fromDegrees(90)),
+                                new Pose2d(new Translation2d(6.75, 3.65), Rotation2d.fromDegrees(90)),
+                                new Pose2d(new Translation2d(1.82,3.7), Rotation2d.fromDegrees(90)));
 
     Trajectory trajectory;
 
@@ -89,7 +90,7 @@ public class RedAutoRight3 extends AutonBase{
                         trajectory = createTrajectory(path.get(point), path.get(point+1),
                         Rotation2d.fromDegrees(-40), Rotation2d.fromDegrees(10),
                         4,2.5);
-                
+
                         point++;
 
                         timer.reset();

@@ -16,7 +16,7 @@ then
     last=$teamNumber
 fi
 
-address="admin@10.$first.$last.2"
+address="admin@10.0.67.2"
 
 if [ ! -d Logs ]; then
     mkdir Logs
