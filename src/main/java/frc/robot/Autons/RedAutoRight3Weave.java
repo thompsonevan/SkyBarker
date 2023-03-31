@@ -24,15 +24,15 @@ import edu.wpi.first.math.trajectory.Trajectory.State;
 
 public class RedAutoRight3Weave extends AutonBase{
     enum AutoState {
-        firstPlace,
-        driveToObject1,
-        pause1,
-        driveToObject2,
+        score1,
+        driveToCone,
+        chomp,
+        driveToConeScore,
         score2,
-        driveToObject3,
-        pause2,
-        driveToObject4,
+        driveToCube,
+        driveToScoreCube,
         score3,
+        balance,
         end
     }
 
@@ -42,71 +42,197 @@ public class RedAutoRight3Weave extends AutonBase{
 
     int point = 0;
 
-    Trajectory drive;
-    
+    Trajectory driveToCone;
+    Trajectory driveToScoreCone;
+    Trajectory driveToCube;
+    Trajectory driveToScoreCube;
+    Trajectory driveToBalance;
+
     double armTime;
     
     public RedAutoRight3Weave(){
+        driveToCone = importTraj("pathweaver/output/conechomp.wpilib.json");
+        driveToScoreCone = importTraj("pathweaver/output/conetoscore.wpilib.json");
+        driveToCube = importTraj("pathweaver/output/cubenotchomp.wpilib.json");
+        driveToScoreCube = importTraj("pathweaver/output/cubetoscore.wpilib.json");
+        driveToBalance = importTraj("pathweaver/output/cubetobalance.wpilib.json");
+
+        initalPose = driveToCone.getInitialPose();
+        initalAngle = -90;
+
         reset();
     }
 
     public void reset(){
         desState = new State();
-        targetTheta = Rotation2d.fromDegrees(-90);
-
-        point = 0;
         
         timer.reset();
         timer.start();
 
-        drive = importTraj("pathweaver/output/conechomp.wpilib.json");
+        targetTheta = Rotation2d.fromDegrees(initalAngle);
 
         armTime = 0;
 
-        autoState = AutoState.firstPlace;
+        autoState = AutoState.score1;
     }
 
     public void runAuto(){
         switch(autoState){
-            case firstPlace:
+            case score1:
                 driving = false;
                 if(!Arm.getAchivedPostion()){
-                    gripperSpeed = -.4;
+                    gripperSpeed = -.5;
                     armPos = ArmPos.topNodeCone;
                     armTime = timer.get();
                 } else {
-                    if(Math.abs(armTime - timer.get()) < .25){
+                    if(Math.abs(armTime - timer.get()) < .15){
                         gripperSpeed = .75;
                     } else {
-                        armPos = ArmPos.packagePos;
-                        gripperSpeed = 0;
-
                         timer.reset();
 
-                        autoState = AutoState.driveToObject1;
+                        autoState = AutoState.driveToCone;
                     }
                 }
             break;
-            case driveToObject1:
+            case driveToCone:
                 driving = true;
-                if(Arm.getAchivedPostion()){
-                    armPos = ArmPos.groundGripperCone;
-                }
 
-                desState = drive.sample(timer.get());
-                targetTheta = Rotation2d.fromDegrees(-90);
-
-                driving = false;
                 armPos = ArmPos.groundGripperConePick;
 
+                desState = driveToCone.sample(timer.get());
+                targetTheta = Rotation2d.fromDegrees(-90);
+
                 gripperSpeed = -.8;
-            
-                if(timer.get() > 1){
-                    autoState = AutoState.driveToObject2;
-                }
                 
+                if(Math.abs(Drivetrain.getPose().getX() - driveToCone.getStates().get(driveToCone.getStates().size()-1).poseMeters.getX()) < .05 &&
+                Math.abs(Drivetrain.getPose().getY() - driveToCone.getStates().get(driveToCone.getStates().size()-1).poseMeters.getY()) < .025){
+                    timer.reset();
+                    
+                    autoState = AutoState.chomp;
+                }
             break;
-            case driveToObject2:
+            case chomp:
+                driving = false;
+
+                gripperSpeed = -.8;
+
+                if(Arm.getAchivedPostion() && timer.get() > .35){
+                    timer.reset();
+                    
+                    autoState = AutoState.driveToConeScore;
+                }
+            break;
+            case driveToConeScore:
+                driving = true;
+
+                gripperSpeed = -.5;
+
+                armPos = ArmPos.topNodeCone;
+
+                desState = driveToScoreCone.sample(timer.get());
+                targetTheta = Rotation2d.fromDegrees(-90);
+
+                if(Math.abs(Drivetrain.getPose().getX() - driveToScoreCone.getStates().get(driveToScoreCone.getStates().size()-1).poseMeters.getX()) < .05 &&
+                Math.abs(Drivetrain.getPose().getY() - driveToScoreCone.getStates().get(driveToScoreCone.getStates().size()-1).poseMeters.getY()) < .075){
+                    timer.reset();
+                    
+                    autoState = AutoState.score2;
+
+                    gripperSpeed = .75;
+                }
+            break;
+            case score2:
+                driving = false;
+
+                if(timer.get() < .2){
+                    gripperSpeed = -.5;
+                } else {
+                    gripperSpeed = .75;
+                }
+
+                if(timer.get() > .85){
+                    timer.reset();
+                    autoState = AutoState.driveToCube;
+                }
+            break;
+            case driveToCube:
+                driving = true;
+
+                gripperSpeed = .5;
+
+                if(timer.get() > driveToCube.getTotalTimeSeconds() /2){
+                    intakePos = IntakePos.collectCube;
+                    intakeSpeed = IntakeSpeed.onCube;
+                }
+
+                armPos = ArmPos.intake;
+
+                desState = driveToCube.sample(timer.get());
+                targetTheta = Rotation2d.fromDegrees(-135);
+
+                if(Math.abs(Drivetrain.getPose().getX() - driveToCube.getStates().get(driveToCube.getStates().size()-1).poseMeters.getX()) < .075 &&
+                Math.abs(Drivetrain.getPose().getY() - driveToCube.getStates().get(driveToCube.getStates().size()-1).poseMeters.getY()) < .075){
+                    intakePos = IntakePos.cubeHandoff;
+                    intakeSpeed = IntakeSpeed.cubeHandoff;
+
+                    timer.reset();
+                    
+                    autoState = AutoState.driveToScoreCube;
+                }
+            break;
+            case driveToScoreCube:
+                driving = true;
+
+                gripperSpeed = -.5;
+
+                if(timer.get() > 2){
+                    armPos = ArmPos.topNodeCube;
+
+                    intakePos = IntakePos.armMoving;
+                    intakeSpeed = IntakeSpeed.none;
+                } else if(timer.get() > 1){
+                    armPos = ArmPos.packagePos;
+
+                    intakePos = IntakePos.cubeHandoff;
+                    intakeSpeed = IntakeSpeed.cubeHandoff;
+                }
+
+                desState = driveToScoreCube.sample(timer.get());
+                targetTheta = Rotation2d.fromDegrees(-90);
+
+                if(Math.abs(Drivetrain.getPose().getX() - driveToScoreCube.getStates().get(driveToScoreCube.getStates().size()-1).poseMeters.getX()) < .05 &&
+                Math.abs(Drivetrain.getPose().getY() - driveToScoreCube.getStates().get(driveToScoreCube.getStates().size()-1).poseMeters.getY()) < .05){
+                    timer.reset();
+                    
+                    autoState = AutoState.score3;
+                }
+            break;
+            case score3:
+                driving = false;
+                if(!Arm.getAchivedPostion()){
+                    gripperSpeed = -.5;
+                    armPos = ArmPos.topNodeCube;
+                    armTime = timer.get();
+                } else {
+                    if(Math.abs(armTime - timer.get()) < .45){
+                        gripperSpeed = .5;
+                    } else {
+                        timer.reset();
+
+                        autoState = AutoState.end;
+                    }
+                }
+            break;
+            case balance:
+                driving = true;
+
+                armPos = ArmPos.packagePos;
+
+                desState = driveToBalance.sample(timer.get());
+                targetTheta = Rotation2d.fromDegrees(-90);
+            break;
+            case end:
+                driving = false;
                 armPos = ArmPos.packagePos;
             break;
         }

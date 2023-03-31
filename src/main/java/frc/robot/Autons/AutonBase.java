@@ -26,6 +26,7 @@ public abstract class AutonBase {
     public Rotation2d targetTheta;
     public Timer timer;
     public Pose2d initalPose;
+    public double initalAngle;
     public Pose2d endingPose;
     public Arm.ArmPos armPos;
     public boolean intakeOn;

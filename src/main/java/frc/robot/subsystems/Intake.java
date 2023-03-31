@@ -218,7 +218,7 @@ public class Intake {
 
         SmartDashboard.putBoolean("_Breaking Things", robotCommander.getCubeStopIntake());
 
-        if(intakePos == IntakePos.cubeHandoff && Math.abs(angle - intakePos.getPositionReading()) < 20){
+        if(intakePos == IntakePos.cubeHandoff && Math.abs(angle - intakePos.getPositionReading()) < 15){
             speedMotor1.set(TalonFXControlMode.PercentOutput, -1);
             speedMotor2.set(TalonFXControlMode.PercentOutput, 1);
         } else if(!ballSensor.get() && intakeSpeed != IntakeSpeed.out){

@@ -30,6 +30,7 @@ import frc.robot.Autons.BlueAutoLeftBalance;
 import frc.robot.Autons.BlueAutoMid1Bal;
 import frc.robot.Autons.BlueAutoRight2;
 import frc.robot.Autons.CableAuto;
+import frc.robot.Autons.NewArmTest;
 import frc.robot.Autons.OhCrap;
 import frc.robot.Autons.RedAutoMid1Bal;
 import frc.robot.Autons.RedAutoRight;
@@ -64,6 +65,7 @@ public class Robot extends TimedRobot {
     private CableAuto cableAuto;
     private BlueAutoRight2 blueAutoRight2;
     private RedAutoRight3Weave weave;
+    private NewArmTest newArmTest;
 
     LED leds;
 
@@ -97,6 +99,7 @@ public class Robot extends TimedRobot {
         m_chooser.addOption("Blue Right 2", "Blue Right 2");
         m_chooser.addOption("Blue Right 2 Balance", "Blue Right 2 Balance");
         m_chooser.addOption("Weave", "Weave");
+        m_chooser.addOption("New Arm Test", "New Arm Test");
 
         Shuffleboard.getTab("Competition")
         .add("Auto Selector", m_chooser)
@@ -123,6 +126,7 @@ public class Robot extends TimedRobot {
         cableAuto = new CableAuto();
         blueAutoRight2 = new BlueAutoRight2();
         weave = new RedAutoRight3Weave();
+        newArmTest = new NewArmTest();
 
         camera.disabled();
 
@@ -197,7 +201,9 @@ public class Robot extends TimedRobot {
         } else if(autonSelection == "Cable"){
             alliance = Alliance.Blue;
             autonCommader.initAuton(cableAuto);
-        }else {
+        } else if(autonSelection == "New Arm Test"){
+            autonCommader.initAuton(newArmTest);
+        } else {
             autonCommader.initAuton(ohCrap);
         }
 
@@ -215,8 +221,10 @@ public class Robot extends TimedRobot {
 
 
         drivetrain.zero(-90, new Pose2d(14.714, 3.905, Rotation2d.fromDegrees(-90)));
+        // drivetrain.zero(autonCommader.auton.initalAngle, autonCommader.auton.initalPose);
         autonCommader.auton.reset();
         Pigeon.zeroSensor(-90);
+        // Pigeon.zeroSensor(autonCommader.auton.initalAngle);
 
         leds.autonInit();
 

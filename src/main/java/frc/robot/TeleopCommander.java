@@ -192,7 +192,7 @@ public class TeleopCommander extends RobotCommander{
     public ArmPos getArmPosition(){
         if (this.getManualMode()) {
             return ArmPos.manual;
-        } else if (operator.getPOV() == 90) {
+        } else if (operator.getLeftBumper()) { //operator.getPOV() == 90
             return ArmPos.intake;
         } else if (operator.getPOV() == 0) {
             return ArmPos.lowerNode;

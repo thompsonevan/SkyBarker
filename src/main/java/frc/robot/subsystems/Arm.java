@@ -49,10 +49,12 @@ public class Arm {
         intakeConeGrab(0,10,0),
         outOfHopperToGround(5,4,-10),
         outOfHopperToGround2(-35,4,-175),
-        groundGripperCone(-85,10.5,-175),
+        groundGripperCone(-83.5,10.5,-175),
         groundGripperConePick(-92,10.5,-175),
         groundToHopper(-30,10,-160),
-        groundToHopper2(-5,10,-40);
+        groundToHopper2(-5,10,-40),
+        topToGround(0,20,181),
+        groundToTop(0, 15, -175);
 
         private final double shoulder;
         public double getShoulder() {
@@ -382,14 +384,12 @@ public class Arm {
                 shoulder.goToPostion(commander, 0);
                 elbow.goToPostion(0);
                 intake.IntakePeriodic (this.returnIntakePos(91), IntakeSpeed.none, commander);
-                
             }
             else if(determineZoneHandoff() == ArmZoneHandoff.armUpCenterIntakeDown){
                 extension.goToPostion(21);
                 shoulder.goToPostion(commander, 0);
                 elbow.goToPostion(0);
-                intake.IntakePeriodic (this.returnIntakePos(91), IntakeSpeed.none, commander);
-                
+                intake.IntakePeriodic (this.returnIntakePos(91), IntakeSpeed.none, commander);  
             }
             else if(determineZoneHandoff() == ArmZoneHandoff.armDownNotCenterIntakeUp){
                 if(intake.angleEncoder.getAbsolutePosition() > 90){
@@ -438,11 +438,7 @@ public class Arm {
                 shoulder.goToPostion(commander, 0);
                 elbow.goToPostion(0);
                 intake.IntakePeriodic (this.returnIntakePos(91), IntakeSpeed.none, commander);
-                
             }
-            
-            
-
         }
 
 
@@ -464,6 +460,64 @@ public class Arm {
             shoulder.setMotorCommand(0.0);
             actualCommand = ArmPos.Zero;
             transitionStateInProgress = false;
+        }
+        // My bad work around for going straight from top cone to cone pickup
+        else if ((commander.getArmPosition() == ArmPos.groundGripperConePick || commander.getArmPosition() == ArmPos.groundGripperCone) && armTargetPrevious == ArmPos.topNodeCone || actualCommand == ArmPos.topToGround){
+            if(useNegativeSide){
+                if(shoulder.getShoulderAngle() < -32.5){
+                    actualCommand = ArmPos.topToGround;
+                } else if(elbow.getElbowAngle() < -173){
+                    actualCommand = ArmPos.groundGripperCone;
+                } else {
+                    actualCommand = commander.getArmPosition();
+                }
+            } else {
+                if(shoulder.getShoulderAngle() > 32.5){
+                    actualCommand = ArmPos.topToGround;
+                } else if(elbow.getElbowAngle() < -172.5){
+                    actualCommand = ArmPos.groundGripperCone;
+                } else {
+                    actualCommand = commander.getArmPosition();
+                }
+            }
+        }
+        else if (commander.getArmPosition() == ArmPos.topNodeCone && (armTargetPrevious == ArmPos.groundGripperConePick || armTargetPrevious == ArmPos.groundGripperCone) || actualCommand == ArmPos.groundToTop){
+            // if(useNegativeSide){
+            //     if(shoulder.getShoulderAngle() < 25){
+            //         actualCommand = ArmPos.groundToTop;
+            //     } else {
+            //         actualCommand = commander.getArmPosition();
+            //     }
+            // } else {
+            //     if(shoulder.getShoulderAngle() < 25){
+            //         actualCommand = ArmPos.groundToTop;
+            //     } else {
+            //         actualCommand = commander.getArmPosition();
+            //     }
+            // }
+            SmartDashboard.putNumber("Cur SHoulder ANgle",shoulder.getShoulderAngle());
+
+            // if(shoulder.getShoulderAngle() < -50){
+            //     actualCommand = ArmPos.groundToTop;
+            //     SmartDashboard.putBoolean("AHHHHHH", true);
+            // } else {
+            //     actualCommand = commander.getArmPosition();
+            //     SmartDashboard.putBoolean("AHHHHHH", false);
+            // }
+
+            if(shoulder.getShoulderAngle() > -75){
+                actualCommand = commander.getArmPosition();
+                SmartDashboard.putBoolean("AHHHHHH", false);
+            } else {
+                actualCommand = ArmPos.groundToTop;
+                SmartDashboard.putBoolean("AHHHHHH", true);
+            }
+
+            // if(shoulder.getShoulderAngle()  25){
+            //     actualCommand = ArmPos.groundToTop;
+            // } else {
+            //     actualCommand = commander.getArmPosition();
+            // }
         }
         //If the commanded position is != the previously set position
         else if (commander.getArmPosition() != armTargetPrevious) {

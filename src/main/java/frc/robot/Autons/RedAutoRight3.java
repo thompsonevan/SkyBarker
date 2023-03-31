@@ -124,6 +124,7 @@ public class RedAutoRight3 extends AutonBase{
                 intakeSpeed = IntakeSpeed.cubeHandoff;
 
                 armPos = ArmPos.intake;
+                
                 gripperSpeed = -.4;
                 if(timer.get() > .25){
                     trajectory = createTrajectory(path.get(point), path.get(point+1), 
@@ -146,6 +147,8 @@ public class RedAutoRight3 extends AutonBase{
 
                 if(timer.get() > 1.25){
                     armPos = ArmPos.topNodeCube;
+                    intakePos = IntakePos.armMoving;
+                    intakeSpeed = IntakeSpeed.none;
                 } else if(timer.get() > .75){
                     armPos = ArmPos.packagePos;
                 }
