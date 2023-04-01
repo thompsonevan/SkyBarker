@@ -80,24 +80,28 @@ public class RedAutoRight3Weave extends AutonBase{
         switch(autoState){
             case score1:
                 driving = false;
-                if(!Arm.getAchivedPostion()){
-                    gripperSpeed = -.5;
-                    armPos = ArmPos.topNodeCone;
-                    armTime = timer.get();
-                } else {
-                    if(Math.abs(armTime - timer.get()) < .15){
-                        gripperSpeed = .75;
+                if(timer.get() > .5){
+                    if(!Arm.getAchivedPostion()){
+                        gripperSpeed = -.5;
+                        armPos = ArmPos.topNodeCone;
+                        armTime = timer.get();
                     } else {
-                        timer.reset();
-
-                        autoState = AutoState.driveToCone;
+                        if(Math.abs(armTime - timer.get()) < .35){
+                            gripperSpeed = .75;
+                        } else {
+                            timer.reset();
+    
+                            autoState = AutoState.driveToCone;
+                        }
                     }
+                } else {
+                    armPos = ArmPos.topNodeCone;
                 }
             break;
             case driveToCone:
                 driving = true;
 
-                armPos = ArmPos.groundGripperConePick;
+                armPos = ArmPos.groundGripperCone;
 
                 desState = driveToCone.sample(timer.get());
                 targetTheta = Rotation2d.fromDegrees(-90);
@@ -106,6 +110,8 @@ public class RedAutoRight3Weave extends AutonBase{
                 
                 if(Math.abs(Drivetrain.getPose().getX() - driveToCone.getStates().get(driveToCone.getStates().size()-1).poseMeters.getX()) < .05 &&
                 Math.abs(Drivetrain.getPose().getY() - driveToCone.getStates().get(driveToCone.getStates().size()-1).poseMeters.getY()) < .025){
+                    armPos = ArmPos.groundGripperConePick;
+                    
                     timer.reset();
                     
                     autoState = AutoState.chomp;
@@ -114,9 +120,11 @@ public class RedAutoRight3Weave extends AutonBase{
             case chomp:
                 driving = false;
 
+                armPos = ArmPos.groundGripperConePick;
+
                 gripperSpeed = -.8;
 
-                if(Arm.getAchivedPostion() && timer.get() > .35){
+                if(timer.get() > .35){
                     timer.reset();
                     
                     autoState = AutoState.driveToConeScore;
@@ -125,7 +133,7 @@ public class RedAutoRight3Weave extends AutonBase{
             case driveToConeScore:
                 driving = true;
 
-                gripperSpeed = -.5;
+                gripperSpeed = -.8;
 
                 armPos = ArmPos.topNodeCone;
 
@@ -160,20 +168,22 @@ public class RedAutoRight3Weave extends AutonBase{
 
                 gripperSpeed = .5;
 
-                if(timer.get() > driveToCube.getTotalTimeSeconds() /2){
+                if(timer.get() > driveToCube.getTotalTimeSeconds() /3){
                     intakePos = IntakePos.collectCube;
                     intakeSpeed = IntakeSpeed.onCube;
                 }
 
                 armPos = ArmPos.intake;
 
+                hopperSpeed = -.3;
+
                 desState = driveToCube.sample(timer.get());
                 targetTheta = Rotation2d.fromDegrees(-135);
 
                 if(Math.abs(Drivetrain.getPose().getX() - driveToCube.getStates().get(driveToCube.getStates().size()-1).poseMeters.getX()) < .075 &&
                 Math.abs(Drivetrain.getPose().getY() - driveToCube.getStates().get(driveToCube.getStates().size()-1).poseMeters.getY()) < .075){
-                    intakePos = IntakePos.cubeHandoff;
-                    intakeSpeed = IntakeSpeed.cubeHandoff;
+                    // intakePos = IntakePos.cubeHandoff;
+                    // intakeSpeed = IntakeSpeed.cubeHandoff;
 
                     timer.reset();
                     
@@ -185,16 +195,21 @@ public class RedAutoRight3Weave extends AutonBase{
 
                 gripperSpeed = -.5;
 
+                intakePos = IntakePos.cubeHandoff;
+                intakeSpeed = IntakeSpeed.cubeHandoff;
+
                 if(timer.get() > 2){
                     armPos = ArmPos.topNodeCube;
-
-                    intakePos = IntakePos.armMoving;
-                    intakeSpeed = IntakeSpeed.none;
-                } else if(timer.get() > 1){
+                    overrideIntake = false;
+                } else if(timer.get() > 1.5){
                     armPos = ArmPos.packagePos;
 
-                    intakePos = IntakePos.cubeHandoff;
-                    intakeSpeed = IntakeSpeed.cubeHandoff;
+                    if(timer.get() > 1){
+                        hopperSpeed = .25;
+                        overrideIntake = false;
+                    } else {
+                        overrideIntake = true;
+                    }
                 }
 
                 desState = driveToScoreCube.sample(timer.get());
@@ -203,24 +218,39 @@ public class RedAutoRight3Weave extends AutonBase{
                 if(Math.abs(Drivetrain.getPose().getX() - driveToScoreCube.getStates().get(driveToScoreCube.getStates().size()-1).poseMeters.getX()) < .05 &&
                 Math.abs(Drivetrain.getPose().getY() - driveToScoreCube.getStates().get(driveToScoreCube.getStates().size()-1).poseMeters.getY()) < .05){
                     timer.reset();
-                    
+
+                    intakePos = IntakePos.armMoving;
+                    intakeSpeed = IntakeSpeed.none;
+
                     autoState = AutoState.score3;
                 }
             break;
             case score3:
                 driving = false;
-                if(!Arm.getAchivedPostion()){
-                    gripperSpeed = -.5;
-                    armPos = ArmPos.topNodeCube;
-                    armTime = timer.get();
-                } else {
-                    if(Math.abs(armTime - timer.get()) < .45){
-                        gripperSpeed = .5;
-                    } else {
-                        timer.reset();
+                // if(!Arm.getAchivedPostion()){
+                //     gripperSpeed = -.5;
+                //     armPos = ArmPos.topNodeCube;
+                //     armTime = timer.get();
+                // } else {
+                //     if(Math.abs(armTime - timer.get()) < .45){
+                //         gripperSpeed = .5;
+                //     } else {
+                //         timer.reset();
 
-                        autoState = AutoState.end;
-                    }
+                //         autoState = AutoState.end;
+                //     }
+                // }
+                driving = false;
+
+                if(timer.get() < 1){
+                    gripperSpeed = -.5;
+                } else {
+                    gripperSpeed = .5;
+                }
+
+                if(timer.get() > 1.5){
+                    timer.reset();
+                    autoState = AutoState.end;
                 }
             break;
             case balance:
@@ -233,7 +263,7 @@ public class RedAutoRight3Weave extends AutonBase{
             break;
             case end:
                 driving = false;
-                armPos = ArmPos.packagePos;
+                // armPos = ArmPos.packagePos;
             break;
         }
 

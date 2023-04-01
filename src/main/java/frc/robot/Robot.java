@@ -251,6 +251,8 @@ public class Robot extends TimedRobot {
 
         teleopCommander.allaince = alliance;
 
+        Pigeon.zeroSensor(Pigeon.getAngle()+180);
+
         if(Camera.getLeftDetecting()){
 
         }
@@ -260,7 +262,7 @@ public class Robot extends TimedRobot {
         // camera.enabled();
 
         arm.brakeMode();
-        arm.initilizeOffsets();
+        // arm.initilizeOffsets();
     }
 
     @Override

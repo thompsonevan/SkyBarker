@@ -141,7 +141,7 @@ public class TeleopCommander extends RobotCommander{
                 if (getArmPosition() != ArmPos.Zero && 
                     getArmPosition() != ArmPos.manual && 
                     getArmPosition() != ArmPos.intake && 
-                    Intake.angleEncoderAngle < 115) { 
+                    Intake.angleEncoderAngle < 130) { 
                         intakeArray[0] = 102;
                         intakePos = IntakePos.armMoving;
                 } else if(getCubeMode()) {
@@ -352,6 +352,12 @@ public class TeleopCommander extends RobotCommander{
 
     public boolean getAutoLine() {
         return false;
+    }
+
+    @Override
+    public double getHopperSpeed() {
+        // TODO Auto-generated method stub
+        return 0;
     }
     
 }

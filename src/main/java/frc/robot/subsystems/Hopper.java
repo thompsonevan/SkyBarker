@@ -35,14 +35,16 @@ public class Hopper {
 
     public void HopperPeriodic(RobotCommander commander){
         // if( > .5){
-        if(Math.abs(commander.getGripperCommand()) > 0.1){
-          hopperMotor.set(.1);
-        } else {
-          hopperMotor.set(-.1);
-        }
+        // if(Math.abs(commander.getGripperCommand()) > 0.1){
+        //   hopperMotor.set(.1);
+        // } else {
+        //   hopperMotor.set(-.1);
+        // }
         // } else {
         //   hopperMotor.set(0);
         // }
+
+        hopperMotor.set(commander.getHopperSpeed());
     }
 
   public void logData(){
