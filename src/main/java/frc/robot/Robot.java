@@ -36,6 +36,7 @@ import frc.robot.Autons.RedAutoMid1Bal;
 import frc.robot.Autons.RedAutoRight;
 import frc.robot.Autons.RedAutoRight3;
 import frc.robot.Autons.RedAutoRight3Weave;
+import frc.robot.Autons.RedAutoRight3WeaveBal;
 import frc.robot.Autons.RedAutoRightBalance;
 import frc.robot.sensors.Camera;
 import frc.robot.sensors.Pigeon;
@@ -66,6 +67,7 @@ public class Robot extends TimedRobot {
     private BlueAutoRight2 blueAutoRight2;
     private RedAutoRight3Weave weave;
     private NewArmTest newArmTest;
+    private RedAutoRight3WeaveBal redRight3Bal;
 
     LED leds;
 
@@ -100,6 +102,7 @@ public class Robot extends TimedRobot {
         m_chooser.addOption("Blue Right 2 Balance", "Blue Right 2 Balance");
         m_chooser.addOption("Weave", "Weave");
         m_chooser.addOption("New Arm Test", "New Arm Test");
+        m_chooser.addOption("Red Right 3 Bal", "Red Right 3 Bal");
 
         Shuffleboard.getTab("Competition")
         .add("Auto Selector", m_chooser)
@@ -127,6 +130,7 @@ public class Robot extends TimedRobot {
         blueAutoRight2 = new BlueAutoRight2();
         weave = new RedAutoRight3Weave();
         newArmTest = new NewArmTest();
+        redRight3Bal = new RedAutoRight3WeaveBal();
 
         camera.disabled();
 
@@ -205,6 +209,8 @@ public class Robot extends TimedRobot {
             autonCommader.initAuton(cableAuto);
         } else if(autonSelection == "New Arm Test"){
             autonCommader.initAuton(newArmTest);
+        } else if(autonSelection == "Red Right 3 Bal"){
+            autonCommader.initAuton(redRight3Bal);
         } else {
             autonCommader.initAuton(ohCrap);
         }

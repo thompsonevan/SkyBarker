@@ -55,9 +55,10 @@ public class Arm {
         groundToHopper2(-5,10,-40),
         topToGround(0,20,181),
         yeetCubeInt(-5,7.5,0),
-        yeetCube(20,10,177.5),
+        yeetCube(20,10,147.5),
         yeetCubeToPack(0, 10, 0),
         groundToTop(0, 15, -175);
+        // topNodeAuto();
 
         private final double shoulder;
         public double getShoulder() {
