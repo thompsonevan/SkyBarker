@@ -152,6 +152,7 @@ public class Robot extends TimedRobot {
         SmartDashboard.putString("Robot Mode", "Disabled");
 
         camera.disabled();
+        arm.brakeMode();
         // arm.coastMode();
 
         leds.disabledAction();
@@ -161,6 +162,7 @@ public class Robot extends TimedRobot {
     public void disabledPeriodic() {
         arm.armPercentOutZero();
         // arm.coastMode();
+        arm.brakeMode();
     }
 
     @Override
@@ -218,6 +220,9 @@ public class Robot extends TimedRobot {
         //     autonCommader.auton.reset();
         //     Pigeon.zeroSensor(90);
         // }
+
+
+        arm.brakeMode();
 
 
         drivetrain.zero(-90, new Pose2d(14.714, 3.905, Rotation2d.fromDegrees(-90)));

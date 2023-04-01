@@ -45,6 +45,9 @@ public class Hopper {
         // }
 
         hopperMotor.set(commander.getHopperSpeed());
+        
+                // hopperMotor.set(.1);
+
     }
 
   public void logData(){

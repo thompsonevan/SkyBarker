@@ -86,7 +86,7 @@ public class RedAutoRight3Weave extends AutonBase{
                         armPos = ArmPos.topNodeCone;
                         armTime = timer.get();
                     } else {
-                        if(Math.abs(armTime - timer.get()) < .35){
+                        if(Math.abs(armTime - timer.get()) < .45){
                             gripperSpeed = .75;
                         } else {
                             timer.reset();
@@ -106,7 +106,13 @@ public class RedAutoRight3Weave extends AutonBase{
                 desState = driveToCone.sample(timer.get());
                 targetTheta = Rotation2d.fromDegrees(-90);
 
-                gripperSpeed = -.8;
+                if(timer.get() < 1){
+                    gripperSpeed = .75;
+                } else {
+                    gripperSpeed = -.8;
+
+                }
+                
                 
                 if(Math.abs(Drivetrain.getPose().getX() - driveToCone.getStates().get(driveToCone.getStates().size()-1).poseMeters.getX()) < .05 &&
                 Math.abs(Drivetrain.getPose().getY() - driveToCone.getStates().get(driveToCone.getStates().size()-1).poseMeters.getY()) < .025){
@@ -152,13 +158,13 @@ public class RedAutoRight3Weave extends AutonBase{
             case score2:
                 driving = false;
 
-                if(timer.get() < .2){
+                if(timer.get() < .5){
                     gripperSpeed = -.5;
                 } else {
                     gripperSpeed = .75;
                 }
 
-                if(timer.get() > .85){
+                if(timer.get() > 1.2){
                     timer.reset();
                     autoState = AutoState.driveToCube;
                 }
@@ -175,7 +181,7 @@ public class RedAutoRight3Weave extends AutonBase{
 
                 armPos = ArmPos.intake;
 
-                hopperSpeed = -.3;
+                hopperSpeed = -.2;
 
                 desState = driveToCube.sample(timer.get());
                 targetTheta = Rotation2d.fromDegrees(-135);
@@ -199,18 +205,17 @@ public class RedAutoRight3Weave extends AutonBase{
                 intakeSpeed = IntakeSpeed.cubeHandoff;
 
                 if(timer.get() > 2){
-                    armPos = ArmPos.topNodeCube;
-                    overrideIntake = false;
-                } else if(timer.get() > 1.5){
+                    armPos = ArmPos.yeetCube;
+                } else if(timer.get() > 1.25){
                     armPos = ArmPos.packagePos;
-
-                    if(timer.get() > 1){
-                        hopperSpeed = .25;
-                        overrideIntake = false;
-                    } else {
-                        overrideIntake = true;
-                    }
                 }
+
+                if(timer.get() < 1){
+                    hopperSpeed = -.3;
+                } 
+                // else {
+                //     hopperSpeed = .3;
+                // }
 
                 desState = driveToScoreCube.sample(timer.get());
                 targetTheta = Rotation2d.fromDegrees(-90);
@@ -242,10 +247,10 @@ public class RedAutoRight3Weave extends AutonBase{
                 // }
                 driving = false;
 
-                if(timer.get() < 1){
-                    gripperSpeed = -.5;
+                if(timer.get() > 1){
+                    gripperSpeed = 1;
                 } else {
-                    gripperSpeed = .5;
+                    gripperSpeed = -.5;
                 }
 
                 if(timer.get() > 1.5){

@@ -54,6 +54,9 @@ public class Arm {
         groundToHopper(-30,10,-160),
         groundToHopper2(-5,10,-40),
         topToGround(0,20,181),
+        yeetCubeInt(-5,7.5,0),
+        yeetCube(20,10,177.5),
+        yeetCubeToPack(0, 10, 0),
         groundToTop(0, 15, -175);
 
         private final double shoulder;
@@ -93,8 +96,6 @@ public class Arm {
             this.shoulder = shoulder;
         }
     }
-
-        
     }
 
     public static enum IntakePos{
@@ -461,10 +462,24 @@ public class Arm {
             actualCommand = ArmPos.Zero;
             transitionStateInProgress = false;
         }
+        else if((commander.getArmPosition() == ArmPos.packagePos && armTargetPrevious == ArmPos.yeetCube) || actualCommand == ArmPos.yeetCubeToPack){
+            if(Math.abs(shoulder.getShoulderAngle()) > 2 || Math.abs(elbow.getElbowAngle()) > 7.5){
+                actualCommand = ArmPos.yeetCubeToPack;
+            } else {
+                actualCommand = ArmPos.packagePos;
+            }
+        }
+        else if(commander.getArmPosition() == ArmPos.yeetCube){
+            if(shoulder.getShoulderAngle() > -4.5 && extension.getExtensionPosition() < 7){
+                actualCommand = ArmPos.yeetCubeInt;
+            } else {
+                actualCommand = ArmPos.yeetCube;
+            }
+        }
         // My bad work around for going straight from top cone to cone pickup
         else if ((commander.getArmPosition() == ArmPos.groundGripperConePick || commander.getArmPosition() == ArmPos.groundGripperCone) && armTargetPrevious == ArmPos.topNodeCone || actualCommand == ArmPos.topToGround){
             if(useNegativeSide){
-                if(shoulder.getShoulderAngle() < -35){
+                if(shoulder.getShoulderAngle() < -45){
                     actualCommand = ArmPos.topToGround;
                 // } else if(elbow.getElbowAngle() < -173){
                 //     actualCommand = ArmPos.groundGripperCone;
@@ -472,10 +487,10 @@ public class Arm {
                     actualCommand = commander.getArmPosition();
                 }
             } else {
-                if(shoulder.getShoulderAngle() > 32.5){
+                if(shoulder.getShoulderAngle() > 45){
                     actualCommand = ArmPos.topToGround;
-                } else if(elbow.getElbowAngle() < -172.5){
-                    actualCommand = ArmPos.groundGripperCone;
+                // } else if(elbow.getElbowAngle() < -172.5){
+                //     actualCommand = ArmPos.groundGripperCone;
                 } else {
                     actualCommand = commander.getArmPosition();
                 }

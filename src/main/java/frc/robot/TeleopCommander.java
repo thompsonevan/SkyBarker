@@ -206,11 +206,12 @@ public class TeleopCommander extends RobotCommander{
                 return ArmPos.topNodeCone;
             }
         } else if(operator.getBButton()){
-            if(getCubeMode()){
-                return ArmPos.middleNodeCube;
-            } else {
-                return ArmPos.middleNodeCone;
-            }
+            // if(getCubeMode()){
+            //     return ArmPos.middleNodeCube;
+            // } else {
+            //     return ArmPos.middleNodeCone;
+            // }
+            return ArmPos.yeetCube;
             // return ArmPos.groundGripperCone;
         } else if(operator.getAButton() || driver.getXButton()) {
             return ArmPos.packagePos;
