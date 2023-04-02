@@ -50,6 +50,9 @@ public class RedAutoRight3 extends AutonBase{
                                 new Pose2d(new Translation2d(6.75, 3.65), Rotation2d.fromDegrees(90)),
                                 new Pose2d(new Translation2d(1.82,3.7), Rotation2d.fromDegrees(90)));
 
+
+
+                                
     Trajectory trajectory;
 
     double armTime;

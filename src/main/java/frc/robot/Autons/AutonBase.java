@@ -22,6 +22,7 @@ import frc.robot.subsystems.Arm.IntakePos;
 import frc.robot.subsystems.Arm.IntakeSpeed;
 
 public abstract class AutonBase {
+    public boolean newAutoBal;
     public boolean overrideIntake;
     public double hopperSpeed;
     public State desState;

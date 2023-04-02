@@ -55,7 +55,6 @@ public class RedAutoRight3Weave extends AutonBase{
         driveToScoreCone = importTraj("pathweaver/output/conetoscore.wpilib.json");
         driveToCube = importTraj("pathweaver/output/cubenotchomp.wpilib.json");
         driveToScoreCube = importTraj("pathweaver/output/cubetoscore.wpilib.json");
-        driveToBalance = importTraj("pathweaver/output/cubetobalance.wpilib.json");
 
         initalPose = driveToCone.getInitialPose();
         initalAngle = -90;

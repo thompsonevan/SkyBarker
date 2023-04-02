@@ -55,7 +55,7 @@ public class Arm {
         groundToHopper2(-5,10,-40),
         topToGround(0,20,181),
         yeetCubeInt(-5,7.5,0),
-        yeetCube(20,10,147.5),
+        yeetCube(20,15,147.5),
         yeetCubeToPack(0, 10, 0),
         groundToTop(0, 15, -175);
         // topNodeAuto();
@@ -329,9 +329,6 @@ public class Arm {
         else return IntakePos.none;
     }
 
-
-    
-
     //commander.getArmPosition is the commanded position using the joysticks in the teleop commander.
     //armTargetPrevious is set to commander.getarmposition at the end of the teleop action.
 
@@ -498,30 +495,10 @@ public class Arm {
             }
         }
         else if (commander.getArmPosition() == ArmPos.topNodeCone && (armTargetPrevious == ArmPos.groundGripperConePick || armTargetPrevious == ArmPos.groundGripperCone) || actualCommand == ArmPos.groundToTop){
-            // if(useNegativeSide){
-            //     if(shoulder.getShoulderAngle() < 25){
-            //         actualCommand = ArmPos.groundToTop;
-            //     } else {
-            //         actualCommand = commander.getArmPosition();
-            //     }
-            // } else {
-            //     if(shoulder.getShoulderAngle() < 25){
-            //         actualCommand = ArmPos.groundToTop;
-            //     } else {
-            //         actualCommand = commander.getArmPosition();
-            //     }
-            // }
+
             SmartDashboard.putNumber("Cur SHoulder ANgle",shoulder.getShoulderAngle());
 
-            // if(shoulder.getShoulderAngle() < -50){
-            //     actualCommand = ArmPos.groundToTop;
-            //     SmartDashboard.putBoolean("AHHHHHH", true);
-            // } else {
-            //     actualCommand = commander.getArmPosition();
-            //     SmartDashboard.putBoolean("AHHHHHH", false);
-            // }
-
-            if(shoulder.getShoulderAngle() > -75){
+            if(Math.abs(shoulder.getShoulderAngle()) < 75){
                 actualCommand = commander.getArmPosition();
                 SmartDashboard.putBoolean("AHHHHHH", false);
             } else {

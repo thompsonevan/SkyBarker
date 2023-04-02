@@ -349,6 +349,12 @@ public class Drivetrain{
                 }
             }
             setSwerveModuleStates(chassisSpeeds);
+        } else if(autonCommader.getNewAutoBal()){
+            chassisSpeeds = new ChassisSpeeds(
+                0,
+                -Pigeon.getRoll() * .03,
+                0
+            );
         } else if (autonCommader.getXMode()){
             setModulePositions();
         }else {
@@ -357,9 +363,6 @@ public class Drivetrain{
 
         SmartDashboard.putNumber("_Time", timer.get());
     }
-
-
-
 
     public void driveToPos(State state, Rotation2d theta){
         ChassisSpeeds speeds = holonomicController.calculate(poseEstimator.getEstimatedPosition(), 

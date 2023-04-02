@@ -22,7 +22,7 @@ import edu.wpi.first.math.trajectory.TrajectoryConfig;
 import edu.wpi.first.math.trajectory.TrajectoryGenerator;
 import edu.wpi.first.math.trajectory.Trajectory.State;
 
-public class RedAutoRight3WeaveBal extends AutonBase{
+public class BlueAutoLeft3WeaveBal extends AutonBase{
     enum AutoState {
         score1,
         driveToCone,
@@ -38,9 +38,9 @@ public class RedAutoRight3WeaveBal extends AutonBase{
 
     public AutoState autoState;
 
-    public Timer timer = new Timer();
+    public Timer totTimer = new Timer();
 
-    public Timer totTime = new Timer();
+    public Timer timer = new Timer();
 
     int point = 0;
 
@@ -52,12 +52,12 @@ public class RedAutoRight3WeaveBal extends AutonBase{
 
     double armTime;
     
-    public RedAutoRight3WeaveBal(){
-        driveToCone = importTraj("pathweaver/output/conechomp.wpilib.json");
-        driveToScoreCone = importTraj("pathweaver/output/conetoscore.wpilib.json");
-        driveToCube = importTraj("pathweaver/output/cubenotchomp.wpilib.json");
-        driveToScoreCube = importTraj("pathweaver/output/cubetoscore.wpilib.json");
-        driveToBalance = importTraj("pathweaver/output/balance.wpilib.json");
+    public BlueAutoLeft3WeaveBal(){
+        driveToCone = importTraj("pathweaver/output/bconechomp.wpilib.json");
+        driveToScoreCone = importTraj("pathweaver/output/bconetoscore.wpilib.json");
+        driveToCube = importTraj("pathweaver/output/bcubenotchomp.wpilib.json");
+        driveToScoreCube = importTraj("pathweaver/output/bcubetoscore.wpilib.json");
+        driveToBalance = importTraj("pathweaver/output/bbalance.wpilib.json");
 
         initalPose = driveToCone.getInitialPose();
         initalAngle = -90;
@@ -67,10 +67,10 @@ public class RedAutoRight3WeaveBal extends AutonBase{
 
     public void reset(){
         desState = new State();
-
-        totTime.reset();
-        totTime.start();
         
+        totTimer.reset();
+        totTimer.start();
+
         timer.reset();
         timer.start();
 
@@ -188,7 +188,7 @@ public class RedAutoRight3WeaveBal extends AutonBase{
                 hopperSpeed = -.2;
 
                 desState = driveToCube.sample(timer.get());
-                targetTheta = Rotation2d.fromDegrees(-135);
+                targetTheta = Rotation2d.fromDegrees(-45);
 
                 if(Math.abs(Drivetrain.getPose().getX() - driveToCube.getStates().get(driveToCube.getStates().size()-1).poseMeters.getX()) < .05 &&
                 Math.abs(Drivetrain.getPose().getY() - driveToCube.getStates().get(driveToCube.getStates().size()-1).poseMeters.getY()) < .05){
@@ -207,24 +207,18 @@ public class RedAutoRight3WeaveBal extends AutonBase{
                 intakePos = IntakePos.armMoving;
                 intakeSpeed = IntakeSpeed.none;
 
-                desState = driveToBalance.sample(timer.get() / 1.75);
+                desState = driveToBalance.sample(timer.get() / 1.5);
                 targetTheta = Rotation2d.fromDegrees(-90);
 
-                if(Math.abs(Drivetrain.getPose().getX() - driveToBalance.getStates().get(driveToBalance.getStates().size()-1).poseMeters.getX()) < .075 &&
-                Math.abs(Drivetrain.getPose().getY() - driveToBalance.getStates().get(driveToBalance.getStates().size()-1).poseMeters.getY()) < .075){
+                if((Math.abs(Drivetrain.getPose().getX() - driveToBalance.getStates().get(driveToBalance.getStates().size()-1).poseMeters.getX()) < .075 &&
+                Math.abs(Drivetrain.getPose().getY() - driveToBalance.getStates().get(driveToBalance.getStates().size()-1).poseMeters.getY()) < .075)
+                || totTimer.get() > 14.75){
                     autoState = AutoState.end;
                 }
             break;
             case end:
                 driving = false;
-                
-                if(totTime.get() > 14.75){
-                    xMode = true;
-                    newAutoBal = false;
-                } else {
-                    newAutoBal = true;
-                    xMode = false;
-                }
+                xMode = true;
                 // armPos = ArmPos.packagePos;
             break;
         }

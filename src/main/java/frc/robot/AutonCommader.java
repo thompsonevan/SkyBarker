@@ -142,11 +142,20 @@ public class AutonCommader extends RobotCommander{
     @Override
     public boolean useNegativeSide() {
         double angle =MathUtil.inputModulus(Pigeon.getAngle(),-180,180);
-        if (angle > -180 && angle < 0) {
-            return false;
-        } else  {
-            return true;
+        if(allaince == Alliance.Red){
+            if (angle > -180 && angle < 0) {
+                return false;
+            } else  {
+                return true;
+            }
+        } else {
+            if (angle > -180 && angle < 0) {
+                return true;
+            } else  {
+                return false;
+            }
         }
+
     }
 
     public boolean overrideNegSide(){
@@ -177,10 +186,10 @@ public class AutonCommader extends RobotCommander{
         if(auton.overrideIntake){
             return auton.intakePos;
         } else {
-            if (getArmPosition() != ArmPos.Zero && 
+            if ((getArmPosition() != ArmPos.Zero && 
             getArmPosition() != ArmPos.manual && 
             getArmPosition() != ArmPos.intake && 
-            Intake.angleEncoderAngle < 130) { 
+            Intake.angleEncoderAngle < 130)) { 
                 return IntakePos.armMoving;
             } else {
                 return auton.intakePos;
@@ -211,5 +220,9 @@ public class AutonCommader extends RobotCommander{
     public double getHopperSpeed() {
         // TODO Auto-generated method stub
         return auton.hopperSpeed;
+    }
+
+    public boolean getNewAutoBal(){
+        return auton.newAutoBal;
     }
 }

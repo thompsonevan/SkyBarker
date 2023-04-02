@@ -19,6 +19,7 @@ import edu.wpi.first.net.PortForwarder;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.Timer;
+import edu.wpi.first.wpilibj.ADXL345_I2C.AllAxes;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.shuffleboard.BuiltInWidgets;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
@@ -26,6 +27,8 @@ import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.Autons.BlueAutoLeft;
 import frc.robot.Autons.BlueAutoLeft3;
+import frc.robot.Autons.BlueAutoLeft3Weave;
+import frc.robot.Autons.BlueAutoLeft3WeaveBal;
 import frc.robot.Autons.BlueAutoLeftBalance;
 import frc.robot.Autons.BlueAutoMid1Bal;
 import frc.robot.Autons.BlueAutoRight2;
@@ -38,6 +41,7 @@ import frc.robot.Autons.RedAutoRight3;
 import frc.robot.Autons.RedAutoRight3Weave;
 import frc.robot.Autons.RedAutoRight3WeaveBal;
 import frc.robot.Autons.RedAutoRightBalance;
+import frc.robot.Autons.RedLeftAuto3;
 import frc.robot.sensors.Camera;
 import frc.robot.sensors.Pigeon;
 import frc.robot.subsystems.Arm;
@@ -68,6 +72,9 @@ public class Robot extends TimedRobot {
     private RedAutoRight3Weave weave;
     private NewArmTest newArmTest;
     private RedAutoRight3WeaveBal redRight3Bal;
+    private BlueAutoLeft3Weave blueAutoLeft3Weave;
+    private BlueAutoLeft3WeaveBal blueAutoLeft3WeaveBal;
+    private RedLeftAuto3 redLeftAuto3;
 
     LED leds;
 
@@ -99,10 +106,12 @@ public class Robot extends TimedRobot {
         m_chooser.addOption("Blue Left Balance", "Blue Left Balance");
         m_chooser.addOption("Cable", "Cable");
         m_chooser.addOption("Blue Right 2", "Blue Right 2");
-        m_chooser.addOption("Blue Right 2 Balance", "Blue Right 2 Balance");
-        m_chooser.addOption("Weave", "Weave");
+        m_chooser.addOption("Red Left 3", "Red Left 3");
+        m_chooser.addOption("Red Weave", "Red Weave");
         m_chooser.addOption("New Arm Test", "New Arm Test");
         m_chooser.addOption("Red Right 3 Bal", "Red Right 3 Bal");
+        m_chooser.addOption("Blue Left 3 Bal", "Blue Left 3 Bal");
+        m_chooser.addOption("Blue Left 3 Weave", "Blue Left 3 Weave");
 
         Shuffleboard.getTab("Competition")
         .add("Auto Selector", m_chooser)
@@ -131,6 +140,9 @@ public class Robot extends TimedRobot {
         weave = new RedAutoRight3Weave();
         newArmTest = new NewArmTest();
         redRight3Bal = new RedAutoRight3WeaveBal();
+        blueAutoLeft3Weave = new BlueAutoLeft3Weave();
+        blueAutoLeft3WeaveBal = new BlueAutoLeft3WeaveBal();
+        redLeftAuto3 = new RedLeftAuto3();
 
         camera.disabled();
 
@@ -179,6 +191,14 @@ public class Robot extends TimedRobot {
 
         alliance = DriverStation.getAlliance();
 
+        if(DriverStation.getAlliance() == Alliance.Red){
+            drivetrain.zero(-90, new Pose2d(14.714, 3.905, Rotation2d.fromDegrees(-90)));
+            Pigeon.zeroSensor(-90);
+        } else {
+            drivetrain.zero(-90, new Pose2d(1.75, 3.905, Rotation2d.fromDegrees(-90)));
+            Pigeon.zeroSensor(-90);
+        }
+
         if(autonSelection == "Blue Left"){
             autonCommader.initAuton(blueAutoLeft);
         } else if(autonSelection == "Red Right"){
@@ -197,12 +217,16 @@ public class Robot extends TimedRobot {
         } else if(autonSelection == "Blue Left Balance"){
             autonCommader.initAuton(blueAutoLeftBalance);
         } else if(autonSelection == "Blue Right 2"){
-            alliance = Alliance.Red;
+            alliance = Alliance.Blue;
+            drivetrain.zero(90, new Pose2d(0,0, Rotation2d.fromDegrees(90)));
+            Pigeon.zeroSensor(90);
             autonCommader.initAuton(blueAutoRight2);
-        } else if(autonSelection == "Blue Right 2 Balance"){
-            alliance = Alliance.Red;
-            autonCommader.initAuton(blueAutoRight2);
-        } else if(autonSelection == "Weave"){
+        } else if(autonSelection == "Red Left 3"){
+            alliance = Alliance.Blue;
+            drivetrain.zero(-90, new Pose2d(0,0, Rotation2d.fromDegrees(-90)));
+            Pigeon.zeroSensor(-90);
+            autonCommader.initAuton(redLeftAuto3);
+        } else if(autonSelection == "Red Weave"){
             autonCommader.initAuton(weave);
         } else if(autonSelection == "Cable"){
             alliance = Alliance.Blue;
@@ -211,6 +235,10 @@ public class Robot extends TimedRobot {
             autonCommader.initAuton(newArmTest);
         } else if(autonSelection == "Red Right 3 Bal"){
             autonCommader.initAuton(redRight3Bal);
+        } else if(autonSelection == "Blue Left 3 Weave"){
+            autonCommader.initAuton(blueAutoLeft3Weave);
+        } else if(autonSelection == "Blue Left 3 Bal"){
+            autonCommader.initAuton(blueAutoLeft3WeaveBal);
         } else {
             autonCommader.initAuton(ohCrap);
         }
@@ -231,10 +259,8 @@ public class Robot extends TimedRobot {
         arm.brakeMode();
 
 
-        drivetrain.zero(-90, new Pose2d(14.714, 3.905, Rotation2d.fromDegrees(-90)));
         // drivetrain.zero(autonCommader.auton.initalAngle, autonCommader.auton.initalPose);
         autonCommader.auton.reset();
-        Pigeon.zeroSensor(-90);
         // Pigeon.zeroSensor(autonCommader.auton.initalAngle);
 
         leds.autonInit();
@@ -262,7 +288,9 @@ public class Robot extends TimedRobot {
 
         teleopCommander.allaince = alliance;
 
-        Pigeon.zeroSensor(Pigeon.getAngle()+180);
+        if(alliance == Alliance.Red){
+            Pigeon.zeroSensor(Pigeon.getAngle()+180);
+        }
 
         if(Camera.getLeftDetecting()){
 
