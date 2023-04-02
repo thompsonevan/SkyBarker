@@ -205,9 +205,9 @@ public class RedAutoRight3Weave extends AutonBase{
                 if(timer.get() > 2){
                     armPos = ArmPos.yeetCube;
                     intakePos = IntakePos.armMoving;
-                } else if(timer.get() > 1.25){
+                } else if(timer.get() > 1){
                     armPos = ArmPos.packagePos;
-                    intakePos = IntakePos.armMoving;
+                    // intakePos = IntakePos.armMoving;
                 }
 
                 if(timer.get() < 1){
