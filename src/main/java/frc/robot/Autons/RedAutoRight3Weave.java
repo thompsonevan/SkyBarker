@@ -205,15 +205,15 @@ public class RedAutoRight3Weave extends AutonBase{
                 if(timer.get() > 2){
                     armPos = ArmPos.yeetCube;
                     intakePos = IntakePos.armMoving;
-                } else if(timer.get() > 1){
+                } else if(timer.get() > 1.1){
                     armPos = ArmPos.packagePos;
                     // intakePos = IntakePos.armMoving;
                 }
 
-                if(timer.get() < 1){
+                if(timer.get() < 1.75){
                     hopperSpeed = -.3;
                     intakePos = IntakePos.cubeHandoff;
-                } 
+                }
                 // else {
                 //     hopperSpeed = .3;
                 // }

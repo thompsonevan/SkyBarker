@@ -77,7 +77,7 @@ public class BlueAutoLeft3 extends AutonBase{
         switch(autoState){
             case firstPlace:
                 driving = false;
-                if(!Arm.getAchivedPostion()){
+                if(!Arm.getAchivedPostion() || timer.get() < .5){
                     gripperSpeed = -.4;
                     armPos = ArmPos.topNodeCone;
                     armTime = timer.get();
@@ -90,7 +90,7 @@ public class BlueAutoLeft3 extends AutonBase{
 
                         trajectory = createTrajectory(path.get(point), path.get(point+1),
                         Rotation2d.fromDegrees(40), Rotation2d.fromDegrees(0),
-                        4,2.5);
+                        5,2.5);
                 
                         point++;
 
@@ -116,7 +116,7 @@ public class BlueAutoLeft3 extends AutonBase{
 
                     trajectory = createTrajectory(path.get(point), path.get(point+1), 
                     Rotation2d.fromDegrees(-12 + 180), Rotation2d.fromDegrees(12 + 180),
-                    4,2.5);
+                    5,2.5);
 
                     point++;
 
@@ -134,9 +134,9 @@ public class BlueAutoLeft3 extends AutonBase{
                 intakePos = IntakePos.cubeHandoff;
                 intakeSpeed = IntakeSpeed.cubeHandoff;
 
-                if(timer.get() > 1.25){
+                if(timer.get() > 2){
                     armPos = ArmPos.topNodeCube;
-                } else if(timer.get() > .75){
+                } else if(timer.get() > 1.1){
                     armPos = ArmPos.packagePos;
                 }
 
@@ -171,7 +171,7 @@ public class BlueAutoLeft3 extends AutonBase{
                         new Pose2d(path.get(point).getTranslation(), Rotation2d.fromDegrees(15)), 
                         List.of(path.get(point+1).getTranslation()),
                         new Pose2d(path.get(point+2).getTranslation(), Rotation2d.fromDegrees(-90)), 
-                        new TrajectoryConfig(4, 2.5));
+                        new TrajectoryConfig(5, 2.5));
     
                         point += 2;
 
@@ -200,7 +200,7 @@ public class BlueAutoLeft3 extends AutonBase{
                         new Pose2d(path.get(point).getTranslation(), Rotation2d.fromDegrees(-90 + 180)), 
                         List.of(path.get(point+1).getTranslation()),
                         new Pose2d(path.get(point+2).getTranslation(), Rotation2d.fromDegrees(10 +180)), 
-                        new TrajectoryConfig(4, 2.5));
+                        new TrajectoryConfig(5, 2.5));
     
                     point += 2;
 

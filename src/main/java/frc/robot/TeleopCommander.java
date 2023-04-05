@@ -117,10 +117,10 @@ public class TeleopCommander extends RobotCommander{
 
     public IntakeSpeed getIntakeSpeed(){
         if(operator.getRightTriggerAxis() > .3){
-            if(!getCubeMode()){
-                intakeSpeed = IntakeSpeed.onCube;
-            } else {
+            if(intakeCone()){
                 intakeSpeed = IntakeSpeed.onCone;
+            } else {
+                intakeSpeed = IntakeSpeed.onCube;
             }
         } else if (operator.getLeftTriggerAxis() > .3){
             intakeSpeed = IntakeSpeed.out;
@@ -144,15 +144,9 @@ public class TeleopCommander extends RobotCommander{
                     Intake.angleEncoderAngle < 130) { 
                         intakeArray[0] = 102;
                         intakePos = IntakePos.armMoving;
-                } else if(getCubeMode()) {
-                    if (Dpad_left && !(Trigger_right || Trigger_left || Dpad_right || Dpad_updown)) {
-                        intakePos = IntakePos.pack;
-                    } else if (Dpad_right && !(Trigger_left || Trigger_right || Dpad_left || Dpad_updown)) {
+                } else if(intakeCone()) {
+                    if(Dpad_right){
                         intakePos = IntakePos.collectCone;
-                    } else if (Dpad_updown && !(Trigger_left || Trigger_right || Dpad_left || Dpad_right)) {
-                        intakePos = IntakePos.station;
-                    } else {
-                        intakePos = IntakePos.none;
                     }
                 } else {
                     if (Dpad_left) {
@@ -177,7 +171,7 @@ public class TeleopCommander extends RobotCommander{
     }
 
     public boolean getCubeStopIntake(){
-        return operator.getRightStickButton();
+        return false;
     }
 
     public boolean getManualMode(){
@@ -359,6 +353,12 @@ public class TeleopCommander extends RobotCommander{
     public double getHopperSpeed() {
         // TODO Auto-generated method stub
         return 0;
+    }
+
+    @Override
+    public boolean intakeCone() {
+        // TODO Auto-generated method stub
+        return operator.getRightStickButton();
     }
     
 }

@@ -225,4 +225,10 @@ public class AutonCommader extends RobotCommander{
     public boolean getNewAutoBal(){
         return auton.newAutoBal;
     }
+
+    @Override
+    public boolean intakeCone() {
+        // TODO Auto-generated method stub
+        return false;
+    }
 }

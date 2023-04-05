@@ -30,7 +30,7 @@ public class Arm {
         readyPosition(-23,.1,100),
         topNodeCone(53,20,181),
         topNodeCube(55,20,181),
-        middleNodeCone(51,.2,181),
+        middleNodeCone(41,.2,161),
         middleNodeCube(58,.2,181),
         lowerNode(27,.2,69),
         manual(0,0,0), // manual motor commands

@@ -213,10 +213,16 @@ public class Robot extends TimedRobot {
             alliance = Alliance.Blue;
             autonCommader.initAuton(blueAutoMid1Bal);
         } else if(autonSelection == "Blue Left 3"){
+            alliance = Alliance.Blue;
+            drivetrain.zero(-90, new Pose2d(0,0, Rotation2d.fromDegrees(-90)));
+            Pigeon.zeroSensor(-90);
             autonCommader.initAuton(blueAutoLeft3);
         } else if (autonSelection == "Red Right Balance"){
             autonCommader.initAuton(redAutoRightBalance);
         } else if(autonSelection == "Red Right 3"){
+            alliance = Alliance.Blue;
+            drivetrain.zero(90, new Pose2d(0,0, Rotation2d.fromDegrees(90)));
+            Pigeon.zeroSensor(90);
             autonCommader.initAuton(redAutoRight3);
         } else if(autonSelection == "Blue Left Balance"){
             autonCommader.initAuton(blueAutoLeftBalance);
@@ -266,7 +272,6 @@ public class Robot extends TimedRobot {
 
 
         arm.brakeMode();
-
 
         // drivetrain.zero(autonCommader.auton.initalAngle, autonCommader.auton.initalPose);
         autonCommader.auton.reset();
