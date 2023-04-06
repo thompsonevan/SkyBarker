@@ -42,17 +42,13 @@ public class RedAutoRight3 extends AutonBase{
 
     int point = 0;
 
-    List<Pose2d> path = List.of(new Pose2d(new Translation2d(1.82,4.1), Rotation2d.fromDegrees(90)),
-                                new Pose2d(new Translation2d(6.75,3.6), Rotation2d.fromDegrees(10)), //4.82, .5
-                                new Pose2d(new Translation2d(1.82,3.7), Rotation2d.fromDegrees(90)),
-                                new Pose2d(new Translation2d(6.75, 3.65), Rotation2d.fromDegrees(90)),
-                                new Pose2d(new Translation2d(7, 5.45), Rotation2d.fromDegrees(90)),
-                                new Pose2d(new Translation2d(6.75, 3.65), Rotation2d.fromDegrees(90)),
-                                new Pose2d(new Translation2d(1.82,3.7), Rotation2d.fromDegrees(90)));
+    List<Pose2d> path = List.of(new Pose2d(new Translation2d(0,0), Rotation2d.fromDegrees(90)),
+                                new Pose2d(new Translation2d(5.3,-.29), Rotation2d.fromDegrees(10)), //4.82, .5
+                                new Pose2d(new Translation2d(-.05,-.125), Rotation2d.fromDegrees(90)),
+                                new Pose2d(new Translation2d(4.75, -.3), Rotation2d.fromDegrees(90)),
+                                new Pose2d(new Translation2d(4.9, 1.5), Rotation2d.fromDegrees(90)),
+                                new Pose2d(new Translation2d(3, .25), Rotation2d.fromDegrees(90)));
 
-
-
-                                
     Trajectory trajectory;
 
     double armTime;
@@ -93,7 +89,7 @@ public class RedAutoRight3 extends AutonBase{
                         trajectory = createTrajectory(path.get(point), path.get(point+1),
                         Rotation2d.fromDegrees(-40), Rotation2d.fromDegrees(10),
                         4,2.5);
-
+                
                         point++;
 
                         timer.reset();
@@ -105,7 +101,7 @@ public class RedAutoRight3 extends AutonBase{
             case driveToObject1:
                 driving = true;
                 armPos = ArmPos.intake;
-                if(timer.get() > trajectory.getTotalTimeSeconds()/2){
+                if(timer.get() > .5){
                     intakePos = IntakePos.collectCube;
                     intakeSpeed = IntakeSpeed.onCube;
                 }
@@ -127,7 +123,6 @@ public class RedAutoRight3 extends AutonBase{
                 intakeSpeed = IntakeSpeed.cubeHandoff;
 
                 armPos = ArmPos.intake;
-                
                 gripperSpeed = -.4;
                 if(timer.get() > .25){
                     trajectory = createTrajectory(path.get(point), path.get(point+1), 
@@ -150,8 +145,6 @@ public class RedAutoRight3 extends AutonBase{
 
                 if(timer.get() > 1.25){
                     armPos = ArmPos.topNodeCube;
-                    intakePos = IntakePos.armMoving;
-                    intakeSpeed = IntakeSpeed.none;
                 } else if(timer.get() > .75){
                     armPos = ArmPos.packagePos;
                 }
@@ -205,7 +198,7 @@ public class RedAutoRight3 extends AutonBase{
 
                 armPos = ArmPos.intake;
 
-                if(timer.get() > trajectory.getTotalTimeSeconds()/2){
+                if(timer.get() > 1.5){
                     intakePos = IntakePos.collectCube;
                     intakeSpeed = IntakeSpeed.onCube;
                 }

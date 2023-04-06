@@ -232,8 +232,14 @@ public class Intake {
             }
         } else {
             if(robotCommander.intakeCone()){
-                speedMotor1.set(TalonFXControlMode.PercentOutput, speed);
-                speedMotor2.set(TalonFXControlMode.PercentOutput, speed);
+                if(robotCommander.getIntakeSpeed() == IntakeSpeed.out){
+                    speedMotor1.set(TalonFXControlMode.PercentOutput, speed);
+                    speedMotor2.set(TalonFXControlMode.PercentOutput, speed);
+                } else {
+                    speedMotor1.set(TalonFXControlMode.PercentOutput, speed);
+                    speedMotor2.set(TalonFXControlMode.PercentOutput, speed);
+                }
+                
             } else {
                 speedMotor1.set(TalonFXControlMode.PercentOutput, speed);
                 speedMotor2.set(TalonFXControlMode.PercentOutput, -speed);

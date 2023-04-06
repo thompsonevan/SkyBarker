@@ -31,7 +31,7 @@ public class Arm {
         topNodeCone(53,20,181),
         topNodeCube(55,20,181),
         middleNodeCone(41,.2,161),
-        middleNodeCube(58,.2,181),
+        middleNodeCube(50,.2,161),
         lowerNode(27,.2,69),
         manual(0,0,0), // manual motor commands
         Zero(0,0,0), // No motor command
@@ -40,7 +40,7 @@ public class Arm {
         outOfDirectionToHopper1(20,5,180),
         outOfDirectionLowToHopper1(20,5,69),
         outOfPostiveToHopper2(-20,3,20),
-        outOfHopperToMid(40,4,180),
+        outOfHopperToMid(40,4,161),
         outOfHopperToTop(40,10,180),
         outOfHumanPlayerInitialExtension(6.8,7.5,-12),
         humanPlayerReady(6.8,22,-67),
@@ -57,7 +57,8 @@ public class Arm {
         yeetCubeInt(-5,7.5,0),
         yeetCube(20,15,147.5),
         yeetCubeToPack(0, 10, 0),
-        groundToTop(0, 15, -175);
+        groundToTop(0, 15, -175),
+        midToHopper(20,5,161);
         // topNodeAuto();
 
         private final double shoulder;
@@ -544,9 +545,7 @@ public class Arm {
                     actualCommand = ArmPos.outOfHopperToDirection;
                 }
                 transitionStateInProgress = true;
-            } 
-
-
+            }
             
             //This happens if the arm is in the positive zone and wants to go back to the hopper.
             else if (currentCommandedZone == ArmZone.hopper && currentZone == ArmZone.postive) {
@@ -562,7 +561,7 @@ public class Arm {
                     }
                 }
                 transitionStateInProgress = true;
-            } 
+            }
             
             //This happens if we want to go negative and we are in the hopper.
             else if (currentCommandedZone == ArmZone.negative && currentZone == ArmZone.hopper) {

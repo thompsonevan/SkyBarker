@@ -205,7 +205,7 @@ public class BlueAutoLeft3Weave extends AutonBase{
                 if(timer.get() > 2){
                     armPos = ArmPos.yeetCube;
                     intakePos = IntakePos.armMoving;
-                } else if(timer.get() > 1.1){
+                } else if(timer.get() > 1.3){
                     armPos = ArmPos.packagePos;
                     // intakePos = IntakePos.armMoving;
                 }
@@ -248,7 +248,7 @@ public class BlueAutoLeft3Weave extends AutonBase{
                 // }
                 driving = false;
 
-                if(timer.get() > 1){
+                if(timer.get() > .5){
                     gripperSpeed = 1;
                 } else {
                     gripperSpeed = -.5;

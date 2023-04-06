@@ -47,9 +47,9 @@ public class RedLeftAuto3 extends AutonBase{
     //                             new Pose2d(new Translation2d(-.1,-.125), Rotation2d.fromDegrees(90)));
 
     List<Pose2d> path = List.of(new Pose2d(new Translation2d(0,0), Rotation2d.fromDegrees(-90)),
-                                new Pose2d(new Translation2d(5.5,.5), Rotation2d.fromDegrees(-10)), //4.82, .5
-                                new Pose2d(new Translation2d(-.05,.125), Rotation2d.fromDegrees(-90)),
-                                new Pose2d(new Translation2d(5.1, .5), Rotation2d.fromDegrees(-90)),
+                                new Pose2d(new Translation2d(5.5,1), Rotation2d.fromDegrees(-10)), //4.82, .5
+                                new Pose2d(new Translation2d(-.05,.25), Rotation2d.fromDegrees(-90)),
+                                new Pose2d(new Translation2d(5.1, .75), Rotation2d.fromDegrees(-90)),
                                 new Pose2d(new Translation2d(5.6, -1.5), Rotation2d.fromDegrees(-90)));
 
     Trajectory trajectory;
@@ -172,7 +172,7 @@ public class RedLeftAuto3 extends AutonBase{
                     } else { 
 
                         trajectory = TrajectoryGenerator.generateTrajectory(
-                        new Pose2d(path.get(point).getTranslation(), Rotation2d.fromDegrees(15)), 
+                        new Pose2d(path.get(point).getTranslation(), Rotation2d.fromDegrees(20)), 
                         List.of(path.get(point+1).getTranslation()),
                         new Pose2d(path.get(point+2).getTranslation(), Rotation2d.fromDegrees(-90)), 
                         new TrajectoryConfig(2.5, 1.5));
