@@ -47,8 +47,8 @@ public class BlueAutoRight2 extends AutonBase{
     //                             new Pose2d(new Translation2d(-.1,-.125), Rotation2d.fromDegrees(90)));
 
     List<Pose2d> path = List.of(new Pose2d(new Translation2d(0,0), Rotation2d.fromDegrees(90)),
-                                new Pose2d(new Translation2d(5.3,-.4), Rotation2d.fromDegrees(10)), //4.82, .5
-                                new Pose2d(new Translation2d(-.05,-.125), Rotation2d.fromDegrees(90)),
+                                new Pose2d(new Translation2d(5.3,-1), Rotation2d.fromDegrees(10)), //4.82, .5
+                                new Pose2d(new Translation2d(-.05,-.25), Rotation2d.fromDegrees(90)),
                                 new Pose2d(new Translation2d(4.75, -.5), Rotation2d.fromDegrees(90)),
                                 new Pose2d(new Translation2d(5.25, 1.5), Rotation2d.fromDegrees(90)));
 
@@ -115,7 +115,7 @@ public class BlueAutoRight2 extends AutonBase{
                 if(Math.abs(Drivetrain.getPose().getX() - path.get(point).getX()) < .1 &&
                 Math.abs(Drivetrain.getPose().getY() - path.get(point).getY()) < .1){
                     trajectory = createTrajectory(path.get(point), path.get(point+1), 
-                    Rotation2d.fromDegrees(12 + 180), Rotation2d.fromDegrees(-12 + 180),
+                    Rotation2d.fromDegrees(15 + 180), Rotation2d.fromDegrees(-15 + 180),
                     2.5,1.5);
 
                     point++;

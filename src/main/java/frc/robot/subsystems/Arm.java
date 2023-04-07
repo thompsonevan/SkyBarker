@@ -49,7 +49,7 @@ public class Arm {
         intakeConeGrab(0,10,0),
         outOfHopperToGround(5,4,-10),
         outOfHopperToGround2(-35,4,-175),
-        groundGripperCone(-85.5,10.5,-175),
+        groundGripperCone(-83.5,10.5,-175),
         groundGripperConePick(-92.5,10.5,-175),
         groundToHopper(-30,10,-160),
         groundToHopper2(-5,10,-40),
@@ -478,7 +478,7 @@ public class Arm {
         // My bad work around for going straight from top cone to cone pickup
         else if ((commander.getArmPosition() == ArmPos.groundGripperConePick || commander.getArmPosition() == ArmPos.groundGripperCone) && armTargetPrevious == ArmPos.topNodeCone || actualCommand == ArmPos.topToGround){
             if(useNegativeSide){
-                if(shoulder.getShoulderAngle() < -45){
+                if(shoulder.getShoulderAngle() < -47.5){
                     actualCommand = ArmPos.topToGround;
                 // } else if(elbow.getElbowAngle() < -173){
                 //     actualCommand = ArmPos.groundGripperCone;
@@ -486,7 +486,7 @@ public class Arm {
                     actualCommand = commander.getArmPosition();
                 }
             } else {
-                if(shoulder.getShoulderAngle() > 45){
+                if(shoulder.getShoulderAngle() > 47.5){
                     actualCommand = ArmPos.topToGround;
                 // } else if(elbow.getElbowAngle() < -172.5){
                 //     actualCommand = ArmPos.groundGripperCone;
