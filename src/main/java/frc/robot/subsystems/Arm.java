@@ -102,6 +102,7 @@ public class Arm {
 
     public static enum IntakePos{
         station(Constants.INTAKE_STATION_POSITION),
+        humanIntake(100),
         cubeHandoff(95),
         pack(Constants.INTAKE_PACKAGE_POSITION),
         collectCone(187),

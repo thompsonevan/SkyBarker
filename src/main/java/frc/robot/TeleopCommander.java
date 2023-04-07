@@ -138,7 +138,11 @@ public class TeleopCommander extends RobotCommander{
         boolean Trigger_right = (operator.getRightTriggerAxis() > .3);
         boolean Trigger_left = (operator.getLeftTriggerAxis() > .3);
             if (!this.getManualMode()) {
-                if (getArmPosition() != ArmPos.Zero && 
+                if(getArmPosition() == ArmPos.humanPlayerPickup ||
+                    getArmPosition() == ArmPos.humanPlayerReady){
+                        intakePos = IntakePos.humanIntake;
+                    }
+                else if (getArmPosition() != ArmPos.Zero && 
                     getArmPosition() != ArmPos.manual && 
                     getArmPosition() != ArmPos.intake && 
                     Intake.angleEncoderAngle < 130) { 

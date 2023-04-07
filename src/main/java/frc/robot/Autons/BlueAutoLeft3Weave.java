@@ -80,7 +80,7 @@ public class BlueAutoLeft3Weave extends AutonBase{
             case score1:
                 driving = false;
                 if(timer.get() > .5){
-                    if(!Arm.getAchivedPostion()){
+                    if(!Arm.getAchivedPostion() || timer.get() < .75){
                         gripperSpeed = -.5;
                         armPos = ArmPos.topNodeCone;
                         armTime = timer.get();
