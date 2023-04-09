@@ -108,11 +108,12 @@ public class BlueAutoLeft3Weave extends AutonBase{
                 if(timer.get() < 1){
                     gripperSpeed = .75;
                 } else {
-                    gripperSpeed = -.8;
+                    gripperSpeed = -1;
 
                 }
                 
-                
+            
+
                 if(Math.abs(Drivetrain.getPose().getX() - driveToCone.getStates().get(driveToCone.getStates().size()-1).poseMeters.getX()) < .05 &&
                 Math.abs(Drivetrain.getPose().getY() - driveToCone.getStates().get(driveToCone.getStates().size()-1).poseMeters.getY()) < .025){
                     armPos = ArmPos.groundGripperConePick;
@@ -127,9 +128,9 @@ public class BlueAutoLeft3Weave extends AutonBase{
 
                 armPos = ArmPos.groundGripperConePick;
 
-                gripperSpeed = -.8;
+                gripperSpeed = -1;
 
-                if(timer.get() > .35){
+                if(timer.get() > .5){
                     timer.reset();
                     
                     autoState = AutoState.driveToConeScore;
@@ -138,7 +139,7 @@ public class BlueAutoLeft3Weave extends AutonBase{
             case driveToConeScore:
                 driving = true;
 
-                gripperSpeed = -.8;
+                gripperSpeed = -1;
 
                 armPos = ArmPos.topNodeCone;
 

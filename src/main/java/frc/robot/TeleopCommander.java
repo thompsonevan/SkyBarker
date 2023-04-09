@@ -187,6 +187,10 @@ public class TeleopCommander extends RobotCommander{
         return manualMode;
     } 
     
+    public boolean resetModules(){
+        return driver.getStartButton();
+    }
+
     public ArmPos getArmPosition(){
         if (this.getManualMode()) {
             return ArmPos.manual;

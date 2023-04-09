@@ -208,9 +208,14 @@ public class Robot extends TimedRobot {
         } else if(autonSelection == "Red Right"){
             autonCommader.initAuton(redAutoRight);
         }else if(autonSelection == "Blue Mid 1"){
+            alliance = Alliance.Blue;
+            drivetrain.zero(-90, new Pose2d(0,0, Rotation2d.fromDegrees(-90)));
+            Pigeon.zeroSensor(-90);
             autonCommader.initAuton(blueAutoMid1Bal);
         }else if(autonSelection == "Red Mid 1"){
             alliance = Alliance.Blue;
+            drivetrain.zero(-90, new Pose2d(0,0, Rotation2d.fromDegrees(-90)));
+            Pigeon.zeroSensor(-90);
             autonCommader.initAuton(blueAutoMid1Bal);
         } else if(autonSelection == "Blue Left 3"){
             alliance = Alliance.Blue;

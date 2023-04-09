@@ -49,7 +49,7 @@ public class Arm {
         intakeConeGrab(0,10,0),
         outOfHopperToGround(5,4,-10),
         outOfHopperToGround2(-35,4,-175),
-        groundGripperCone(-83.5,10.5,-175),
+        groundGripperCone(-80,10.5,-175),
         groundGripperConePick(-92.5,10.5,-175),
         groundToHopper(-30,10,-160),
         groundToHopper2(-5,10,-40),

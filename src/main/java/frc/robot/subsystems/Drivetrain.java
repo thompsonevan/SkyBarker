@@ -271,6 +271,10 @@ public class Drivetrain{
     PIDController y = new PIDController(.06,0,0);
 
     public void teleAction(TeleopCommander commander){
+        if(commander.resetModules()){
+            zero();
+        }
+
         if (commander.driver.getPOV() == 180){
             setModulePositions();
         }else {
