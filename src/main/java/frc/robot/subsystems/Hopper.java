@@ -44,9 +44,11 @@ public class Hopper {
         //   hopperMotor.set(0);
         // }
 
+
+
         hopperMotor.set(commander.getHopperSpeed());
         
-                // hopperMotor.set(.1);
+        // hopperMotor.set(-.15);
 
     }
 

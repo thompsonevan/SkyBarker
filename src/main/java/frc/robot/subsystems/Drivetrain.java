@@ -356,7 +356,7 @@ public class Drivetrain{
         } else if(autonCommader.getNewAutoBal()){
             chassisSpeeds = new ChassisSpeeds(
                 0,
-                -Pigeon.getRoll() * .03,
+                -Pigeon.getPitch() * .03,
                 0
             );
         } else if (autonCommader.getXMode()){
