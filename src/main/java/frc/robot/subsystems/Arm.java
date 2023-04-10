@@ -55,7 +55,7 @@ public class Arm {
         groundToHopper2(-5,10,-40),
         topToGround(0,20,181),
         yeetCubeInt(-5,7.5,0),
-        yeetCube(20,15,147.5),
+        yeetCube(19,16,150),
         yeetCubeToPack(0, 10, 0),
         groundToTop(0, 15, -175),
         midToHopper(20,5,161);

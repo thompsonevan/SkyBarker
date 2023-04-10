@@ -183,9 +183,9 @@ public class AutonCommader extends RobotCommander{
 
     @Override
     public IntakePos getIntakePosition() {
-        if(auton.overrideIntake){
-            return auton.intakePos;
-        } else {
+        // if(auton.overrideIntake){
+        //     return auton.intakePos;
+        // } else {
             if ((getArmPosition() != ArmPos.Zero && 
             getArmPosition() != ArmPos.manual && 
             getArmPosition() != ArmPos.intake && 
@@ -194,7 +194,7 @@ public class AutonCommader extends RobotCommander{
             } else {
                 return auton.intakePos;
             }
-        }
+        // }
 
     }
 

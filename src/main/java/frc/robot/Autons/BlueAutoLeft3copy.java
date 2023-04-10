@@ -22,7 +22,7 @@ import edu.wpi.first.math.trajectory.TrajectoryConfig;
 import edu.wpi.first.math.trajectory.TrajectoryGenerator;
 import edu.wpi.first.math.trajectory.Trajectory.State;
 
-public class BlueAutoLeft3 extends AutonBase{
+public class BlueAutoLeft3copy extends AutonBase{
     enum AutoState {
         firstPlace,
         driveToObject1,
@@ -42,7 +42,7 @@ public class BlueAutoLeft3 extends AutonBase{
 
     List<Pose2d> path = List.of(new Pose2d(new Translation2d(0,0), Rotation2d.fromDegrees(-90)),
                                 new Pose2d(new Translation2d(5,.75), Rotation2d.fromDegrees(-10)), //4.82, .5
-                                new Pose2d(new Translation2d(0,.25), Rotation2d.fromDegrees(-180)),
+                                new Pose2d(new Translation2d(0,.25), Rotation2d.fromDegrees(-90)),
                                 new Pose2d(new Translation2d(4.5, .3), Rotation2d.fromDegrees(-90)),
                                 new Pose2d(new Translation2d(4.95, -.75), Rotation2d.fromDegrees(-90)),
                                 new Pose2d(new Translation2d(4.5, .3), Rotation2d.fromDegrees(-90)),
@@ -52,7 +52,7 @@ public class BlueAutoLeft3 extends AutonBase{
 
     double armTime;
 
-    public BlueAutoLeft3(){
+    public BlueAutoLeft3copy(){
         reset();
     }
 
@@ -82,7 +82,7 @@ public class BlueAutoLeft3 extends AutonBase{
                     if(Math.abs(armTime - timer.get()) < .35){
                         gripperSpeed = .75;
                     } else {
-                        armPos = ArmPos.packagePos;
+                        armPos = ArmPos.intake;
                         gripperSpeed = 0;
 
                         trajectory = createTrajectory(path.get(point), path.get(point+1),
@@ -123,11 +123,23 @@ public class BlueAutoLeft3 extends AutonBase{
             break;
             case driveToObject2:
                 driving = true;
+                intakeOn = false;
+                
+                // if(timer.get() < 1.25){
+                //     overrideIntake = true;
+                // } else {
+                //     overrideIntake = false;
+                // }
 
-                intakePos = IntakePos.pack;
-                intakeSpeed = IntakeSpeed.none;
+                intakePos = IntakePos.cubeHandoff;
 
-                gripperSpeed = 0;
+                if(timer.get() > 2){
+                    armPos = ArmPos.topNodeCube;
+                } else if(timer.get() > .75){
+                    armPos = ArmPos.packagePos;
+                }
+
+                gripperSpeed = -.75;
                 
                 desState = trajectory.sample(timer.get());
                 targetTheta = path.get(point).getRotation();
@@ -143,23 +155,28 @@ public class BlueAutoLeft3 extends AutonBase{
             break;
             case score2:
                 driving = false;
-                
-                if(timer.get() < .5){
-                    intakeSpeed = IntakeSpeed.out;
+                if(timer.get() < .75){
+                    gripperSpeed = -.4;
+                    armPos = ArmPos.topNodeCube;
                 } else {
-                    trajectory = TrajectoryGenerator.generateTrajectory(
-                    new Pose2d(path.get(point).getTranslation(), Rotation2d.fromDegrees(15)), 
-                    List.of(path.get(point+1).getTranslation()),
-                    new Pose2d(path.get(point+2).getTranslation(), Rotation2d.fromDegrees(-90)), 
-                    new TrajectoryConfig(4, 2));
+                    if(timer.get() < 1.25){
+                        gripperSpeed = .5;
+                    } else if(timer.get() < 1.75){
+                        armPos = ArmPos.intake;
+                        gripperSpeed = 0;
+                    } else {
+                        trajectory = TrajectoryGenerator.generateTrajectory(
+                        new Pose2d(path.get(point).getTranslation(), Rotation2d.fromDegrees(15)), 
+                        List.of(path.get(point+1).getTranslation()),
+                        new Pose2d(path.get(point+2).getTranslation(), Rotation2d.fromDegrees(-90)), 
+                        new TrajectoryConfig(4, 2));
 
-                    intakeSpeed = IntakeSpeed.none;
+                        point += 2;
 
-                    point += 2;
+                        timer.reset();
 
-                    timer.reset();
-
-                    autoState = AutoState.driveToObject3;
+                        autoState = AutoState.driveToObject3;
+                    }
                 }
             break;
             case driveToObject3:
@@ -181,7 +198,7 @@ public class BlueAutoLeft3 extends AutonBase{
                         List.of(path.get(point+1).getTranslation()),
                         new Pose2d(path.get(point+2).getTranslation(), Rotation2d.fromDegrees(-5 + 180)), 
                         new TrajectoryConfig(4, 2));
-                    
+
                     point += 2;
 
                     timer.reset();
@@ -197,11 +214,18 @@ public class BlueAutoLeft3 extends AutonBase{
                 desState = trajectory.sample(timer.get());
                 targetTheta = path.get(point).getRotation();
                 
+                // if(timer.get() < 1.25){
+                //     overrideIntake = true;
+                // } else {
+                //     overrideIntake = false;
+                // }
+
                 intakePos = IntakePos.cubeHandoff;
+                // intakeSpeed = IntakeSpeed.cubeHandoff;
 
                 if(timer.get() > 2){
-                    armPos = ArmPos.yeetCube;
-                } else if(timer.get() > 1.1){
+                    armPos = ArmPos.middleNodeCube;
+                } else if(timer.get() > .75){
                     armPos = ArmPos.packagePos;
                 }
 
@@ -218,11 +242,20 @@ public class BlueAutoLeft3 extends AutonBase{
             break;
             case score3:
                 driving = false;
-                if(timer.get() < 1.5){
+                if(timer.get() < .75){
                     gripperSpeed = -.4;
-                    armPos = ArmPos.yeetCube;
+                    armPos = ArmPos.middleNodeCube;
                 } else {
-                    gripperSpeed = 1;
+                    if(timer.get() < 1.25){
+                        gripperSpeed = .5;
+                    } else if(timer.get() < 1.75){
+                        armPos = ArmPos.packagePos;
+                        gripperSpeed = 0;
+                    } else {
+                        timer.reset();
+
+                        autoState = AutoState.end;
+                    }
                 }
             break;
             case end:
