@@ -230,7 +230,7 @@ public class Robot extends TimedRobot {
             // drivetrain.zero(-90, new Pose2d(0,0, Rotation2d.fromDegrees(-90)));
             // Pigeon.zeroSensor(-90);
             // autonCommader.initAuton(blueAutoLeft3);
-            autonCommader.initAuton(copy);
+            autonCommader.initAuton(blueAutoLeft3);
         } else if (autonSelection == "Red Right Balance"){
             autonCommader.initAuton(redAutoRightBalance);
         } else if(autonSelection == "Red Right 3"){
