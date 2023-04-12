@@ -121,13 +121,21 @@ public class BlueAutoLeft3 extends AutonBase{
             case driveToObject2:
                 driving = true;
 
-                intakePos = IntakePos.pack;
-                intakeSpeed = IntakeSpeed.none;
+                intakePos = IntakePos.cubeHandoff;
 
-                gripperSpeed = 0;
+                gripperSpeed = -.75;
+
+                if(timer.get() > 2.25){
+                    armPos = ArmPos.topNodeCube;
+                } else if(timer.get() > 1.25){
+                    armPos = ArmPos.packagePos;
+                    targetTheta = Rotation2d.fromDegrees(-100);
+                    hopperSpeed = 0;
+                } else {
+                    hopperSpeed = -.15;
+                }
                 
-                desState = firstScore.sample(timer.get());
-                targetTheta = Rotation2d.fromDegrees(-179);
+                desState = firstScore.sample(timer.get()/1.1);
 
                 if(Math.abs(Drivetrain.getPose().getX() - firstScore.getStates().get(firstScore.getStates().size()-1).poseMeters.getX()) < .05 &&
                 Math.abs(Drivetrain.getPose().getY() - firstScore.getStates().get(firstScore.getStates().size()-1).poseMeters.getY()) < .05){                
@@ -143,10 +151,22 @@ public class BlueAutoLeft3 extends AutonBase{
             case score2:
                 driving = false;
                 
-                if(timer.get() < .25){
-                    intakeSpeed = IntakeSpeed.out;
-                } else {
-                    intakeSpeed = IntakeSpeed.none;
+                // if(timer.get() < .25){
+                //     intakeSpeed = IntakeSpeed.out;
+                // } else {
+                //     intakeSpeed = IntakeSpeed.none;
+
+                //     timer.reset();
+
+                //     autoState = AutoState.driveToObject3;
+                // }
+                if(timer.get() > 1.1){
+                    gripperSpeed = .75;
+                } 
+                if(timer.get() >  1.5){
+                    gripperSpeed = 0;
+                    
+                    armPos = ArmPos.intake;
 
                     timer.reset();
 
@@ -160,7 +180,7 @@ public class BlueAutoLeft3 extends AutonBase{
 
                 armPos = ArmPos.intake;
 
-                if(timer.get() > 1.5){
+                if(timer.get() > 1.25){
                     intakePos = IntakePos.collectCube;
                     intakeSpeed = IntakeSpeed.onCube;
                 }
@@ -183,7 +203,7 @@ public class BlueAutoLeft3 extends AutonBase{
                 intakePos = IntakePos.pack;
                 intakeSpeed = IntakeSpeed.none;
 
-                gripperSpeed = 0;
+                gripperSpeed = -.75;
 
                 if(Math.abs(Drivetrain.getPose().getX() - secondScore.getStates().get(secondScore.getStates().size()-1).poseMeters.getX()) < .05 &&
                 Math.abs(Drivetrain.getPose().getY() - secondScore.getStates().get(secondScore.getStates().size()-1).poseMeters.getY()) < .05){                    

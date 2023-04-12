@@ -105,7 +105,7 @@ public class Arm {
         humanIntake(100),
         cubeHandoff(95),
         pack(Constants.INTAKE_PACKAGE_POSITION),
-        collectCone(187),
+        collectCone(190),
         collectCube(180),
         armMoving(120),
         handoff(91),
@@ -129,7 +129,7 @@ public class Arm {
         none(0,0),
         onCube(-.65,-.65),
         onCone(-.8,-.8),
-        out(.65,.65),
+        out(.65,.65), //        out(.65,.65),
         cubeHandoff(-1,-1);
 
         public double speedReading1;

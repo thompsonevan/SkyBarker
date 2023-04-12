@@ -34,6 +34,7 @@ import frc.robot.Autons.BlueAutoLeft3copy;
 import frc.robot.Autons.BlueAutoLeftBalance;
 import frc.robot.Autons.BlueAutoMid1Bal;
 import frc.robot.Autons.BlueAutoRight2;
+import frc.robot.Autons.BlueCord;
 import frc.robot.Autons.CableAuto;
 import frc.robot.Autons.NewArmTest;
 import frc.robot.Autons.NewMidBlue;
@@ -81,6 +82,7 @@ public class Robot extends TimedRobot {
     private AHHHH ahhhh;
     private NewMidBlue newMidBlue;
     private BlueAutoLeft3copy copy;
+    private BlueCord blueCord;
 
     LED leds;
 
@@ -120,6 +122,7 @@ public class Robot extends TimedRobot {
         m_chooser.addOption("Blue Left 3 Weave", "Blue Left 3 Weave");
         m_chooser.addOption("AHHHH", "AHHHH");
         m_chooser.addOption("New Mid Blue", "New Mid Blue");
+        m_chooser.addOption("Blue Cord", "Blue Cord");
 
 
         Shuffleboard.getTab("Competition")
@@ -155,6 +158,7 @@ public class Robot extends TimedRobot {
         ahhhh = new AHHHH();
         newMidBlue = new NewMidBlue();
         copy = new BlueAutoLeft3copy();
+        blueCord = new BlueCord();
 
         camera.disabled();
 
@@ -268,6 +272,10 @@ public class Robot extends TimedRobot {
             autonCommader.initAuton(blueAutoLeft3Weave);
         } else if(autonSelection == "Blue Left 3 Bal"){
             autonCommader.initAuton(blueAutoLeft3WeaveBal);
+        } else if(autonSelection == "Blue Cord"){
+            drivetrain.zero(180, new Pose2d(1.68, 1.65, Rotation2d.fromDegrees(180)));
+            Pigeon.zeroSensor(180);
+            autonCommader.initAuton(blueCord);
         } else if(autonSelection == "New Mid Blue"){
             alliance = Alliance.Blue;
             drivetrain.zero(-90, new Pose2d(0,0, Rotation2d.fromDegrees(-90)));

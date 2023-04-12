@@ -229,6 +229,6 @@ public class AutonCommader extends RobotCommander{
     @Override
     public boolean intakeCone() {
         // TODO Auto-generated method stub
-        return false;
+        return auton.coneIntake;
     }
 }

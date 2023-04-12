@@ -41,35 +41,13 @@ public class LED {
     }
 
     public void teleopAction(TeleopCommander commander){
-        if(commander.getArmPosition() == ArmPos.topNodeCone || 
-        commander.getArmPosition() == ArmPos.topNodeCube || 
-        commander.getArmPosition() == ArmPos.middleNodeCone || 
-        commander.getArmPosition() == ArmPos.middleNodeCube ||
-        commander.getArmPosition() == ArmPos.lowerNode){
-            // if (Camera.getLeftDetecting()){
-            //     if (Camera.getLeftX() <= LED_LEFT_THRESH_HIGH && Camera.getLeftX() >= LED_LEFT_THRESH_LOW) {
-            //         setLights(LED_DETECT_CORRECT);
-            //         // if the camera is deteting and is within the thresholds, turn the lights green
-            //     } else {
-            //         setLights(LED_DETECT_BAD);
-            //         // if the camera is detecting and is not within the thersholds, turn the lights red
-            //     }
-            // } else if (Camera.getRightDetecting()){
-            //     if (Camera.getRightX() <= LED_RIGHT_THRESH_HIGH && Camera.getRightX() >= LED_RIGHT_THRESH_LOW) {
-            //         setLights(LED_DETECT_CORRECT);
-            //         // if the camera is deteting and is within the thresholds, turn the lights green
-            //     } else {
-            //         setLights(LED_DETECT_BAD);
-            //         // if the camera is detecting and is not within the thersholds, turn the lights red
-            //     }
-            // }
+        
+        if (commander.getCubeMode()){
+            setLights(LED_CUBE_PICKUP);
         } else {
-            if (commander.getCubeMode()){
-                setLights(LED_CUBE_PICKUP);
-            } else {
-                setLights(LED_CONE_PICKUP);
-            }
+            setLights(LED_CONE_PICKUP);
         }
+        
     }
 
     public void disabledAction(){
