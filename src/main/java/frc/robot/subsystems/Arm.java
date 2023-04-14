@@ -130,6 +130,7 @@ public class Arm {
         onCube(-.65,-.65),
         onCone(-.8,-.8),
         out(.65,.65), //        out(.65,.65),
+        autoOut(1,.65), //        out(.65,.65),
         cubeHandoff(-1,-1);
 
         public double speedReading1;

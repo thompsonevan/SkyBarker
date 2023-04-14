@@ -354,11 +354,20 @@ public class Drivetrain{
             }
             setSwerveModuleStates(chassisSpeeds);
         } else if(autonCommader.getNewAutoBal()){
-            chassisSpeeds = new ChassisSpeeds(
-                0,
-                -Pigeon.getPitch() * .03,
-                0
-            );
+                if(Pigeon.getPitch() < -13.7){
+                    chassisSpeeds = new ChassisSpeeds(
+                        -.8,
+                        0,
+                        0
+                        );
+                } else {
+                    chassisSpeeds = new ChassisSpeeds(
+                        Pigeon.getPitch() * .02,
+                        0,
+                        0
+                    );
+                }
+            setSwerveModuleStates(chassisSpeeds);
         } else if (autonCommader.getXMode()){
             setModulePositions();
         }else {

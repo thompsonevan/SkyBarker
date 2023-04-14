@@ -4,8 +4,12 @@ import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.sensors.Camera;
 import frc.robot.sensors.Pigeon;
+import frc.robot.subsystems.Arm;
 import frc.robot.subsystems.Drivetrain;
 import frc.robot.subsystems.Arm.ArmPos;
+import frc.robot.subsystems.Arm.IntakePos;
+import frc.robot.subsystems.Arm.IntakeSpeed;
+import frc.robot.subsystems.Arm.ArmPos.ArmBumpDirection;
 
 import java.util.List;
 
@@ -38,11 +42,13 @@ public class NewMidBlue extends AutonBase{
     int point = 0;
 
     Pose2d startingPose = new Pose2d(0,0, Rotation2d.fromDegrees(-90));
-    Pose2d over = new Pose2d(4.25,0, Rotation2d.fromDegrees(-90));
-    Pose2d endPose = new Pose2d(5.5,0, Rotation2d.fromDegrees(-10));
-    Pose2d onStation = new Pose2d(5.5,0, Rotation2d.fromDegrees(-10));
+    Pose2d over = new Pose2d(5.5,.25, Rotation2d.fromDegrees(0));
+    Pose2d endPose = new Pose2d(0,0, Rotation2d.fromDegrees(170));
+    Pose2d onStation = new Pose2d(1.8,0, Rotation2d.fromDegrees(170));
 
     Trajectory trajectory;
+
+    double armTime;
 
     public NewMidBlue(){
         reset();
@@ -57,6 +63,8 @@ public class NewMidBlue extends AutonBase{
         timer.reset();
         timer.start();
 
+        armTime = 0;
+
         totalTime.reset();
         totalTime.start();
 
@@ -67,58 +75,115 @@ public class NewMidBlue extends AutonBase{
         switch(autoState){
             case firstPlace:
                 driving = false;
-                if(timer.get() < 3){
-                    if(timer.get() < 2.5){
-                        gripperSpeed = -.4;
-                    }else{
-                        gripperSpeed = .4;
+                if(timer.get() > .5){
+                    if(!Arm.getAchivedPostion() || timer.get() < .75){
+                        gripperSpeed = -.5;
+                        armPos = ArmPos.topNodeCone;
+                        armTime = timer.get();
+                    } else {
+                        if(Math.abs(armTime - timer.get()) < .45){
+                            gripperSpeed = .75;
+                        } else {
+                            
+                            armPos = ArmPos.packagePos;
+
+                            trajectory = createTrajectory(startingPose, over,
+                            Rotation2d.fromDegrees(0), Rotation2d.fromDegrees(0),
+                            1,1);
+
+                            timer.reset();
+    
+                            autoState = AutoState.mobility;
+                        }
                     }
-                    armPos = ArmPos.topNodeCone;
                 } else {
-                    gripperSpeed = 0;
-                    armPos = ArmPos.packagePos;
-                }
-
-                if(timer.get() > 3){
-                    double headingAngle = Math.toDegrees(Math.atan2(over.getY()-startingPose.getY(), 
-                                             over.getX()-startingPose.getX()));
-
-                    trajectory = TrajectoryGenerator.generateTrajectory(
-                        new Pose2d(startingPose.getTranslation(), Rotation2d.fromDegrees(headingAngle)),
-                        List.of(),
-                        new Pose2d(over.getTranslation(), Rotation2d.fromDegrees(headingAngle)),
-                        new TrajectoryConfig(2, 1).setKinematics(Drivetrain.kinematics));
-
-                    timer.reset();
-
-                    autoState = AutoState.mobility;
+                    armPos = ArmPos.topNodeCone;
                 }
             break;
             case mobility:
                 driving = true;
-                desState = trajectory.sample(timer.get());
-                if(desState.poseMeters.getX() < 4.5){
+
+                if(desState.poseMeters.getX() < 2.25){
                     targetTheta = startingPose.getRotation();
                 } else {
-                    targetTheta = endPose.getRotation();
-
+                    targetTheta = over.getRotation();
                 }
 
-                if(timer.get() > trajectory.getTotalTimeSeconds()){
+                if(desState.poseMeters.getX() > 2.9){
+                    armPos = ArmPos.Zero;
+                    intakeSpeed = IntakeSpeed.onCube;
+                    intakePos = IntakePos.collectCube;
+                }
+
+                if(desState.poseMeters.getX() > 3.4){
+                    desState = trajectory.sample(timer.get() * 1.5);
+                } else {
+                    desState = trajectory.sample(timer.get());
+                }
+
+                if(Math.abs(Drivetrain.getPose().getX() - over.getX()) < .075 && 
+                Math.abs(Drivetrain.getPose().getY() - over.getY()) < .075){
+                    trajectory = createTrajectory(over, endPose,
+                    Rotation2d.fromDegrees(180), Rotation2d.fromDegrees(180),
+                    1.1,1.1);
+
                     timer.reset();
 
-                    autoState = AutoState.balance;
+                    autoState = AutoState.finalMove;
+                }
+            break;
+
+            case finalMove:
+                driving = true;
+
+                intakeSpeed = IntakeSpeed.none;
+                intakePos = IntakePos.pack;
+
+                if(timer.get() < 2){
+                    intakeSpeed = IntakeSpeed.onCube;
+                } else {
+                    intakeSpeed = IntakeSpeed.none;
+                }
+
+                if(desState.poseMeters.getX() < 1.5){
+                    desState = trajectory.sample(timer.get() * 1.25);
+                } else {
+                    desState = trajectory.sample(timer.get());
+                }
+                targetTheta = endPose.getRotation();
+
+                if(Math.abs(Drivetrain.getPose().getX() - endPose.getX()) < .075 && 
+                Math.abs(Drivetrain.getPose().getY() - endPose.getY()) < .075){
+                    intakeSpeed = IntakeSpeed.autoOut;
+
+                    trajectory = createTrajectory(endPose, onStation,
+                    Rotation2d.fromDegrees(0), Rotation2d.fromDegrees(0),
+                    2,2);
+
+                    timer.reset();
+
+                    autoState = AutoState.pause1;
                 }
             break;
             case pause1:
-            break;
-            case finalMove:
+                desState = trajectory.sample(timer.get());
+                targetTheta = endPose.getRotation();
+
+                if(Math.abs(Pigeon.getPitch()) > 13) {
+                    timer.reset();
+                    autoState = AutoState.balance;
+                }
             break;
             case balance:
                 driving = false;
                 newAutoBal = true;
-                if(totalTime.get() > 14.75){
-                    autoState = AutoState.end;
+                // if(totalTime.get() > 14.8){
+                //     autoState = AutoState.end;
+                // }
+                if(totalTime.get() > 14.8){
+                    xMode = true;
+                    driving = false;
+                    newAutoBal = false;
                 }
             break;
             case end:
@@ -127,5 +192,8 @@ public class NewMidBlue extends AutonBase{
                 xMode = true;
             break;
         }
+        // driving = false;
+        // newAutoBal = true;
+        // xMode = false;
     }
 }

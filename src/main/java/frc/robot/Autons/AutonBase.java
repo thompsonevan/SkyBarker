@@ -18,6 +18,7 @@ import edu.wpi.first.wpilibj.Filesystem;
 import edu.wpi.first.wpilibj.Timer;
 import frc.robot.subsystems.Arm;
 import frc.robot.subsystems.Drivetrain;
+import frc.robot.subsystems.Arm.ArmPos;
 import frc.robot.subsystems.Arm.IntakePos;
 import frc.robot.subsystems.Arm.IntakeSpeed;
 
@@ -32,7 +33,7 @@ public abstract class AutonBase {
     public Pose2d initalPose;
     public double initalAngle;
     public Pose2d endingPose;
-    public Arm.ArmPos armPos;
+    public Arm.ArmPos armPos = ArmPos.Zero;
     public boolean intakeOn;
     public boolean pickUpObject;
     public boolean driving;
