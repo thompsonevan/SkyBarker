@@ -195,7 +195,6 @@ public class AutonCommader extends RobotCommander{
                 return auton.intakePos;
             }
         // }
-
     }
 
     @Override

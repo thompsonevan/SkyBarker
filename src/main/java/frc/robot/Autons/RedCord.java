@@ -22,7 +22,7 @@ import edu.wpi.first.math.trajectory.TrajectoryConfig;
 import edu.wpi.first.math.trajectory.TrajectoryGenerator;
 import edu.wpi.first.math.trajectory.Trajectory.State;
 
-public class BlueCord extends AutonBase{
+public class RedCord extends AutonBase{
     enum AutoState {
         firstPlace,
         driveToObject1,
@@ -51,20 +51,20 @@ public class BlueCord extends AutonBase{
 
     double armTime;
 
-    public BlueCord(){
+    public RedCord(){
         reset();
     }
 
     public void reset(){
         desState = new State();
-        targetTheta = Rotation2d.fromDegrees(180);
+        targetTheta = Rotation2d.fromDegrees(0);
 
         point = 0;
         
-        firstCube = importTraj("pathweaver/output/bcord1.wpilib.json");
-        firstScore = importTraj("pathweaver/output/bcord2.wpilib.json");
-        secondCube = importTraj("pathweaver/output/bcord3.wpilib.json");
-        secondScore = importTraj("pathweaver/output/bcord4.wpilib.json");
+        firstCube = importTraj("pathweaver/output/cord1.wpilib.json");
+        firstScore = importTraj("pathweaver/output/cord2.wpilib.json");
+        secondCube = importTraj("pathweaver/output/cord3.wpilib.json");
+        secondScore = importTraj("pathweaver/output/cord4.wpilib.json");
 
         timer.reset();
         timer.start();
@@ -80,7 +80,7 @@ public class BlueCord extends AutonBase{
                 driving = false;
                 coneIntake = false;
                 intakeSpeed = IntakeSpeed.out;
-                armPos = ArmPos.packagePos;
+                armPos = ArmPos.Zero;
 
                 if(timer.get() > .2){
                     timer.reset();
@@ -109,7 +109,7 @@ public class BlueCord extends AutonBase{
                 }
 
                 // if(Math.abs(Drivetrain.getPose().getX() - firstCube.getInitialPose().getX()) > 1){
-                    targetTheta = Rotation2d.fromDegrees(5);
+                    targetTheta = Rotation2d.fromDegrees(-5 +180);
                 // }
 
                 if(Math.abs(Drivetrain.getPose().getX() - firstCube.getStates().get(firstCube.getStates().size()-1).poseMeters.getX()) < .1 &&
@@ -131,7 +131,7 @@ public class BlueCord extends AutonBase{
                 }
 
                 desState = firstScore.sample(timer.get()/1.5);
-                targetTheta = Rotation2d.fromDegrees(-170);
+                targetTheta = Rotation2d.fromDegrees(170 +180);
 
                 if(Math.abs(Drivetrain.getPose().getX() - firstScore.getStates().get(firstScore.getStates().size()-1).poseMeters.getX()) < .25 &&
                 Math.abs(Drivetrain.getPose().getY() - firstScore.getStates().get(firstScore.getStates().size()-1).poseMeters.getY()) < .25){                
@@ -165,7 +165,7 @@ public class BlueCord extends AutonBase{
                     desState = secondCube.sample(timer.get()/1.5);
                 }
                 // if(Math.abs(Drivetrain.getPose().getX() - firstCube.getInitialPose().getX()) > 3.5){
-                targetTheta = Rotation2d.fromDegrees(65);
+                targetTheta = Rotation2d.fromDegrees(-65+180);
 
                 if(timer.get() > 1.75){
                     intakePos = IntakePos.collectCube;
@@ -185,12 +185,12 @@ public class BlueCord extends AutonBase{
                 driving = true;
 
                 desState = secondScore.sample(timer.get()/1.5);
-                targetTheta = Rotation2d.fromDegrees(-165);
+                targetTheta = Rotation2d.fromDegrees(165 + 180);
                 
                 intakePos = IntakePos.pack;
                 intakeSpeed = IntakeSpeed.none;
 
-                gripperSpeed = -.75;
+                // gripperSpeed = -.75;
 
                 if(Math.abs(Drivetrain.getPose().getX() - secondScore.getStates().get(secondScore.getStates().size()-1).poseMeters.getX()) < 1){                    
                     // timer.reset();

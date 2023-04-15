@@ -221,7 +221,7 @@ public class Intake {
         if(intakePos == IntakePos.cubeHandoff && Math.abs(angle - intakePos.getPositionReading()) < 10){
             // speedMotor1.set(TalonFXControlMode.PercentOutput, -1);
             speedMotor2.set(TalonFXControlMode.PercentOutput, 1);
-        } else if(!ballSensor.get() && intakeSpeed != IntakeSpeed.out){
+        } else if(!ballSensor.get() && intakeSpeed != IntakeSpeed.out && intakeSpeed != IntakeSpeed.autoOut){
             if(tick < INTAKE_DELAY){
                 speedMotor1.set(TalonFXControlMode.PercentOutput, speed);
                 speedMotor2.set(TalonFXControlMode.PercentOutput, -speed);

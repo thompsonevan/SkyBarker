@@ -56,6 +56,12 @@ public final class Constants {
     public static final int LED_PWM = 2;
     public static final int LED_LENGTH = 19;
 
+    public static final int[] LED_FANCY_BASE = {255, 60, 0};
+    public static final int LED_RED_DEVIATION = 100;
+    public static final int LED_YELLOW_DEVIATION = 100;
+    public static final int LED_FANCY_ITERATION = 2;
+    public static final int LED_RESET_TIMER = 1000;
+
     public static final int[] LED_TELEOP_DEFAULT = {0, 0, 255};
     public static final int[] LED_AUTON_RED = {255, 0, 0};
     public static final int[] LED_AUTON_BLUE = {0, 0, 255};

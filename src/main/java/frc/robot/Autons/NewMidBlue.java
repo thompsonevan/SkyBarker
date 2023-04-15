@@ -42,7 +42,7 @@ public class NewMidBlue extends AutonBase{
     int point = 0;
 
     Pose2d startingPose = new Pose2d(0,0, Rotation2d.fromDegrees(-90));
-    Pose2d over = new Pose2d(5.5,.25, Rotation2d.fromDegrees(0));
+    Pose2d over = new Pose2d(5.5,0, Rotation2d.fromDegrees(0));
     Pose2d endPose = new Pose2d(0,0, Rotation2d.fromDegrees(170));
     Pose2d onStation = new Pose2d(1.8,0, Rotation2d.fromDegrees(170));
 
@@ -132,7 +132,6 @@ public class NewMidBlue extends AutonBase{
                     autoState = AutoState.finalMove;
                 }
             break;
-
             case finalMove:
                 driving = true;
 
@@ -166,24 +165,33 @@ public class NewMidBlue extends AutonBase{
                 }
             break;
             case pause1:
-                desState = trajectory.sample(timer.get());
-                targetTheta = endPose.getRotation();
-
+                if(timer.get() > .15){
+                    desState = trajectory.sample(timer.get());
+                    targetTheta = endPose.getRotation();    
+                }
+ 
                 if(Math.abs(Pigeon.getPitch()) > 13) {
                     timer.reset();
                     autoState = AutoState.balance;
                 }
             break;
             case balance:
+                intakeSpeed = IntakeSpeed.none;
                 driving = false;
-                newAutoBal = true;
+
                 // if(totalTime.get() > 14.8){
                 //     autoState = AutoState.end;
                 // }
                 if(totalTime.get() > 14.8){
                     xMode = true;
-                    driving = false;
                     newAutoBal = false;
+                } else {
+                    if(Math.abs(Pigeon.getPitch()) < 13.75){
+                        newAutoBal = false;
+                        xMode = true;
+                    } else {
+                        newAutoBal = true;
+                    }
                 }
             break;
             case end:

@@ -206,7 +206,8 @@ public class BlueAutoLeft3Weave extends AutonBase{
                 if(timer.get() > 2){
                     armPos = ArmPos.yeetCube;
                     intakePos = IntakePos.armMoving;
-                } else if(timer.get() > 1.3){
+                    
+                } else if(timer.get() > 1.5){
                     armPos = ArmPos.packagePos;
                     // intakePos = IntakePos.armMoving;
                 }
@@ -219,8 +220,11 @@ public class BlueAutoLeft3Weave extends AutonBase{
                 //     hopperSpeed = .3;
                 // }
 
+                // if(timer.get() > 2.75){
+                    targetTheta = Rotation2d.fromDegrees(-90);
+                // }
+
                 desState = driveToScoreCube.sample(timer.get());
-                targetTheta = Rotation2d.fromDegrees(-90);
 
                 if(Math.abs(Drivetrain.getPose().getX() - driveToScoreCube.getStates().get(driveToScoreCube.getStates().size()-1).poseMeters.getX()) < .05 &&
                 Math.abs(Drivetrain.getPose().getY() - driveToScoreCube.getStates().get(driveToScoreCube.getStates().size()-1).poseMeters.getY()) < .05){

@@ -1,26 +1,13 @@
 package frc.robot;
 
-import java.util.List;
-
 import org.hotutilites.hotlogger.HotLogger;
-
-import com.ctre.phoenix.motorcontrol.ControlMode;
-import com.ctre.phoenix.motorcontrol.can.VictorSPX;
-import com.revrobotics.CANSparkMax;
-import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
-import edu.wpi.first.math.geometry.Translation2d;
-import edu.wpi.first.math.trajectory.Trajectory;
-import edu.wpi.first.math.trajectory.TrajectoryConfig;
-import edu.wpi.first.math.trajectory.TrajectoryGenerator;
-import edu.wpi.first.net.PortForwarder;
 import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.Timer;
-import edu.wpi.first.wpilibj.ADXL345_I2C.AllAxes;
-import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.shuffleboard.BuiltInWidgets;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
@@ -39,12 +26,12 @@ import frc.robot.Autons.CableAuto;
 import frc.robot.Autons.NewArmTest;
 import frc.robot.Autons.NewMidBlue;
 import frc.robot.Autons.OhCrap;
-import frc.robot.Autons.RedAutoMid1Bal;
 import frc.robot.Autons.RedAutoRight;
 import frc.robot.Autons.RedAutoRight3;
 import frc.robot.Autons.RedAutoRight3Weave;
 import frc.robot.Autons.RedAutoRight3WeaveBal;
 import frc.robot.Autons.RedAutoRightBalance;
+import frc.robot.Autons.RedCord;
 import frc.robot.Autons.RedLeftAuto3;
 import frc.robot.sensors.Camera;
 import frc.robot.sensors.Pigeon;
@@ -83,6 +70,7 @@ public class Robot extends TimedRobot {
     private NewMidBlue newMidBlue;
     private BlueAutoLeft3copy copy;
     private BlueCord blueCord;
+    private RedCord redCord;
 
     LED leds;
 
@@ -123,7 +111,7 @@ public class Robot extends TimedRobot {
         m_chooser.addOption("AHHHH", "AHHHH");
         m_chooser.addOption("New Mid Blue", "New Mid Blue");
         m_chooser.addOption("Blue Cord", "Blue Cord");
-
+        m_chooser.addOption("Red Cord", "Red Cord");
 
         Shuffleboard.getTab("Competition")
         .add("Auto Selector", m_chooser)
@@ -159,6 +147,7 @@ public class Robot extends TimedRobot {
         newMidBlue = new NewMidBlue();
         copy = new BlueAutoLeft3copy();
         blueCord = new BlueCord();
+        redCord = new RedCord();
 
         camera.disabled();
 
@@ -195,6 +184,7 @@ public class Robot extends TimedRobot {
         arm.armPercentOutZero();
         // arm.coastMode();
         arm.brakeMode();
+        leds.fancyDisable();
     }
 
     @Override
@@ -238,9 +228,9 @@ public class Robot extends TimedRobot {
         } else if (autonSelection == "Red Right Balance"){
             autonCommader.initAuton(redAutoRightBalance);
         } else if(autonSelection == "Red Right 3"){
-            alliance = Alliance.Blue;
-            drivetrain.zero(90, new Pose2d(0,0, Rotation2d.fromDegrees(90)));
-            Pigeon.zeroSensor(90);
+            // alliance = Alliance.Blue;
+            // drivetrain.zero(90, new Pose2d(0,0, Rotation2d.fromDegrees(90)));
+            // Pigeon.zeroSensor(90);
             autonCommader.initAuton(redAutoRight3);
         } else if(autonSelection == "Blue Left Balance"){
             autonCommader.initAuton(blueAutoLeftBalance);
@@ -276,6 +266,10 @@ public class Robot extends TimedRobot {
             drivetrain.zero(180, new Pose2d(1.68, 1.65, Rotation2d.fromDegrees(180)));
             Pigeon.zeroSensor(180);
             autonCommader.initAuton(blueCord);
+        } else if(autonSelection == "Red Cord"){
+            drivetrain.zero(0, new Pose2d(15, 1.65, Rotation2d.fromDegrees(0)));
+            Pigeon.zeroSensor(0);
+            autonCommader.initAuton(redCord);
         } else if(autonSelection == "New Mid Blue"){
             alliance = Alliance.Blue;
             drivetrain.zero(-90, new Pose2d(0,0, Rotation2d.fromDegrees(-90)));

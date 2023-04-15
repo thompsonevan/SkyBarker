@@ -266,7 +266,7 @@ public class Drivetrain{
 
     public boolean rampPassed = false;
 
-    PIDController turn = new PIDController(.125,0,0);
+    PIDController turn = new PIDController(.125,0.01,0); // .125 // .125,0.05,0.0025
     PIDController x = new PIDController(.25,0,0);
     PIDController y = new PIDController(.06,0,0);
 
@@ -275,7 +275,24 @@ public class Drivetrain{
             zero();
         }
 
-        if (commander.driver.getPOV() == 180){
+        if(commander.autoAim()){
+            if(!commander.useNegativeSide()){
+                chassisSpeeds = ChassisSpeeds.fromFieldRelativeSpeeds(
+                    commander.getForwardCommand()/2,
+                    commander.getStrafeCommand()/2,
+                    turn.calculate(Pigeon.getRotation2d().getDegrees(), 90),
+                    Pigeon.getRotation2d());
+            } else {
+                chassisSpeeds = ChassisSpeeds.fromFieldRelativeSpeeds(
+                    commander.getForwardCommand()/2,
+                    commander.getStrafeCommand()/2,
+                    turn.calculate(Pigeon.getRotation2d().getDegrees(), -90),
+                    Pigeon.getRotation2d());
+            }
+
+
+            setSwerveModuleStates(chassisSpeeds);
+        } else if (commander.driver.getPOV() == 180){
             setModulePositions();
         }else {
             chassisSpeeds = ChassisSpeeds.fromFieldRelativeSpeeds(
@@ -354,19 +371,19 @@ public class Drivetrain{
             }
             setSwerveModuleStates(chassisSpeeds);
         } else if(autonCommader.getNewAutoBal()){
-                if(Pigeon.getPitch() < -13.7){
+                // if(Pigeon.getPitch() < -13.7){
+                //     chassisSpeeds = new ChassisSpeeds(
+                //         -.85,
+                //         0,
+                //         0
+                //         );
+                // } else {
                     chassisSpeeds = new ChassisSpeeds(
-                        -.8,
-                        0,
-                        0
-                        );
-                } else {
-                    chassisSpeeds = new ChassisSpeeds(
-                        Pigeon.getPitch() * .02,
+                        Pigeon.getPitch() * .05,
                         0,
                         0
                     );
-                }
+                // }
             setSwerveModuleStates(chassisSpeeds);
         } else if (autonCommader.getXMode()){
             setModulePositions();
