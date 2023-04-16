@@ -132,7 +132,7 @@ public final class Constants {
     public static final double WRIST_RATIO = (9.0)*(7.0)*(96.0/36.0);  // Ratio
 
     public static final double SHOULDER_OFFSET = compBot ? 112.709 : 160.049;
-    public static final double ELBOW_OFFSET = compBot ? 50.889 : 167.783;
+    public static final double ELBOW_OFFSET = compBot ? -5.801 : 167.783; //50.889
 
     //Arm pid motion magic gains
     public static final double SHOULDER_MOTOR_kF = 0;

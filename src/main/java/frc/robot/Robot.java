@@ -23,6 +23,7 @@ import frc.robot.Autons.BlueAutoMid1Bal;
 import frc.robot.Autons.BlueAutoRight2;
 import frc.robot.Autons.BlueCord;
 import frc.robot.Autons.CableAuto;
+import frc.robot.Autons.MidCube;
 import frc.robot.Autons.NewArmTest;
 import frc.robot.Autons.NewMidBlue;
 import frc.robot.Autons.OhCrap;
@@ -71,6 +72,7 @@ public class Robot extends TimedRobot {
     private BlueAutoLeft3copy copy;
     private BlueCord blueCord;
     private RedCord redCord;
+    private MidCube midCube;
 
     LED leds;
 
@@ -112,6 +114,7 @@ public class Robot extends TimedRobot {
         m_chooser.addOption("New Mid Blue", "New Mid Blue");
         m_chooser.addOption("Blue Cord", "Blue Cord");
         m_chooser.addOption("Red Cord", "Red Cord");
+        m_chooser.addOption("Mid Cube", "Mid Cube");
 
         Shuffleboard.getTab("Competition")
         .add("Auto Selector", m_chooser)
@@ -148,6 +151,7 @@ public class Robot extends TimedRobot {
         copy = new BlueAutoLeft3copy();
         blueCord = new BlueCord();
         redCord = new RedCord();
+        midCube = new MidCube();
 
         camera.disabled();
 
@@ -275,6 +279,11 @@ public class Robot extends TimedRobot {
             drivetrain.zero(-90, new Pose2d(0,0, Rotation2d.fromDegrees(-90)));
             Pigeon.zeroSensor(-90);
             autonCommader.initAuton(newMidBlue);
+        } else if(autonSelection == "Mid Cube"){
+            alliance = Alliance.Blue;
+            drivetrain.zero(-90, new Pose2d(0,0, Rotation2d.fromDegrees(-90)));
+            Pigeon.zeroSensor(-90);
+            autonCommader.initAuton(midCube);
         } else {
             autonCommader.initAuton(ohCrap);
         }

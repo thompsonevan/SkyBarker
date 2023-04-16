@@ -188,7 +188,11 @@ public class RedCord extends AutonBase{
                 targetTheta = Rotation2d.fromDegrees(165 + 180);
                 
                 intakePos = IntakePos.pack;
-                intakeSpeed = IntakeSpeed.none;
+                if(timer.get() > 1){
+                    intakeSpeed = IntakeSpeed.none;
+                } else {
+                    intakeSpeed = IntakeSpeed.onCube;
+                }
 
                 // gripperSpeed = -.75;
 

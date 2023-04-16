@@ -278,18 +278,17 @@ public class Drivetrain{
         if(commander.autoAim()){
             if(!commander.useNegativeSide()){
                 chassisSpeeds = ChassisSpeeds.fromFieldRelativeSpeeds(
-                    commander.getForwardCommand()/2,
-                    commander.getStrafeCommand()/2,
+                    commander.getForwardCommand(),
+                    commander.getStrafeCommand(),
                     turn.calculate(Pigeon.getRotation2d().getDegrees(), 90),
                     Pigeon.getRotation2d());
             } else {
                 chassisSpeeds = ChassisSpeeds.fromFieldRelativeSpeeds(
-                    commander.getForwardCommand()/2,
-                    commander.getStrafeCommand()/2,
+                    commander.getForwardCommand(),
+                    commander.getStrafeCommand(),
                     turn.calculate(Pigeon.getRotation2d().getDegrees(), -90),
                     Pigeon.getRotation2d());
             }
-
 
             setSwerveModuleStates(chassisSpeeds);
         } else if (commander.driver.getPOV() == 180){
@@ -379,7 +378,7 @@ public class Drivetrain{
                 //         );
                 // } else {
                     chassisSpeeds = new ChassisSpeeds(
-                        Pigeon.getPitch() * .05,
+                        Pigeon.getPitch() * .035,
                         0,
                         0
                     );
