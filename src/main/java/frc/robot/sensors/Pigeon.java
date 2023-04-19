@@ -15,6 +15,8 @@ import static frc.robot.Constants.*;
 public class Pigeon{
     private static Pigeon2 pigeon;
     private static Alliance alliance;
+    
+    private short[] xyzAccel;
 
     public Pigeon() {
         if(realBot){
@@ -53,7 +55,17 @@ public class Pigeon{
         SmartDashboard.putNumber("Pitch", getPitch());
         SmartDashboard.putNumber("Roll", getRoll());
 
-        HotLogger.Log("Theta", getAngle());
+        pigeon.getBiasedAccelerometer(xyzAccel);
+
+        // "Yaw", "Pitch", "Roll", "X Accel", "Y Accel", "Z Accel", 
+
+        HotLogger.Log("Yaw", getRotation2d().getDegrees());
+        HotLogger.Log("Pitch", getPitch());
+        HotLogger.Log("Roll", getRoll());
+
+        // HotLogger.Log("X Acell", ((double)xyzAccel[0]));
+        // HotLogger.Log("Y Acell", ((double)xyzAccel[1]));
+        // HotLogger.Log("Z Acell", ((double)xyzAccel[2]));
     }
     
     public void enabledAction(RobotCommander commander) {

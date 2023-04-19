@@ -235,8 +235,6 @@ public class RedAutoRight3 extends AutonBase{
                 intakeSpeed = IntakeSpeed.none;
             break;
         }
-
-        HotLogger.Log("AutoState", autoState.toString());
         SmartDashboard.putString("AutoState", autoState.toString());
         SmartDashboard.putBoolean("Arm Achieved Position", Arm.getAchivedPostion());
     }

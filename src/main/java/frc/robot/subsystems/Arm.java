@@ -660,9 +660,7 @@ public class Arm {
         }
         
         SmartDashboard.putNumber("intake commanded pos", shoulderBump);
-        HotLogger.Log("determineArmZoneHandOff", this.determineZoneHandoff().toString());
         SmartDashboard.putString("determineArmZoneHandOff", this.determineZoneHandoff().toString());
-        HotLogger.Log("DesiredIntakeAngle",desiredIntakePos);
     }
     }
 

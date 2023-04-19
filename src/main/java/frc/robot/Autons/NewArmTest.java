@@ -111,7 +111,6 @@ public class NewArmTest extends AutonBase{
             break;
         }
 
-        HotLogger.Log("AutoState", autoState.toString());
         SmartDashboard.putString("AutoState", autoState.toString());
         SmartDashboard.putBoolean("Arm Achieved Position", Arm.getAchivedPostion());
     }

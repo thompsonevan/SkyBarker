@@ -307,7 +307,6 @@ public class Drivetrain{
     }
     
     public void autonAction(AutonCommader autonCommader){
-        HotLogger.Log("Driving", autonCommader.isDriving());
         if(autonCommader.isDriving()){
             driveToPos(autonCommader.getDesiredState(), autonCommader.getTargetTheta());
             rampPassed = false;
@@ -405,11 +404,8 @@ public class Drivetrain{
         SmartDashboard.putNumber("Commanded Turn", speeds.omegaRadiansPerSecond);
 
         SmartDashboard.putNumber("Commanded Theta",theta.getDegrees());
-        HotLogger.Log("TargetTheta", theta.getDegrees());
         SmartDashboard.putNumber("Commanded X", state.poseMeters.getX());
-        HotLogger.Log("TargetX", state.poseMeters.getX());
         SmartDashboard.putNumber("Commanded Y", state.poseMeters.getY());
-        HotLogger.Log("TargetY", state.poseMeters.getY());
     }
 
     public void updatePose(){
@@ -445,10 +441,7 @@ public class Drivetrain{
         poseEstimator.updateWithTime(Timer.getFPGATimestamp(), Pigeon.getRotation2d(), positions);
 
         SmartDashboard.putNumber("Estimated Theta", Rotation2d.fromDegrees(Pigeon.getAngle()).getDegrees());
-        HotLogger.Log("Pose Theta", Pigeon.getRotation2d().getDegrees());
         SmartDashboard.putNumber("Estimated X", poseEstimator.getEstimatedPosition().getX());
-        HotLogger.Log("poseX", poseEstimator.getEstimatedPosition().getX());
         SmartDashboard.putNumber("Estimated Y", poseEstimator.getEstimatedPosition().getY());
-        HotLogger.Log("poseY", poseEstimator.getEstimatedPosition().getY());
     }
 }

@@ -85,14 +85,28 @@ public class Robot extends TimedRobot {
 
     @Override
     public void robotInit() {
-        HotLogger.Setup("Theta", "Left Front Absolute", "Left Front Assumed",
-        "Right Front Absolute", "Right Front Assumed",
-        "Left Rear Absolute", "Left Rear Assumed",
-        "Right Rear Absolute", "Right Rear Assumed",
-        "TargetX", "TargetY", "TargetTheta", "Pose Theta", "poseX", "poseY",
-        "Shoulder Absolute Pos", "Shoulder Motor Pos", "Extension Pos", "Elbow Absolute Pos", "Elbow Motor Pos",
-        "Shoulder Desired Pos", "Extension Desired Pos", "Elbow Desired Pos","determineArmZoneHandOff","DesiredIntakeAngle",
-        "Commanded Extension Position", "AutoState", "Driving");
+        // HotLogger.Setup("Theta", "Left Front Absolute", "Left Front Assumed",
+        // "Right Front Absolute", "Right Front Assumed",
+        // "Left Rear Absolute", "Left Rear Assumed",
+        // "Right Rear Absolute", "Right Rear Assumed",
+        // "TargetX", "TargetY", "TargetTheta", "Pose Theta", "poseX", "poseY",
+        // "Shoulder Absolute Pos", "Shoulder Motor Pos", "Extension Pos", "Elbow Absolute Pos", "Elbow Motor Pos",
+        // "Shoulder Desired Pos", "Extension Desired Pos", "Elbow Desired Pos","determineArmZoneHandOff","DesiredIntakeAngle",
+        // "Commanded Extension Position", "AutoState", "Driving");
+
+        HotLogger.Setup("Match Time", "Robot Mode", "Auto State", "Cur Auton",
+                        "Yaw", "Pitch", "Roll", "X Accel", "Y Accel", "Z Accel", 
+                        "Front Left Cur Pos", "Front Right Cur Pos", "Back Left Cur Pos", "Back Right Cur Pos",
+                        "Front Left Des Pos", "Front Right Des Pos", "Back Left Des Pos", "Back Right Des Pos",
+                        "Front Left Cur Speed", "Front Right Cur Speed", "Back Left Cur Speed", "Back Right Cur Speed",
+                        "Chassis Speed Forward", "Chassis Speed Strafe", "Chassis Speed Turn",
+                        "Pose Theta", "Pose X", "Pose Y", "Des Theta", "Des X", "Des Y",
+                        "Extension Cur Pos", "Extension Des Pos", 
+                        "Shoulder Cur Pos", "Shoulder Des Pos",
+                        "Elbow Cur Pos", "Elbow Des Pos",
+                        "Cur Arm Zone", "Commanded Arm Zone", "Is Negative Side", "Arm Commanded Pos", "Arm Actual Commanded Pos",
+                        "Intake Cur Angle", "Intake Des Angle", "Intake Speed",
+                        "Gripper Speed");
 
         m_chooser.setDefaultOption("Blue Left", "Blue Left");
         m_chooser.addOption("Red Right", "Red Right");
@@ -167,6 +181,7 @@ public class Robot extends TimedRobot {
         hopper.logData();
         arm.logdata();
         SmartDashboard.putNumber("Match Time", DriverStation.getMatchTime());
+        HotLogger.Log("Match Time",DriverStation.getMatchTime());
         SmartDashboard.putNumber("FPGA Time", Timer.getFPGATimestamp());
         drivetrain.updatePose();
         SmartDashboard.putString("Auton Selected", autoSelected);

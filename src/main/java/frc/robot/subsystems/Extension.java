@@ -71,7 +71,6 @@ public class Extension {
         achivedTargetAuto = Math.abs(this.convertToInches(extension.getClosedLoopTarget()) - extensionPosition) < 3;
         SmartDashboard.putNumber("Extension Closed loop target", this.convertToInches(extension.getClosedLoopTarget()));
         SmartDashboard.putNumber("Extension", extensionPosition);
-        HotLogger.Log("Extension Pos", extensionPosition);
     }
 
     public void setMotorCommand(double motorCommand) {
@@ -89,7 +88,6 @@ public class Extension {
         } else {
             extension.set(ControlMode.PercentOutput, 0.0);
         }
-        HotLogger.Log("Commanded Extension Position", inches);
         SmartDashboard.putNumber("Elbow Angle Command", this.convertToTicks(inches));
         SmartDashboard.putNumber("Elbow Command", inches);
         SmartDashboard.putNumber("Elbow Command Actual", extension.getActiveTrajectoryPosition());

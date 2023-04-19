@@ -53,7 +53,6 @@ public class Hopper {
     }
 
   public void logData(){
-    HotLogger.Log("Hopper Override", hopperOverrideActive);
-    }
+  }
 }
   

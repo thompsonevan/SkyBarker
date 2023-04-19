@@ -94,7 +94,6 @@ public class Elbow {
         SmartDashboard.putNumber("Elbow Closed loop target", this.convertToDegrees(elbow.getClosedLoopTarget() - elbowOffset));
         SmartDashboard.putNumber("Elbow real angle", elbow.getSelectedSensorPosition(Constants.ELBOW_K_PID_LOOP_IDX));
         SmartDashboard.putNumber("Elbow Angle CANCODER", elbowEncoder.getAbsolutePosition());
-        HotLogger.Log("Extension Pos",elbowAngle);
     }
 
     public void setMotorCommand(double motorCommand) { 

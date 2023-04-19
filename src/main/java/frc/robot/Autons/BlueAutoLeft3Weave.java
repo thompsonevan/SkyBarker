@@ -270,7 +270,6 @@ public class BlueAutoLeft3Weave extends AutonBase{
             break;
         }
 
-        HotLogger.Log("AutoState", autoState.toString());
         SmartDashboard.putString("AutoState", autoState.toString());
         SmartDashboard.putBoolean("Arm Achieved Position", Arm.getAchivedPostion());
     }

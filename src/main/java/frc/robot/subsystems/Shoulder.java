@@ -95,7 +95,6 @@ public class Shoulder {
         SmartDashboard.putNumber("Shoulder Angle", shoulderAngle);
         SmartDashboard.putNumber("Shoulder Closed loop target", this.convertToDegrees(shoulder.getClosedLoopTarget()));
         SmartDashboard.putNumber("Shoulder Angle CANCODER", shoulderEncoder.getAbsolutePosition());
-        HotLogger.Log("Shoulder Pos",shoulderAngle);
     }
 
     public void setMotorCommand(double motorCommand) { 

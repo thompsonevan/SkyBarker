@@ -90,13 +90,13 @@ public final class Constants {
     public static final double INTAKE_SPEED_CONE = 1;
     public static final int INTAKE_TIMEOUT = 200;
     public static final int INTAKE_DELAY = 1;
-    public static final double INTAKE_ANGLE_MAX_SPEED = .7;
+    public static final double INTAKE_ANGLE_MAX_SPEED = 1; //.7
     public static final double INTAKE_PID_DEADBAND = .2;
-    public static final double INTAKE_DEADBAND = 30;
+    public static final double INTAKE_DEADBAND = 45; //30
 
     public static final double INTAKE_OFFSET = compBot ? -8.3 : 52.5;
 
-    public static final double ip = 0.0175;
+    public static final double ip = 0.02;
     public static final double ii = 0.0015;
     public static final double id = 0.0000005;
     public static final double iiz = 0;

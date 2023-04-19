@@ -225,7 +225,7 @@ public class BlueAutoLeftBalance extends AutonBase{
                 xMode = true;
             break;
         }
-        HotLogger.Log("AutoState", autoState.toString());
+
         SmartDashboard.putString("AutoState", autoState.toString());
         SmartDashboard.putBoolean("Arm Achieved Position", Arm.getAchivedPostion());
     }
