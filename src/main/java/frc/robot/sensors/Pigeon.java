@@ -55,7 +55,7 @@ public class Pigeon{
         SmartDashboard.putNumber("Pitch", getPitch());
         SmartDashboard.putNumber("Roll", getRoll());
 
-        pigeon.getBiasedAccelerometer(xyzAccel);
+        // pigeon.getBiasedAccelerometer(xyzAccel);
 
         // "Yaw", "Pitch", "Roll", "X Accel", "Y Accel", "Z Accel", 
 
