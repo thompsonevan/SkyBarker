@@ -41,9 +41,9 @@ public class Gripper {
         }
         else{
         gripper.set(ControlMode.PercentOutput, commander.getGripperCommand());
-        SmartDashboard.putNumber("Gripper Command", commander.getGripperCommand());
+        // SmartDashboard.putNumber("Gripper Command", commander.getGripperCommand());
         }
         armPositionPrev = commander.getArmPosition();
-        SmartDashboard.putNumber("timer", timer);
+        // SmartDashboard.putNumber("timer", timer);
     }
 }

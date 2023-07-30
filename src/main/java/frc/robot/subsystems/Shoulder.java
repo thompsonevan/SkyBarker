@@ -92,9 +92,9 @@ public class Shoulder {
         shoulderAngle = this.convertToDegrees(shoulder.getSelectedSensorPosition());
         achivedTarget = Math.abs(this.convertToDegrees(shoulder.getClosedLoopTarget()) - shoulderAngle) < 5;
         achivedTargetAuto = Math.abs(this.convertToDegrees(shoulder.getClosedLoopTarget()) - shoulderAngle) < 2.5;
-        SmartDashboard.putNumber("Shoulder Angle", shoulderAngle);
-        SmartDashboard.putNumber("Shoulder Closed loop target", this.convertToDegrees(shoulder.getClosedLoopTarget()));
-        SmartDashboard.putNumber("Shoulder Angle CANCODER", shoulderEncoder.getAbsolutePosition());
+        // SmartDashboard.putNumber("Shoulder Angle", shoulderAngle);
+        // SmartDashboard.putNumber("Shoulder Closed loop target", this.convertToDegrees(shoulder.getClosedLoopTarget()));
+        // SmartDashboard.putNumber("Shoulder Angle CANCODER", shoulderEncoder.getAbsolutePosition());
     }
 
     public void setMotorCommand(double motorCommand) { 
@@ -119,15 +119,15 @@ public class Shoulder {
         } else {
             shoulder.set(ControlMode.PercentOutput, 0.0);
         }
-        SmartDashboard.putNumber("Should command ticks", this.convertToTicks(degrees));
-        SmartDashboard.putNumber("Should ticks", shoulder.getSelectedSensorPosition());
-        SmartDashboard.putNumber("Shoulder Command", degrees);
-        SmartDashboard.putNumber("Shoulder Command Actual", this.convertToDegrees(shoulder.getActiveTrajectoryPosition()));
-        SmartDashboard.putNumber("Shoulder FeedForward", shoulder.getActiveTrajectoryArbFeedFwd()*100);
-        SmartDashboard.putNumber("Shoulder Proportional", shoulder.getClosedLoopError()*Constants.SHOULDER_MOTOR_kP/1023);
-        SmartDashboard.putNumber("Shoulder Derviative", shoulder.getErrorDerivative()*Constants.SHOULDER_MOTOR_kD/1023);
-        SmartDashboard.putNumber("Shoulder Integral", shoulder.getIntegralAccumulator()*Constants.SHOULDER_MOTOR_kI/1023);
-        SmartDashboard.putNumber("Shoulder Total Command", shoulder.getMotorOutputPercent());
+        // SmartDashboard.putNumber("Should command ticks", this.convertToTicks(degrees));
+        // SmartDashboard.putNumber("Should ticks", shoulder.getSelectedSensorPosition());
+        // SmartDashboard.putNumber("Shoulder Command", degrees);
+        // SmartDashboard.putNumber("Shoulder Command Actual", this.convertToDegrees(shoulder.getActiveTrajectoryPosition()));
+        // SmartDashboard.putNumber("Shoulder FeedForward", shoulder.getActiveTrajectoryArbFeedFwd()*100);
+        // SmartDashboard.putNumber("Shoulder Proportional", shoulder.getClosedLoopError()*Constants.SHOULDER_MOTOR_kP/1023);
+        // SmartDashboard.putNumber("Shoulder Derviative", shoulder.getErrorDerivative()*Constants.SHOULDER_MOTOR_kD/1023);
+        // SmartDashboard.putNumber("Shoulder Integral", shoulder.getIntegralAccumulator()*Constants.SHOULDER_MOTOR_kI/1023);
+        // SmartDashboard.putNumber("Shoulder Total Command", shoulder.getMotorOutputPercent());
     }
 
     public void setCoastMode() {

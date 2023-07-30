@@ -69,8 +69,8 @@ public class Extension {
         extensionPosition = this.convertToInches(extension.getSelectedSensorPosition()); 
         achivedTarget = Math.abs(this.convertToInches(extension.getClosedLoopTarget()) - extensionPosition) < 1;
         achivedTargetAuto = Math.abs(this.convertToInches(extension.getClosedLoopTarget()) - extensionPosition) < 3;
-        SmartDashboard.putNumber("Extension Closed loop target", this.convertToInches(extension.getClosedLoopTarget()));
-        SmartDashboard.putNumber("Extension", extensionPosition);
+        // SmartDashboard.putNumber("Extension Closed loop target", this.convertToInches(extension.getClosedLoopTarget()));
+        // SmartDashboard.putNumber("Extension", extensionPosition);
     }
 
     public void setMotorCommand(double motorCommand) {
@@ -88,14 +88,14 @@ public class Extension {
         } else {
             extension.set(ControlMode.PercentOutput, 0.0);
         }
-        SmartDashboard.putNumber("Elbow Angle Command", this.convertToTicks(inches));
-        SmartDashboard.putNumber("Elbow Command", inches);
-        SmartDashboard.putNumber("Elbow Command Actual", extension.getActiveTrajectoryPosition());
-        SmartDashboard.putNumber("Elbow FeedForward", extension.getActiveTrajectoryArbFeedFwd()*100);
-        SmartDashboard.putNumber("Elbow Proportional", extension.getClosedLoopError()*Constants.ELBOW_MOTOR_kP/1023);
-        SmartDashboard.putNumber("Elbow Derviative", extension.getErrorDerivative()*Constants.ELBOW_MOTOR_kD/1023);
-        SmartDashboard.putNumber("Elbow Integral", extension.getIntegralAccumulator()*Constants.ELBOW_MOTOR_kI/1023);
-        SmartDashboard.putNumber("Elbow Total Command", extension.getMotorOutputPercent());
+        // SmartDashboard.putNumber("Elbow Angle Command", this.convertToTicks(inches));
+        // SmartDashboard.putNumber("Elbow Command", inches);
+        // SmartDashboard.putNumber("Elbow Command Actual", extension.getActiveTrajectoryPosition());
+        // SmartDashboard.putNumber("Elbow FeedForward", extension.getActiveTrajectoryArbFeedFwd()*100);
+        // SmartDashboard.putNumber("Elbow Proportional", extension.getClosedLoopError()*Constants.ELBOW_MOTOR_kP/1023);
+        // SmartDashboard.putNumber("Elbow Derviative", extension.getErrorDerivative()*Constants.ELBOW_MOTOR_kD/1023);
+        // SmartDashboard.putNumber("Elbow Integral", extension.getIntegralAccumulator()*Constants.ELBOW_MOTOR_kI/1023);
+        // SmartDashboard.putNumber("Elbow Total Command", extension.getMotorOutputPercent());
     }
 
     public void setCoastMode() {

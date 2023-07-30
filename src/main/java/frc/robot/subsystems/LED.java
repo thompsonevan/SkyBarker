@@ -27,15 +27,15 @@ public class LED {
     }
 
     public void fancyDisable() {
-        for (var i = 0; i <= LED_FANCY_ITERATION; i++) {
-            strip1Buffer.setRGB(assigner.nextInt(LED_LENGTH), LED_FANCY_BASE[0] - redRandom.nextInt(LED_RED_DEVIATION), LED_FANCY_BASE[1] + yellowRandom.nextInt(LED_YELLOW_DEVIATION), LED_FANCY_BASE[2]);
-        }
+        // for (var i = 0; i <= LED_FANCY_ITERATION; i++) {
+        //     strip1Buffer.setRGB(assigner.nextInt(LED_LENGTH), LED_FANCY_BASE[0] - redRandom.nextInt(LED_RED_DEVIATION), LED_FANCY_BASE[1] + yellowRandom.nextInt(LED_YELLOW_DEVIATION), LED_FANCY_BASE[2]);
+        // }
          
-        if (resetTimer == LED_RESET_TIMER) {
-            resetTimer = 0;
-            setLights(LED_FANCY_BASE);
-        }
-        strip1.setData(strip1Buffer);
+        // if (resetTimer == LED_RESET_TIMER) {
+        //     resetTimer = 0;
+        //     setLights(LED_FANCY_BASE);
+        // }
+        // strip1.setData(strip1Buffer);
 	}
 
     public void autonInit() {

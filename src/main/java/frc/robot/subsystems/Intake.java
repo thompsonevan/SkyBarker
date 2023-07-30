@@ -199,7 +199,7 @@ public class Intake {
         speedPeriodic();
         anglePeriodic();
 
-        SmartDashboard.putBoolean("_intake Sensor", ballSensor.get());
+        // SmartDashboard.putBoolean("_intake Sensor", ballSensor.get());
     }
     
     public void speedPeriodic(){
@@ -245,7 +245,7 @@ public class Intake {
                     // speedMotor1.set(TalonFXControlMode.PercentOutput, speed);
                     speedMotor2.set(TalonFXControlMode.PercentOutput, -speed);
                 } else {
-                    speedMotor1.set(TalonFXControlMode.PercentOutput, speed);
+                    speedMotor1.set(TalonFXControlMode.PercentOutput, speed/2);
                     speedMotor2.set(TalonFXControlMode.PercentOutput, -speed);
                 }
 
@@ -300,12 +300,12 @@ public class Intake {
 
     public void logData() {
         angleEncoderAngle = angleEncoder.getAbsolutePosition();
-        SmartDashboard.putNumber("Intake Change", change);
-        SmartDashboard.putNumber("Intake PID Change", pidchange);
-        SmartDashboard.putNumber("Intake Absolute Encoder", angleEncoderAngle);
-        SmartDashboard.putNumber("Intake rotations", angleMotor.getEncoder().getPosition());
-        SmartDashboard.putNumber("Intake Angle Power", angleMotor.getAppliedOutput());
-        SmartDashboard.putBoolean("intake Sensor", ballSensor.get());
+        // SmartDashboard.putNumber("Intake Change", change);
+        // SmartDashboard.putNumber("Intake PID Change", pidchange);
+        // SmartDashboard.putNumber("Intake Absolute Encoder", angleEncoderAngle);
+        // SmartDashboard.putNumber("Intake rotations", angleMotor.getEncoder().getPosition());
+        // SmartDashboard.putNumber("Intake Angle Power", angleMotor.getAppliedOutput());
+        // SmartDashboard.putBoolean("intake Sensor", ballSensor.get());
         // SmartDashboard.putNumber("magnet offset", angleEncoder.getAllConfigs(CANCoderConfiguration));
     }
 }

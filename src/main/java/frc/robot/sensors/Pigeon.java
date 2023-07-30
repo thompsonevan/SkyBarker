@@ -51,9 +51,9 @@ public class Pigeon{
     }
 
     public void logData() {
-        SmartDashboard.putNumber("Theta", getAngle());
-        SmartDashboard.putNumber("Pitch", getPitch());
-        SmartDashboard.putNumber("Roll", getRoll());
+        // SmartDashboard.putNumber("Theta", getAngle());
+        // SmartDashboard.putNumber("Pitch", getPitch());
+        // SmartDashboard.putNumber("Roll", getRoll());
 
         // pigeon.getBiasedAccelerometer(xyzAccel);
 

@@ -8,7 +8,9 @@ import com.ctre.phoenix.motorcontrol.can.VictorSPX;
 import com.ctre.phoenix.sensors.AbsoluteSensorRange;
 import com.ctre.phoenix.sensors.CANCoder;
 
+import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Timer;
+import edu.wpi.first.wpilibj.DriverStation.MatchType;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.Constants;
 import frc.robot.Robot;
@@ -499,14 +501,14 @@ public class Arm {
         }
         else if (commander.getArmPosition() == ArmPos.topNodeCone && (armTargetPrevious == ArmPos.groundGripperConePick || armTargetPrevious == ArmPos.groundGripperCone) || actualCommand == ArmPos.groundToTop){
 
-            SmartDashboard.putNumber("Cur SHoulder ANgle",shoulder.getShoulderAngle());
-
+            // SmartDashboard.putNumber("Cur SHoulder ANgle",shoulder.getShoulderAngle());
+  
             if(Math.abs(shoulder.getShoulderAngle()) < 75){
                 actualCommand = commander.getArmPosition();
-                SmartDashboard.putBoolean("AHHHHHH", false);
+                // SmartDashboard.putBoolean("AHHHHHH", false);
             } else {
                 actualCommand = ArmPos.groundToTop;
-                SmartDashboard.putBoolean("AHHHHHH", true);
+                // SmartDashboard.putBoolean("AHHHHHH", true);
             }
 
             // if(shoulder.getShoulderAngle()  25){
@@ -631,10 +633,10 @@ public class Arm {
                 }
             }
         }
-        SmartDashboard.putString("Commanded Position", commander.getArmPosition().name());
-        SmartDashboard.putString("Commanded Position Actual", actualCommand.name());
-        SmartDashboard.putString("Commanded Zone", currentCommandedZone.name());
-        SmartDashboard.putString("Commanded Position Previuos", commander.getArmPosition().name());
+        // SmartDashboard.putString("Commanded Position", commander.getArmPosition().name());
+        // SmartDashboard.putString("Commanded Position Actual", actualCommand.name());
+        // SmartDashboard.putString("Commanded Zone", currentCommandedZone.name());
+        // SmartDashboard.putString("Commanded Position Previuos", commander.getArmPosition().name());
         armTargetPrevious = commander.getArmPosition();
         
         double shoulderBump = this.determineShoulderBump(commander);
@@ -659,8 +661,8 @@ public class Arm {
             extension.setMotorCommand(0);
         }
         
-        SmartDashboard.putNumber("intake commanded pos", shoulderBump);
-        SmartDashboard.putString("determineArmZoneHandOff", this.determineZoneHandoff().toString());
+        // SmartDashboard.putNumber("intake commanded pos", shoulderBump);
+        // SmartDashboard.putString("determineArmZoneHandOff", this.determineZoneHandoff().toString());
     }
     }
 
@@ -729,8 +731,8 @@ public class Arm {
             bumpLatchTimer = Constants.ARM_BUMP_LATCH_TIME + 1;
         }
 
-        SmartDashboard.putNumber("shoulderBumpOffSet", shoulderBumpOffSet);
-        SmartDashboard.putNumber("bumpLatchTimer", bumpLatchTimer);
+        // SmartDashboard.putNumber("shoulderBumpOffSet", shoulderBumpOffSet);
+        // SmartDashboard.putNumber("bumpLatchTimer", bumpLatchTimer);
 
         return shoulderBumpOffSet * humanPlayerModifier * negativeModifier;
     }
@@ -738,11 +740,13 @@ public class Arm {
     public void updatePose(){
         extension.updatePose();
         elbow.updatePose();
-        shoulder.updatePose();
-        achivedPostion = this.determineAchivePosition();
+        shoulder.updatePose();  
+        // if(!DriverStation.isDisabled()){
+            achivedPostion = this.determineAchivePosition();
+        // }
         currentZone = this.determineArmZone(shoulder.getShoulderAngle(), extension.getExtensionPosition(), elbow.getElbowAngle());
-        SmartDashboard.putString("ArmActualZone",currentZone.name());
-        SmartDashboard.putBoolean("Achived Position",achivedPostion);
+        // SmartDashboard.putString("ArmActualZone",currentZone.name());
+        // SmartDashboard.putBoolean("Achived Position",achivedPostion);
     }
 
     private boolean determineAchivePosition() {

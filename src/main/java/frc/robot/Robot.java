@@ -177,14 +177,14 @@ public class Robot extends TimedRobot {
     public void robotPeriodic() {
         arm.updatePose();
         // camera.logData();
-        pigeon.logData();
-        hopper.logData();
-        arm.logdata();
-        SmartDashboard.putNumber("Match Time", DriverStation.getMatchTime());
-        HotLogger.Log("Match Time",DriverStation.getMatchTime());
-        SmartDashboard.putNumber("FPGA Time", Timer.getFPGATimestamp());
+        // pigeon.logData();
+        // hopper.logData();
+        // arm.logdata();
+        // SmartDashboard.putNumber("Match Time", DriverStation.getMatchTime());
+        // HotLogger.Log("Match Time",DriverStation.getMatchTime());
+        // SmartDashboard.putNumber("FPGA Time", Timer.getFPGATimestamp());
         drivetrain.updatePose();
-        SmartDashboard.putString("Auton Selected", autoSelected);
+        // SmartDashboard.putString("Auton Selected", autoSelected);
     }
 
     @Override
@@ -204,6 +204,7 @@ public class Robot extends TimedRobot {
         // arm.coastMode();
         arm.brakeMode();
         leds.fancyDisable();
+        // drivetrain.zero();
     }
 
     @Override

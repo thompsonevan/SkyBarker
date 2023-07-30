@@ -43,7 +43,7 @@ public class NewMidBlue extends AutonBase{
 
     Pose2d startingPose = new Pose2d(0,0, Rotation2d.fromDegrees(-90));
     Pose2d over = new Pose2d(5.5,0, Rotation2d.fromDegrees(0));
-    Pose2d endPose = new Pose2d(0,0, Rotation2d.fromDegrees(170));
+    Pose2d endPose = new Pose2d(.5,0, Rotation2d.fromDegrees(170));
     Pose2d onStation = new Pose2d(1.8,0, Rotation2d.fromDegrees(170));
 
     Trajectory trajectory;
@@ -151,21 +151,19 @@ public class NewMidBlue extends AutonBase{
                 }
                 targetTheta = endPose.getRotation();
 
-                if(Math.abs(Drivetrain.getPose().getX() - endPose.getX()) < .075 && 
-                Math.abs(Drivetrain.getPose().getY() - endPose.getY()) < .075){
+                if(Math.abs(Drivetrain.getPose().getX() - endPose.getX()) < .15 && 
+                Math.abs(Drivetrain.getPose().getY() - endPose.getY()) < .15){
                     intakeSpeed = IntakeSpeed.autoOut;
 
+                    // if(timer.get() > (trajectory.getTotalTimeSeconds() + .3)){
+                    trajectory = createTrajectory(endPose, onStation,
+                    Rotation2d.fromDegrees(0), Rotation2d.fromDegrees(0),
+                    2,2);
 
+                    timer.reset();
 
-                    if(timer.get() > (trajectory.getTotalTimeSeconds() + .3)){
-                        trajectory = createTrajectory(endPose, onStation,
-                        Rotation2d.fromDegrees(0), Rotation2d.fromDegrees(0),
-                        2,2);
-
-                        timer.reset();
-
-                        autoState = AutoState.pause1;
-                    }
+                    autoState = AutoState.pause1;
+                    // }
                 }
             break;
             case pause1:

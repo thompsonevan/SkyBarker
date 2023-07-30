@@ -89,11 +89,11 @@ public class Elbow {
         elbowAngle = (elbow.getSelectedSensorPosition(Constants.ELBOW_K_PID_LOOP_IDX) - elbowOffset)*360/4096; 
         achivedTarget = Math.abs(this.convertToDegrees(elbow.getClosedLoopTarget() - elbowOffset) - elbowAngle) < 10;
         achivedTargetAuto = Math.abs(this.convertToDegrees(elbow.getClosedLoopTarget() - elbowOffset) - elbowAngle) < 30;
-        SmartDashboard.putNumber("Elbow Angle", elbowAngle);
-        SmartDashboard.putNumber("Elbow elbowOffset", elbowOffset);
-        SmartDashboard.putNumber("Elbow Closed loop target", this.convertToDegrees(elbow.getClosedLoopTarget() - elbowOffset));
-        SmartDashboard.putNumber("Elbow real angle", elbow.getSelectedSensorPosition(Constants.ELBOW_K_PID_LOOP_IDX));
-        SmartDashboard.putNumber("Elbow Angle CANCODER", elbowEncoder.getAbsolutePosition());
+        // SmartDashboard.putNumber("Elbow Angle", elbowAngle);
+        // SmartDashboard.putNumber("Elbow elbowOffset", elbowOffset);
+        // SmartDashboard.putNumber("Elbow Closed loop target", this.convertToDegrees(elbow.getClosedLoopTarget() - elbowOffset));
+        // SmartDashboard.putNumber("Elbow real angle", elbow.getSelectedSensorPosition(Constants.ELBOW_K_PID_LOOP_IDX));
+        // SmartDashboard.putNumber("Elbow Angle CANCODER", elbowEncoder.getAbsolutePosition());
     }
 
     public void setMotorCommand(double motorCommand) { 
@@ -102,7 +102,7 @@ public class Elbow {
         } else {
             elbow.set(ControlMode.PercentOutput, 0.0);
         }
-        SmartDashboard.putNumber("Elbow Total Command", elbow.getMotorOutputPercent());
+        // SmartDashboard.putNumber("Elbow Total Command", elbow.getMotorOutputPercent());
     }
 
     public void goToPostion(double degrees) {
@@ -111,14 +111,14 @@ public class Elbow {
         } else {
             elbow.set(ControlMode.PercentOutput, 0.0);
         }
-        SmartDashboard.putNumber("Elbow Angle Command", elbowOffset + this.convertToTicks(degrees));
-        SmartDashboard.putNumber("Elbow Command", degrees);
-        SmartDashboard.putNumber("Elbow Command Actual", this.convertToDegrees(elbow.getActiveTrajectoryPosition()- elbowOffset)*360/4096);
-        SmartDashboard.putNumber("Elbow FeedForward", elbow.getActiveTrajectoryArbFeedFwd()*100);
-        SmartDashboard.putNumber("Elbow Proportional", elbow.getClosedLoopError()*Constants.ELBOW_MOTOR_kP/1023);
-        SmartDashboard.putNumber("Elbow Derviative", elbow.getErrorDerivative()*Constants.ELBOW_MOTOR_kD/1023);
-        SmartDashboard.putNumber("Elbow Integral", elbow.getIntegralAccumulator()*Constants.ELBOW_MOTOR_kI/1023);
-        SmartDashboard.putNumber("Elbow Total Command", elbow.getMotorOutputPercent());
+        // SmartDashboard.putNumber("Elbow Angle Command", elbowOffset + this.convertToTicks(degrees));
+        // SmartDashboard.putNumber("Elbow Command", degrees);
+        // SmartDashboard.putNumber("Elbow Command Actual", this.convertToDegrees(elbow.getActiveTrajectoryPosition()- elbowOffset)*360/4096);
+        // SmartDashboard.putNumber("Elbow FeedForward", elbow.getActiveTrajectoryArbFeedFwd()*100);
+        // SmartDashboard.putNumber("Elbow Proportional", elbow.getClosedLoopError()*Constants.ELBOW_MOTOR_kP/1023);
+        // SmartDashboard.putNumber("Elbow Derviative", elbow.getErrorDerivative()*Constants.ELBOW_MOTOR_kD/1023);
+        // SmartDashboard.putNumber("Elbow Integral", elbow.getIntegralAccumulator()*Constants.ELBOW_MOTOR_kI/1023);
+        // SmartDashboard.putNumber("Elbow Total Command", elbow.getMotorOutputPercent());
     }
 
     public void setCoastMode() {

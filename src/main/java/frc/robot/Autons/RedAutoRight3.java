@@ -184,8 +184,8 @@ public class RedAutoRight3 extends AutonBase{
                     intakeSpeed = IntakeSpeed.onCube;
                 }
 
-                if(Math.abs(Drivetrain.getPose().getX() - secondCube.getStates().get(secondCube.getStates().size()-1).poseMeters.getX()) < .05 &&
-                Math.abs(Drivetrain.getPose().getY() - secondCube.getStates().get(secondCube.getStates().size()-1).poseMeters.getY()) < .05){                
+                if(Math.abs(Drivetrain.getPose().getX() - secondCube.getStates().get(secondCube.getStates().size()-1).poseMeters.getX()) < .1 &&
+                Math.abs(Drivetrain.getPose().getY() - secondCube.getStates().get(secondCube.getStates().size()-1).poseMeters.getY()) < .1){                
                     timer.reset();
                     
                     gripperSpeed = 0;

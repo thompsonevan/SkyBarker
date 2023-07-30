@@ -78,7 +78,7 @@ public class BlueAutoRight2 extends AutonBase{
         switch(autoState){
             case firstPlace:
                 driving = false;
-                if(!Arm.getAchivedPostion()){
+                if(!Arm.getAchivedPostion() || timer.get() < .75){
                     gripperSpeed = -.4;
                     armPos = ArmPos.topNodeCone;
                     armTime = timer.get();
@@ -145,8 +145,8 @@ public class BlueAutoRight2 extends AutonBase{
                 desState = trajectory.sample(timer.get());
                 targetTheta = path.get(point).getRotation();
 
-                if(Math.abs(Drivetrain.getPose().getX() - path.get(point).getX()) < .075 &&
-                Math.abs(Drivetrain.getPose().getY() - path.get(point).getY()) < .075){                    
+                if(Math.abs(Drivetrain.getPose().getX() - path.get(point).getX()) < .1 &&
+                Math.abs(Drivetrain.getPose().getY() - path.get(point).getY()) < .1){                    
                     timer.reset();
                     
                     gripperSpeed = 0;
@@ -192,6 +192,7 @@ public class BlueAutoRight2 extends AutonBase{
                 targetTheta = path.get(point).getRotation();
 
                 if(timer.get() > trajectory.getTotalTimeSeconds()/2){
+                    armPos = ArmPos.Zero;
                     intakePos = IntakePos.collectCube;
                     intakeSpeed = IntakeSpeed.onCube;
                 }

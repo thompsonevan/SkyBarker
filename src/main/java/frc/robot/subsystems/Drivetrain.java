@@ -88,6 +88,7 @@ public class Drivetrain{
     
     public Drivetrain(){
         ShuffleboardTab tab = Shuffleboard.getTab("Drivetrain");
+        // ShuffleboardTab tab =null;
 
         kinematics = new SwerveDriveKinematics(
             new Translation2d(DRIVETRAIN_TRACKWIDTH_METERS / 2.0, DRIVETRAIN_WHEELBASE_METERS / 2.0),
@@ -251,10 +252,10 @@ public class Drivetrain{
         backRightModule.set(states[3].speedMetersPerSecond / MAX_VELOCITY_METERS_PER_SECOND * MAX_VOLTAGE,
                         states[3].angle.getRadians());
 
-        SmartDashboard.putNumber("Left Front", frontLeftDrive.getMotorOutputPercent());
-        SmartDashboard.putNumber("Right Front", frontRightDrive.getMotorOutputPercent());
-        SmartDashboard.putNumber("Left Rear", backLeftDrive.getMotorOutputPercent());
-        SmartDashboard.putNumber("Right Rear", backRightDrive.getMotorOutputPercent());
+        // SmartDashboard.putNumber("Left Front", frontLeftDrive.getMotorOutputPercent());
+        // SmartDashboard.putNumber("Right Front", frontRightDrive.getMotorOutputPercent());
+        // SmartDashboard.putNumber("Left Rear", backLeftDrive.getMotorOutputPercent());
+        // SmartDashboard.putNumber("Right Rear", backRightDrive.getMotorOutputPercent());
     }
 
     public void setModulePositions(){
@@ -303,7 +304,7 @@ public class Drivetrain{
             rampPassed = false;
             setSwerveModuleStates(chassisSpeeds);
         }
-        SmartDashboard.putBoolean("Ramp Pased", rampPassed);
+        // SmartDashboard.putBoolean("Ramp Pased", rampPassed);
     }
     
     public void autonAction(AutonCommader autonCommader){
@@ -389,7 +390,7 @@ public class Drivetrain{
             setSwerveModuleStates(new ChassisSpeeds(0,0,0));
         }
 
-        SmartDashboard.putNumber("_Time", timer.get());
+        // SmartDashboard.putNumber("_Time", timer.get());
     }
 
     public void driveToPos(State state, Rotation2d theta){
@@ -399,13 +400,13 @@ public class Drivetrain{
         
         setSwerveModuleStates(speeds);
 
-        SmartDashboard.putNumber("Commanded Forward", speeds.vxMetersPerSecond);
-        SmartDashboard.putNumber("Commanded Sideways", speeds.vyMetersPerSecond);
-        SmartDashboard.putNumber("Commanded Turn", speeds.omegaRadiansPerSecond);
+        // SmartDashboard.putNumber("Commanded Forward", speeds.vxMetersPerSecond);
+        // SmartDashboard.putNumber("Commanded Sideways", speeds.vyMetersPerSecond);
+        // SmartDashboard.putNumber("Commanded Turn", speeds.omegaRadiansPerSecond);
 
-        SmartDashboard.putNumber("Commanded Theta",theta.getDegrees());
-        SmartDashboard.putNumber("Commanded X", state.poseMeters.getX());
-        SmartDashboard.putNumber("Commanded Y", state.poseMeters.getY());
+        // SmartDashboard.putNumber("Commanded Theta",theta.getDegrees());
+        // SmartDashboard.putNumber("Commanded X", state.poseMeters.getX());
+        // SmartDashboard.putNumber("Commanded Y", state.poseMeters.getY());
     }
 
     public void updatePose(){
@@ -440,8 +441,8 @@ public class Drivetrain{
 
         poseEstimator.updateWithTime(Timer.getFPGATimestamp(), Pigeon.getRotation2d(), positions);
 
-        SmartDashboard.putNumber("Estimated Theta", Rotation2d.fromDegrees(Pigeon.getAngle()).getDegrees());
-        SmartDashboard.putNumber("Estimated X", poseEstimator.getEstimatedPosition().getX());
-        SmartDashboard.putNumber("Estimated Y", poseEstimator.getEstimatedPosition().getY());
+        // SmartDashboard.putNumber("Estimated Theta", Rotation2d.fromDegrees(Pigeon.getAngle()).getDegrees());
+        // SmartDashboard.putNumber("Estimated X", poseEstimator.getEstimatedPosition().getX());
+        // SmartDashboard.putNumber("Estimated Y", poseEstimator.getEstimatedPosition().getY());
     }
 }
