@@ -66,6 +66,10 @@ public class CanCoderFactoryBuilder {
 
             return angle;
         }
+
+        public CANCoder getEncoder(){
+            return this.encoder;
+        }
     }
 
     public enum Direction {

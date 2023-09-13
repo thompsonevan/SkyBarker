@@ -1,6 +1,7 @@
 package com.swervedrivespecialties.swervelib;
 
-@FunctionalInterface
+import com.ctre.phoenix.sensors.CANCoder;
+
 public interface AbsoluteEncoder {
     /**
      * Gets the current angle reading of the encoder in radians.
@@ -8,4 +9,6 @@ public interface AbsoluteEncoder {
      * @return The current angle in radians. Range: [0, 2pi)
      */
     double getAbsoluteAngle();
+
+    CANCoder getEncoder();
 }
