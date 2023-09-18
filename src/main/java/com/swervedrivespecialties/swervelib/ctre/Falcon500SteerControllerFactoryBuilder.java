@@ -125,6 +125,8 @@ public final class Falcon500SteerControllerFactoryBuilder {
                 motor = new TalonFX(steerConfiguration.getMotorPort());
             }
 
+            Timer.delay(1);
+
             checkCtreError(motor.configAllSettings(motorConfiguration, CAN_TIMEOUT_MS), "Failed to configure Falcon 500 settings");
 
             if (hasVoltageCompensation()) {
