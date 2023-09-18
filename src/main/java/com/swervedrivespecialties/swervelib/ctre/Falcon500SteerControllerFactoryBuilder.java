@@ -117,8 +117,6 @@ public final class Falcon500SteerControllerFactoryBuilder {
                 motorConfiguration.supplyCurrLimit.enable = true;
             }
 
-            
-
             TalonFX motor;
 
             if(realBot){
@@ -132,8 +130,7 @@ public final class Falcon500SteerControllerFactoryBuilder {
             if (hasVoltageCompensation()) {
                 motor.enableVoltageCompensation(true);
             }
-            motor.configRemoteFeedbackFilter(absoluteEncoder.getEncoder(), 0);
-            checkCtreError(motor.configSelectedFeedbackSensor(TalonFXFeedbackDevice.RemoteSensor0, 0, CAN_TIMEOUT_MS), "Failed to set Falcon 500 feedback sensor");
+            checkCtreError(motor.configSelectedFeedbackSensor(TalonFXFeedbackDevice.IntegratedSensor, 0, CAN_TIMEOUT_MS), "Failed to set Falcon 500 feedback sensor");
             motor.setSensorPhase(true);
             motor.setInverted(moduleConfiguration.isSteerInverted() ? TalonFXInvertType.CounterClockwise : TalonFXInvertType.Clockwise);
             motor.setNeutralMode(NeutralMode.Brake);
